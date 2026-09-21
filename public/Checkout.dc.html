@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
+ <script type='module' defer crossorigin src='./assets/modular-pipeline-studio.js'></script> 
 </head>
 <body>
 <x-dc>
@@ -66,7 +67,7 @@
               <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; color: oklch(0.76 0.07 262);">{{ chainLabel }}</span>
             </div>
 
-              <button type="button" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 52px; padding: 14px 20px; border: 0; background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 500;" style-hover="background: oklch(0.985 0.002 240); color: oklch(0.19 0.008 250);">Connect wallet</button>
+              <button type="button" class="cnnctAprBtn" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 52px; padding: 14px 20px; border: 0; background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 500;" style-hover="background: oklch(0.985 0.002 240); color: oklch(0.19 0.008 250);">Connect wallet</button>
               <span style="font-size: 12.5px; line-height: 1.6; color: oklch(0.72 0.006 250);">{{ walletNote }}</span>
 
           </div>
