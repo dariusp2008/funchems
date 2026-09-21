@@ -482,7 +482,7 @@
         const raw = window.localStorage.getItem(CART_KEY);
         if (raw) return JSON.parse(raw);
       } catch (e) {}
-      return { lines: [{ cat: "TR5", qty: 2 }, { cat: "BP5", qty: 1 }, { cat: "PPB10", qty: 1 }], code: "", payMethod: "crypto", wishlist: ["RT5"] };
+      return { lines: [], code: "", payMethod: "crypto", wishlist: [] };
     })(),
 
     subscribe(fn) { listeners.add(fn); return () => listeners.delete(fn); },
