@@ -59,6 +59,13 @@ create table votes (
 create table content (
   key text primary key, value jsonb          -- hero, blocks, nav, strip, promos...
 );
+create table help_chat_messages (
+  id bigserial primary key,
+  update_id bigint unique,               -- set for rows pulled from the relay bot, null for visitor-sent rows
+  from_role text not null,               -- visitor | support
+  text text not null,
+  created_at timestamptz default now()
+);
 
 -- Row level security: public reads only "live" rows; all writes go through
 -- the service role key from a server route, never from the browser.
@@ -93,3 +100,8 @@ create policy "admin all orders" on orders for all using (auth.role() = 'service
 
 alter table customers enable row level security;
 create policy "admin all customers" on customers for all using (auth.role() = 'service_role');
+
+-- Help-page chat log. The browser never talks to Supabase for this table —
+-- only the server route (service role) reads and writes it.
+alter table help_chat_messages enable row level security;
+create policy "admin all help_chat_messages" on help_chat_messages for all using (auth.role() = 'service_role');

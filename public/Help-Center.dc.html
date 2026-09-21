@@ -157,83 +157,54 @@ class Component extends DCLogic {
   state = {
     open: 0, query: "", topic: null, contactOpen: false,
     email: "", order: "", message: "", sent: false, error: false,
-    chatDraft: "", chatLog: [], chatSending: false, chatNote: "", chatNoteOk: false, chatOffset: 0,
+    chatDraft: "", chatLog: [], chatSending: false, chatNote: "", chatNoteOk: false, chatOnline: true,
   };
 
-  tg() {
-    const db = window.Morpheps;
-    return (db && db.data.settings.telegram) || {};
-  }
-
-  async tgCall(method, params) {
-    const t = this.tg();
-    if (!t.botToken) throw new Error("no-token");
-    const url = "https://api.telegram.org/bot" + t.botToken + "/" + method;
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(params || {}),
-    });
-    const json = await res.json();
-    if (!json.ok) throw new Error(json.description || "telegram-error");
-    return json.result;
-  }
-
-  async sendToTelegram(text) {
-    const t = this.tg();
+  async sendChatMessage(text) {
     const stamp = new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
     this.setState((s) => ({
       chatLog: s.chatLog.concat([{ from: "you", text, at: stamp }]),
       chatDraft: "", chatSending: true, chatNote: "",
     }));
-    if (!t.botToken || !t.chatId) {
-      this.setState({
-        chatSending: false, chatNoteOk: false,
-        chatNote: "Chat is not connected yet. Add the bot token and channel id under Settings, Telegram in the dashboard.",
-      });
-      return;
-    }
     try {
-      await this.tgCall("sendMessage", { chat_id: t.chatId, text: "Store chat: " + text });
-      this.setState({ chatSending: false, chatNoteOk: true, chatNote: "Delivered to " + (t.adminHandle || "support") + "." });
-      this.pollTelegram();
+      const res = await fetch("/api/help-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+      const json = await res.json();
+      if (!json.ok) throw new Error(json.error || "send failed");
+      this.setState({ chatSending: false, chatNoteOk: true, chatNote: "Delivered to support." });
+      this.refreshChat();
     } catch (e) {
-      this.setState({ chatSending: false, chatNoteOk: false, chatNote: "Telegram refused the message: " + e.message });
+      this.setState({ chatSending: false, chatNoteOk: false, chatNote: "Message could not be delivered. Try again shortly." });
     }
   }
 
-  async pollTelegram() {
-    const t = this.tg();
-    if (!t.botToken || !t.chatId) return;
+  async refreshChat() {
     try {
-      const updates = await this.tgCall("getUpdates", { offset: this.state.chatOffset || undefined, timeout: 0 });
-      if (!updates || !updates.length) return;
-      const replies = [];
-      let offset = this.state.chatOffset;
-      updates.forEach((u) => {
-        offset = u.update_id + 1;
-        const msg = u.message || u.channel_post;
-        if (!msg || !msg.text) return;
-        if (String(msg.chat && msg.chat.id) !== String(t.chatId)) return;
-        if (msg.text.indexOf("Store chat: ") === 0) return;
-        replies.push({
-          from: "support",
-          text: msg.text,
-          at: new Date((msg.date || 0) * 1000).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }),
-        });
+      const res = await fetch("/api/help-chat");
+      const json = await res.json();
+      if (!json.ok) throw new Error(json.error || "fetch failed");
+      this.setState({
+        chatOnline: true,
+        chatLog: json.messages.map((m) => ({
+          from: m.from_role === "visitor" ? "you" : "support",
+          text: m.text,
+          at: new Date(m.created_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }),
+        })),
       });
-      if (replies.length || offset !== this.state.chatOffset) {
-        this.setState((s) => ({ chatLog: s.chatLog.concat(replies), chatOffset: offset }));
-      }
-    } catch (e) { /* keep the panel usable when polling fails */ }
+    } catch (e) {
+      this.setState({ chatOnline: false });
+    }
   }
 
   componentDidMount() {
     const bind = () => {
       this.unsub = window.Morpheps.subscribe(() => this.forceUpdate());
       this.forceUpdate();
-      const secs = Number(this.tg().pollSeconds) || 5;
-      this.chatTimer = setInterval(() => this.pollTelegram(), Math.max(2, secs) * 1000);
+      this.refreshChat();
+      this.chatTimer = setInterval(() => this.refreshChat(), 5000);
     };
     if (window.Morpheps) bind();
     else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
@@ -255,7 +226,6 @@ class Component extends DCLogic {
   renderVals() {
     const db = window.Morpheps;
     if (!db) return { faqs: [], topics: [], channels: [], contactFields: [], chatLog: [] };
-    const tg = this.tg();
     const all = db.data.content.faqs.filter((f) => f.live);
     const q = this.state.query.trim().toLowerCase();
 
@@ -310,16 +280,16 @@ class Component extends DCLogic {
         toggle: () => this.setState((s) => ({ open: s.open === i ? -1 : i })),
       })),
 
-      chatDot: tg.botToken && tg.chatId ? "oklch(0.55 0.13 145)" : "oklch(0.72 0.12 75)",
-      chatStatus: tg.botToken && tg.chatId
-        ? "Connected to Telegram, replies appear here"
-        : "Not connected yet, messages are held until the bot is configured",
-      chatHandle: tg.adminHandle || "",
-      chatGreeting: tg.greeting || "",
+      chatDot: this.state.chatOnline ? "oklch(0.55 0.13 145)" : "oklch(0.72 0.12 75)",
+      chatStatus: this.state.chatOnline
+        ? "Live chat, replies appear here"
+        : "Chat is temporarily unavailable, try again shortly",
+      chatHandle: "Support",
+      chatGreeting: "Usually replying within a few minutes during CET business hours.",
       chatEmpty: this.state.chatLog.length === 0,
       chatLog: this.state.chatLog.map((m) => ({
         text: m.text,
-        meta: (m.from === "you" ? "you" : (tg.adminHandle || "support")) + ", " + m.at,
+        meta: (m.from === "you" ? "you" : "support") + ", " + m.at,
         align: m.from === "you" ? "flex-end" : "flex-start",
         bg: m.from === "you" ? "oklch(0.19 0.008 250)" : "oklch(0.972 0.003 240)",
         color: m.from === "you" ? "oklch(0.985 0.002 240)" : "oklch(0.22 0.008 250)",
@@ -327,8 +297,8 @@ class Component extends DCLogic {
       })),
       chatDraft: this.state.chatDraft,
       setChatDraft: (e) => this.setState({ chatDraft: e.target.value }),
-      chatKey: (e) => { if (e.key === "Enter" && this.state.chatDraft.trim()) this.sendToTelegram(this.state.chatDraft.trim()); },
-      sendChat: () => { if (this.state.chatDraft.trim()) this.sendToTelegram(this.state.chatDraft.trim()); },
+      chatKey: (e) => { if (e.key === "Enter" && this.state.chatDraft.trim()) this.sendChatMessage(this.state.chatDraft.trim()); },
+      sendChat: () => { if (this.state.chatDraft.trim()) this.sendChatMessage(this.state.chatDraft.trim()); },
       chatSendLabel: this.state.chatSending ? "Sending" : "Send",
       hasChatNote: Boolean(this.state.chatNote),
       chatNote: this.state.chatNote,
@@ -361,7 +331,7 @@ class Component extends DCLogic {
 
       channels: [
         { label: "Email", value: "support@morpheps.com", note: "Replies within four hours, seven days a week." },
-        { label: "Telegram", value: "@morpheps_support", note: "Fastest for order status and restock questions." },
+        { label: "Live chat", value: "See the chat panel above", note: "Fastest for order status and restock questions." },
         { label: "Order issues", value: "Quote your order number", note: "Found in the dispatch email and in your account." },
       ],
     };
