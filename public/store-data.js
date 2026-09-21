@@ -1046,4 +1046,12 @@
 
   window.Morpheps = db;
   window.Aptera = db;
+
+  // Each .dc.html page is a fresh full page load, not a SPA — connect() must
+  // run on every load (not just when an action happens to need it) so the
+  // Supabase session in localStorage gets restored into authUser here.
+  // Without this, a page reached by plain navigation (not through an action
+  // that calls connect() itself, like signIn()) sees authUser as null even
+  // though a valid session already exists.
+  if (db.supabaseConfigured) db.connect();
 })();
