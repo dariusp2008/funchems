@@ -654,7 +654,10 @@
         if (c) {
           const { error } = await c.auth.signUp({
             email, password: fields.password,
-            options: { data: { name: fields.name || "", country: fields.country || "" } },
+            options: {
+              data: { name: fields.name || "", country: fields.country || "" },
+              emailRedirectTo: location.origin + "/Email-Confirmed.dc.html",
+            },
           });
           return error ? { ok: false, error: error.message } : { ok: true, note: "Check your email to confirm your account." };
         }
@@ -684,7 +687,9 @@
         const db = window.Morpheps;
         const c = db.connect();
         if (c) {
-          const { error } = await c.auth.resetPasswordForEmail(String(email).trim());
+          const { error } = await c.auth.resetPasswordForEmail(String(email).trim(), {
+            redirectTo: location.origin + "/Reset-Password.dc.html",
+          });
           return error ? { ok: false, error: error.message } : { ok: true, note: "Reset link sent to " + email + " if an account exists." };
         }
         const local = db.data.customers.find((x) => x.email.toLowerCase() === String(email).trim().toLowerCase());
