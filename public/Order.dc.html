@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="./store-data.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: oklch(0.972 0.003 240); }
+  * { box-sizing: border-box; }
+  a { color: oklch(0.19 0.008 250); text-decoration: none; }
+  a:hover { color: oklch(0.40 0.105 262); }
+  input { font-family: inherit; }
+  @keyframes marquee-left { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', Helvetica, sans-serif; color: oklch(0.19 0.008 250); background: oklch(0.972 0.003 240); min-height: 100vh; -webkit-font-smoothing: antialiased;">
+
+  <dc-import name="StoreChrome" active="Track order" hint-size="100%,222px"></dc-import>
+
+  <sc-if value="{{ found }}" hint-placeholder-val="{{ true }}">
+    <section style="max-width: 1400px; margin: 0 auto; padding: 30px clamp(16px, 3.5vw, 40px) 0;">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; padding-bottom: 18px; border-bottom: 1px solid oklch(0.9 0.004 250); flex-wrap: wrap;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 12.5px; color: oklch(0.5 0.008 250);">Placed {{ placedOn }}, {{ lineCount }}</span>
+          <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 33px; line-height: 1.06; letter-spacing: -0.02em; font-weight: 600;">Order {{ orderId }}</h1>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <span style="display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border: 1px solid {{ statusBorder }}; background: {{ statusBg }}; color: {{ statusColor }}; font-size: 13px; font-weight: 500;">
+            <span style="width: 6px; height: 6px; background: {{ statusColor }}; display: block;"></span>{{ status }}
+          </span>
+          <button onClick="{{ reorder }}" style="height: 34px; padding: 0 14px; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; background: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; color: oklch(0.3 0.008 250);" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">{{ reorderLabel }}</button>
+        </div>
+      </div>
+    </section>
+
+    <section style="max-width: 1400px; margin: 0 auto; padding: 24px clamp(16px, 3.5vw, 40px) 68px; display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 24px; align-items: start;">
+
+      <div style="display: flex; flex-direction: column; gap: 20px; min-width: 0;">
+
+        <div style="display: flex; flex-direction: column; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 16px 22px; border-bottom: 1px solid oklch(0.93 0.004 250);">
+            <span style="font-size: 14px; font-weight: 600;">Progress</span>
+            <span style="font-size: 12.5px; color: oklch(0.52 0.008 250);">{{ etaLine }}</span>
+          </div>
+          <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+            <div style="display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: 14px; padding: 13px 22px; border-bottom: 1px solid oklch(0.955 0.004 250); align-items: center;">
+              <span style="width: 10px; height: 10px; background: {{ s.dot }}; border: 1px solid {{ s.ring }}; display: block;"></span>
+              <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+                <span style="font-size: 13.5px; font-weight: 500; color: {{ s.color }};">{{ s.label }}</span>
+                <span style="font-size: 12.5px; line-height: 1.5; color: oklch(0.55 0.008 250);">{{ s.note }}</span>
+              </span>
+              <span style="font-size: 12.5px; color: oklch(0.58 0.008 250); white-space: nowrap;">{{ s.when }}</span>
+            </div>
+          </sc-for>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0;">
+            <div style="display: flex; flex-direction: column; gap: 5px; padding: 16px 22px; border-right: 1px solid oklch(0.955 0.004 250);">
+              <span style="font-size: 12.5px; color: oklch(0.55 0.008 250);">Carrier reference</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: {{ trackingColor }};">{{ tracking }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 5px; padding: 16px 22px;">
+              <span style="font-size: 12.5px; color: oklch(0.55 0.008 250);">Ships to</span>
+              <span style="font-size: 13px;">{{ country }}, {{ email }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
+          <div style="display: grid; grid-template-columns: 78px minmax(0, 1fr) 64px 88px; gap: 12px; padding: 12px 22px; border-bottom: 1px solid oklch(0.93 0.004 250); font-size: 12.5px; color: oklch(0.52 0.008 250);">
+            <span>Cat. no.</span><span>Item</span><span style="text-align: right;">Qty</span><span style="text-align: right;">Line</span>
+          </div>
+          <sc-for list="{{ lines }}" as="l" hint-placeholder-count="3">
+            <div style="display: grid; grid-template-columns: 78px minmax(0, 1fr) 64px 88px; gap: 12px; padding: 13px 22px; border-bottom: 1px solid oklch(0.955 0.004 250); align-items: baseline;">
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: oklch(0.5 0.008 250);">{{ l.cat }}</span>
+              <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+                <a href="{{ l.href }}" style="font-size: 13.5px; font-weight: 500;">{{ l.name }}</a>
+                <span style="font-size: 12.5px; color: oklch(0.55 0.008 250);">{{ l.meta }}</span>
+              </span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; text-align: right;">{{ l.qty }}</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; text-align: right;">{{ l.total }}</span>
+            </div>
+          </sc-for>
+          <sc-if value="{{ hasNote }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 5px; padding: 16px 22px;">
+              <span style="font-size: 12.5px; color: oklch(0.55 0.008 250);">Note on file</span>
+              <span style="font-size: 13px; line-height: 1.55;">{{ note }}</span>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 20px; min-width: 0;">
+        <div style="display: flex; flex-direction: column; padding: 22px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
+          <span style="font-size: 14px; font-weight: 600; padding-bottom: 12px;">Payment</span>
+          <sc-for list="{{ summary }}" as="s" hint-placeholder-count="4">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 9px 0; border-top: 1px solid oklch(0.95 0.004 250);">
+              <span style="font-size: 13px; color: {{ s.color }};">{{ s.label }}</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: {{ s.color }};">{{ s.value }}</span>
+            </div>
+          </sc-for>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 16px 0 4px; border-top: 1px solid oklch(0.88 0.004 250);">
+            <span style="font-size: 14.5px; font-weight: 500;">Paid by {{ payMethod }}</span>
+            <span style="font-size: 24px; font-weight: 500; letter-spacing: -0.02em;">{{ total }}</span>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px; padding: 22px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
+          <span style="font-size: 14px; font-weight: 600;">Something wrong with this order?</span>
+          <p style="margin: 0; font-size: 13px; line-height: 1.6; color: oklch(0.45 0.008 250); text-wrap: pretty;">Damaged seals, a temperature excursion or a missing vial are replaced free within fourteen days of delivery. Quote the order number and the lot printed on the vial.</p>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <a href="Help-Center.dc.html" style="display: flex; align-items: center; height: 40px; padding: 0 18px; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">Contact support</a>
+            
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px; padding: 22px; border: 1px solid oklch(0.9 0.004 250);">
+          <span style="font-size: 14px; font-weight: 600;">Look up another order</span>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <input type="text" value="{{ lookup }}" onChange="{{ setLookup }}" onKeyDown="{{ lookupKey }}" placeholder="MP-24118" style="flex: 1; min-width: 140px; height: 42px; padding: 0 12px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 13.5px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);" />
+            <button onClick="{{ doLookup }}" style="height: 42px; padding: 0 18px; border: 1px solid oklch(0.19 0.008 250); border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262); border-color: oklch(0.40 0.105 262);">Find it</button>
+          </div>
+          <span style="font-size: 12.5px; color: oklch(0.55 0.008 250);">{{ lookupHint }}</span>
+        </div>
+      </div>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{ notFound }}" hint-placeholder-val="{{ false }}">
+    <section style="max-width: 620px; margin: 0 auto; padding: 80px clamp(16px, 3.5vw, 40px) 110px; display: flex; flex-direction: column; gap: 16px;">
+      <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 30px; line-height: 1.08; letter-spacing: -0.02em; font-weight: 600;">Find an order</h1>
+      <p style="margin: 0; font-size: 14px; line-height: 1.65; color: oklch(0.45 0.008 250);">{{ lookupHint }}</p>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <input type="text" value="{{ lookup }}" onChange="{{ setLookup }}" onKeyDown="{{ lookupKey }}" placeholder="Order number, e.g. MP-24118" style="flex: 1; min-width: 200px; height: 46px; padding: 0 14px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 14px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);" />
+        <button onClick="{{ doLookup }}" style="height: 46px; padding: 0 22px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262);">Find it</button>
+      </div>
+      <sc-if value="{{ hasRecent }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 0; margin-top: 10px; border-top: 1px solid oklch(0.9 0.004 250);">
+        <sc-for list="{{ recent }}" as="r" hint-placeholder-count="3">
+          <a href="{{ r.href }}" style="display: grid; grid-template-columns: 100px minmax(0, 1fr) auto; gap: 14px; padding: 13px 2px; border-bottom: 1px solid oklch(0.94 0.004 250); align-items: baseline;">
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px;">{{ r.id }}</span>
+            <span style="font-size: 13px; color: oklch(0.45 0.008 250); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.summary }}</span>
+            <span style="font-size: 13px; font-weight: 500;">{{ r.total }}</span>
+          </a>
+        </sc-for>
+      </div>
+      </sc-if>
+    </section>
+  </sc-if>
+
+  <dc-import name="SiteFooter" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1400,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = { id: "", lookup: "", added: false, missed: "" };
+
+  componentDidMount() {
+    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Morpheps) bind();
+    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+    const q = new URLSearchParams(window.location.search).get("id");
+    if (q) this.setState({ id: q.toUpperCase() });
+  }
+  componentWillUnmount() {
+    if (this.unsub) this.unsub();
+    if (this.poll) clearInterval(this.poll);
+  }
+
+  find(db) {
+    const id = (this.state.id || "").trim().toUpperCase();
+    if (!id) return null;
+    return db.data.orders.find((o) => o.id.toUpperCase() === id || o.id.toUpperCase() === "MP-" + id) || null;
+  }
+
+  renderVals() {
+    const db = window.Morpheps;
+    if (!db) return { steps: [], lines: [], summary: [], recent: [] };
+    const o = this.find(db);
+    const me = db.currentUser();
+    const lookupFns = {
+      lookup: this.state.lookup,
+      setLookup: (e) => this.setState({ lookup: e.target.value }),
+      doLookup: () => this.setState({ id: this.state.lookup.trim().toUpperCase(), lookup: "", missed: "" }),
+      lookupKey: (e) => { if (e.key === "Enter") this.setState({ id: this.state.lookup.trim().toUpperCase(), lookup: "" }); },
+      lookupHint: this.state.missed
+        ? "No order matches " + this.state.missed + ". Check the number in your confirmation email."
+        : "The number is in your confirmation email, in the form MP-24118.",
+    };
+
+    if (!o) {
+      return {
+        ...lookupFns, found: false, notFound: true,
+        hasRecent: Boolean(me) && db.data.orders.some((r) => r.email === me.email),
+        recent: (me ? db.data.orders.filter((r) => r.email === me.email) : []).slice(0, 4).map((r) => ({
+          id: r.id, href: "Order.dc.html?id=" + r.id,
+          summary: (r.lines || []).map((l) => l.cat + " ×" + l.qty).join(", "),
+          total: db.money(db.orderTotalOf(r)),
+        })),
+      };
+    }
+
+    const order = ["Awaiting", "Paid", "Packed", "Shipped"];
+    const reached = order.indexOf(o.status);
+    const refunded = o.status === "Refunded";
+    const day = (offset) => {
+      const d = new Date(o.createdAt + "T09:00:00");
+      d.setDate(d.getDate() + offset);
+      return d.toISOString().slice(5, 10).replace("-", "/");
+    };
+    const notes = [
+      "Order received. Payment " + (reached >= 1 ? "confirmed" : "not yet confirmed") + ".",
+      "Funds cleared and the lot was reserved from stock.",
+      "Vials packed with a frozen gel pack in an unmarked outer box.",
+      o.tracking ? "Handed to the carrier, reference below." : "Waiting for the next carrier collection at 16:00 CET.",
+    ];
+    const tone = {
+      Awaiting: "oklch(0.5 0.12 60)", Paid: "oklch(0.42 0.10 145)",
+      Packed: "oklch(0.40 0.105 262)", Shipped: "oklch(0.28 0.008 250)", Refunded: "oklch(0.5 0.13 25)",
+    }[o.status] || "oklch(0.3 0.008 250)";
+
+    const summary = [
+      { label: "Items", value: db.money(o.subtotal), color: "oklch(0.4 0.008 250)" },
+      { label: "Discounts applied", value: o.discount ? "−" + db.money(o.discount) : "", color: o.discount ? "oklch(0.40 0.105 262)" : "oklch(0.55 0.008 250)" },
+      { label: "Cold chain shipping", value: o.shipping ? db.money(o.shipping) : "free", color: "oklch(0.4 0.008 250)" },
+    ];
+
+    return {
+      ...lookupFns,
+      found: true, notFound: false,
+      orderId: o.id,
+      placedOn: new Date(o.createdAt + "T09:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }),
+      lineCount: (o.lines || []).length + ((o.lines || []).length === 1 ? " line" : " lines"),
+      status: refunded ? "Refunded" : o.status,
+      statusColor: tone,
+      statusBg: "oklch(0.985 0.002 240)",
+      statusBorder: "oklch(0.88 0.004 250)",
+      etaLine: refunded ? "Refund issued to the original method" : reached >= 3 ? "In transit, 2 to 4 days inside the EU" : "Dispatch same day before " + db.data.settings.dispatchCutoff,
+
+      steps: order.map((label, i) => ({
+        label,
+        note: notes[i],
+        when: i <= reached ? day(i === 0 ? 0 : i === 1 ? 0 : 1) : "",
+        dot: i <= reached ? tone : "transparent",
+        ring: i <= reached ? tone : "oklch(0.82 0.006 250)",
+        color: i <= reached ? "oklch(0.22 0.008 250)" : "oklch(0.6 0.006 250)",
+      })),
+
+      tracking: o.tracking || "Assigned at hand-off",
+      trackingColor: o.tracking ? "oklch(0.22 0.008 250)" : "oklch(0.58 0.008 250)",
+      country: o.country,
+      email: o.email,
+
+      lines: (o.lines || []).map((l) => {
+        const p = db.product(l.cat) || {};
+        return {
+          cat: l.cat,
+          name: p.name || l.cat,
+          href: "Product-Detail.dc.html?p=" + l.cat,
+          meta: (p.dose || "") + (p.lot ? ", lot " + p.lot : ""),
+          qty: "×" + l.qty,
+          total: db.money(l.unit * l.qty),
+        };
+      }),
+      hasNote: Boolean(o.note),
+      note: o.note,
+
+      summary,
+      total: db.money(db.orderTotalOf(o)),
+      payMethod: o.payMethod,
+
+      reorderLabel: this.state.added ? "Added to cart" : "Reorder these items",
+      reorder: () => {
+        (o.lines || []).forEach((l) => db.cart.add(l.cat, l.qty));
+        this.setState({ added: true });
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

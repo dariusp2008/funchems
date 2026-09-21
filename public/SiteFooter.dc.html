@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="./store-data.js"></script>
+<style>
+  @font-face { font-family: Synthra; src: url("./Synthra-Regular.otf") format("opentype"); font-weight: 400; font-display: swap; }
+</style>
+</head>
+<body>
+<x-dc>
+<footer style="font-family: 'IBM Plex Sans', Helvetica, sans-serif; background: oklch(0.19 0.008 250); color: oklch(0.85 0.006 250);">
+  <div style="max-width: 1400px; margin: 0 auto; padding: 64px clamp(16px, 3.5vw, 40px) 0;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 40px 48px; padding-bottom: 56px;">
+      <div style="display: flex; flex-direction: column; gap: 18px;">
+        <div style="display: flex; align-items: baseline;">
+          <span style="font-family: Synthra, Archivo, Helvetica, sans-serif; font-size: 29px; line-height: 1; letter-spacing: 0.01em; color: oklch(0.972 0.003 240);">{{ brandOne }}</span>
+        </div>
+        <p style="margin: 0; max-width: 34ch; font-size: 13px; line-height: 1.65; color: oklch(0.68 0.006 250);">{{ blurb }}</p>
+        <div style="display: flex; gap: 8px; margin-top: 4px;">
+          <sc-for list="{{ payments }}" as="pay" hint-placeholder-count="4">
+            <span style="padding: 6px 10px; border: 1px solid oklch(0.34 0.008 250); border-radius: 2px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.08em; color: oklch(0.72 0.006 250);">{{ pay }}</span>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px 24px;">
+        <sc-for list="{{ columns }}" as="col" hint-placeholder-count="3">
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.58 0.006 250);">{{ col.title }}</span>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{ col.items }}" as="item" hint-placeholder-count="5">
+                <a href="{{ item.href }}" style="font-size: 13.5px; color: oklch(0.85 0.006 250);" style-hover="color: oklch(0.76 0.07 262);">{{ item.label }}</a>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 48px; align-items: center; padding: 30px 0; border-top: 1px solid oklch(0.28 0.008 250);">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 24px; line-height: 1.1; color: oklch(0.972 0.003 240);">{{ subTitle }}</span>
+        <span style="font-size: 13px; line-height: 1.6; color: oklch(0.68 0.006 250); max-width: 46ch;">{{ subNote }}</span>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <input type="email" value="{{ email }}" onChange="{{ setEmail }}" placeholder="youremail@email.com" style="flex: 1; min-width: 0; height: 46px; padding: 0 14px; border: 1px solid oklch(0.34 0.008 250); border-radius: 2px; background: oklch(0.23 0.008 250); color: oklch(0.93 0.004 250); font-family: inherit; font-size: 13.5px; outline: none;" style-focus="border-color: oklch(0.76 0.07 262);" />
+        <button onClick="{{ subscribe }}" style="height: 46px; padding: 0 22px; border: 0; border-radius: 2px; background: oklch(0.972 0.003 240); color: oklch(0.19 0.008 250); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0; white-space: nowrap;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">{{ subLabel }}</button>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 22px 0 26px; border-top: 1px solid oklch(0.28 0.008 250); font-size: 11.5px; letter-spacing: 0.05em; color: oklch(0.6 0.006 250); flex-wrap: wrap;">
+      <span>{{ legal }}</span>
+      <div style="display: flex; gap: 22px;">
+        <sc-for list="{{ legalLinks }}" as="lk" hint-placeholder-count="3">
+          <a href="{{ lk.href }}" style="color: oklch(0.6 0.006 250);" style-hover="color: oklch(0.76 0.07 262);">{{ lk.label }}</a>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { email: "", subscribed: false };
+
+  componentDidMount() {
+    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Morpheps) bind();
+    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+  }
+  componentWillUnmount() {
+    if (this.unsub) this.unsub();
+    if (this.poll) clearInterval(this.poll);
+  }
+
+  renderVals() {
+    const db = window.Morpheps;
+    const f = db ? db.footer() : {};
+    const name = (db ? db.data.settings.storeName : "Morpheps").split(" ");
+    return {
+      brandOne: name.join(" ") || "Morpheps",
+      blurb: f.blurb || "",
+      legal: f.legal || "",
+      legalLinks: db ? (db.data.content.legalLinks || []) : [],
+      payments: (f.payments || "ETH, USDT").split(",").map((s) => s.trim()).filter(Boolean),
+      columns: db ? db.footerColumns() : [],
+      subTitle: f.newsletterTitle || "",
+      subscribed: this.state.subscribed,
+      email: this.state.email,
+      setEmail: (e) => this.setState({ email: e.target.value }),
+      subscribe: () => { if (this.state.email.includes("@")) this.setState({ subscribed: true }); },
+      subLabel: this.state.subscribed ? "Subscribed" : "Subscribe",
+      subNote: this.state.subscribed
+        ? "You are on the list. Restocks, new assays and the offsale shortlist, once a week."
+        : (f.newsletterNote || ""),
+    };
+  }
+}
+</script>
+</body>
+</html>

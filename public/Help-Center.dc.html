@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="./store-data.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: oklch(0.972 0.003 240); }
+  * { box-sizing: border-box; }
+  a { color: oklch(0.19 0.008 250); text-decoration: none; }
+  a:hover { color: oklch(0.40 0.105 262); }
+  input, textarea { font-family: inherit; }
+  @keyframes marquee-left { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', Helvetica, sans-serif; color: oklch(0.19 0.008 250); background: oklch(0.972 0.003 240); min-height: 100vh; -webkit-font-smoothing: antialiased;">
+
+  <dc-import name="StoreChrome" active="Help Center" hint-size="100%,222px"></dc-import>
+
+  <section style="max-width: 1400px; margin: 0 auto; padding: 56px clamp(16px, 3.5vw, 40px) 0;">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center;">
+      <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">Support replies within four hours, 7 days</span>
+      <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 52px; line-height: 1; letter-spacing: -0.025em; font-weight: 600;">Help Center</h1>
+      <div style="position: relative; width: 100%; max-width: 620px; margin-top: 6px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="oklch(0.55 0.006 250)" stroke-width="2" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%);"><circle cx="11" cy="11" r="7"></circle><path d="M16.5 16.5 21 21"></path></svg>
+        <input type="text" value="{{ query }}" onChange="{{ setQuery }}" placeholder="Search shipping, payment, storage, returns…" style="width: 100%; height: 54px; padding: 0 20px 0 46px; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 14.5px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);">
+      </div>
+      <sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}">
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; letter-spacing: 0.06em; color: oklch(0.55 0.008 250);">{{ resultLine }}</span>
+      </sc-if>
+    </div>
+  </section>
+
+  <section style="max-width: 1400px; margin: 0 auto; padding: 48px clamp(16px, 3.5vw, 40px) 0;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+      <sc-for list="{{ topics }}" as="t" hint-placeholder-count="4">
+        <button onClick="{{ t.pick }}" style="display: flex; flex-direction: column; gap: 10px; padding: 26px; background: oklch(0.985 0.002 240); border: 1px solid {{ t.border }}; border-radius: 2px; cursor: pointer; font-family: inherit; text-align: left;" style-hover="border-color: oklch(0.40 0.105 262);">
+          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">{{ t.count }}</span>
+          <span style="font-size: 17px; font-weight: 500; letter-spacing: -0.01em; color: oklch(0.19 0.008 250);">{{ t.title }}</span>
+          <span style="font-size: 13px; line-height: 1.55; color: oklch(0.5 0.008 250); text-wrap: pretty;">{{ t.body }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="max-width: 1400px; margin: 0 auto; padding: 52px clamp(16px, 3.5vw, 40px) 0;">
+    <div style="display: flex; flex-wrap: wrap; gap: 56px; align-items: start;">
+      <div style="flex: 0 1 300px; min-width: 240px; display: flex; flex-direction: column; gap: 14px; position: sticky; top: 24px;">
+        <h2 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 34px; line-height: 1.05; letter-spacing: -0.02em; font-weight: 600;">{{ faqHeading }}</h2>
+        <p style="margin: 0; font-size: 13.5px; line-height: 1.6; color: oklch(0.48 0.008 250); text-wrap: pretty;">If the answer is not here, write to support and quote your order number. Replies come from a person, not a template.</p>
+        <button onClick="{{ toggleContact }}" style="display: flex; align-items: center; align-self: flex-start; height: 42px; padding: 0 20px; margin-top: 6px; border: 1px solid oklch(0.19 0.008 250); border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.19 0.008 250);" style-hover="background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240);">{{ contactLabel }}</button>
+      </div>
+
+      <div style="flex: 1 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+        <div style="display: flex; flex-direction: column; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid oklch(0.93 0.004 250);">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: {{ chatDot }}; display: block; flex: none;"></span>
+            <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+              <span style="font-size: 14.5px; font-weight: 600;">Live chat</span>
+              <span style="font-size: 12.5px; color: oklch(0.53 0.008 250);">{{ chatStatus }}</span>
+            </span>
+            <span style="margin-left: auto; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: oklch(0.55 0.008 250);">{{ chatHandle }}</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 12px; padding: 18px 20px; max-height: 340px; overflow-y: auto;">
+            <sc-for list="{{ chatLog }}" as="m" hint-placeholder-count="2">
+              <div style="display: flex; flex-direction: column; gap: 4px; align-self: {{ m.align }}; max-width: 78%;">
+                <span style="padding: 11px 14px; border: 1px solid {{ m.border }}; border-radius: 2px; background: {{ m.bg }}; color: {{ m.color }}; font-size: 13.5px; line-height: 1.55;">{{ m.text }}</span>
+                <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; color: oklch(0.6 0.006 250); align-self: {{ m.align }};">{{ m.meta }}</span>
+              </div>
+            </sc-for>
+            <sc-if value="{{ chatEmpty }}" hint-placeholder-val="{{ true }}">
+              <span style="padding: 22px 0; font-size: 13px; line-height: 1.6; color: oklch(0.55 0.008 250);">{{ chatGreeting }}</span>
+            </sc-if>
+          </div>
+
+          <div style="display: flex; gap: 8px; padding: 14px 20px; border-top: 1px solid oklch(0.93 0.004 250); flex-wrap: wrap;">
+            <input type="text" value="{{ chatDraft }}" onChange="{{ setChatDraft }}" onKeyDown="{{ chatKey }}" placeholder="Type a message" style="flex: 1 1 200px; min-width: 0; height: 44px; padding: 0 13px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-family: inherit; font-size: 13.5px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);">
+            <button onClick="{{ sendChat }}" style="height: 44px; padding: 0 22px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262);">{{ chatSendLabel }}</button>
+          </div>
+          <sc-if value="{{ hasChatNote }}" hint-placeholder-val="{{ false }}">
+            <span style="padding: 0 20px 16px; font-size: 12.5px; color: {{ chatNoteColor }};">{{ chatNote }}</span>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ contactOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 16px; padding: 26px 28px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.86 0.006 250); border-radius: 2px;">
+            <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 24px;">Write to support</span>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+              <sc-for list="{{ contactFields }}" as="f" hint-placeholder-count="2">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <label style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.56 0.008 250);">{{ f.label }}</label>
+                  <input type="{{ f.type }}" value="{{ f.value }}" onChange="{{ f.change }}" placeholder="{{ f.placeholder }}" style="height: 42px; padding: 0 12px; border: 1px solid {{ f.border }}; border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13.5px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);">
+                </div>
+              </sc-for>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.56 0.008 250);">How can we help</label>
+              <textarea value="{{ message }}" onChange="{{ setMessage }}" rows="4" placeholder="Order number and what happened" style="padding: 12px; border: 1px solid {{ messageBorder }}; border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13.5px; line-height: 1.6; resize: vertical; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);"></textarea>
+            </div>
+            <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+              <button onClick="{{ send }}" style="height: 44px; padding: 0 24px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262);">{{ sendLabel }}</button>
+              <span style="font-size: 12.5px; color: {{ sendNoteColor }};">{{ sendNote }}</span>
+            </div>
+          </div>
+        </sc-if>
+
+        <div style="display: flex; flex-direction: column; border-top: 1px solid oklch(0.9 0.004 250);">
+          <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="7">
+            <div style="border-bottom: 1px solid oklch(0.9 0.004 250);">
+              <button onClick="{{ f.toggle }}" style="display: grid; grid-template-columns: minmax(0, 1fr) 20px; gap: 20px; align-items: center; width: 100%; padding: 22px 0; border: 0; background: transparent; cursor: pointer; text-align: left; font-family: inherit;" style-hover="color: oklch(0.40 0.105 262);">
+                <span style="font-size: 16px; font-weight: 500; letter-spacing: -0.005em; color: {{ f.color }};">{{ f.q }}</span>
+                <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 16px; color: oklch(0.55 0.008 250); text-align: right;">{{ f.sign }}</span>
+              </button>
+              <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}">
+                <p style="margin: 0; padding: 0 60px 24px 0; max-width: 76ch; font-size: 14px; line-height: 1.7; color: oklch(0.42 0.008 250); text-wrap: pretty;">{{ f.a }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noFaqs }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 10px; padding: 56px 0;">
+              <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 24px; color: oklch(0.42 0.008 250);">Nothing matches that search</span>
+              <span style="font-size: 13.5px; color: oklch(0.55 0.008 250);">Write to support and we will answer directly, and add the article.</span>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="max-width: 1400px; margin: 0 auto; padding: 52px clamp(16px, 3.5vw, 40px) 68px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+      <sc-for list="{{ channels }}" as="c" hint-placeholder-count="3">
+        <div style="display: flex; flex-direction: column; gap: 10px; padding: 28px; border: 1px solid oklch(0.9 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240);">
+          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.55 0.008 250);">{{ c.label }}</span>
+          <span style="font-size: 17px; font-weight: 500;">{{ c.value }}</span>
+          <span style="font-size: 13px; line-height: 1.5; color: oklch(0.5 0.008 250);">{{ c.note }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <dc-import name="SiteFooter" hint-size="100%,540px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    open: 0, query: "", topic: null, contactOpen: false,
+    email: "", order: "", message: "", sent: false, error: false,
+    chatDraft: "", chatLog: [], chatSending: false, chatNote: "", chatNoteOk: false, chatOffset: 0,
+  };
+
+  tg() {
+    const db = window.Morpheps;
+    return (db && db.data.settings.telegram) || {};
+  }
+
+  async tgCall(method, params) {
+    const t = this.tg();
+    if (!t.botToken) throw new Error("no-token");
+    const url = "https://api.telegram.org/bot" + t.botToken + "/" + method;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(params || {}),
+    });
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.description || "telegram-error");
+    return json.result;
+  }
+
+  async sendToTelegram(text) {
+    const t = this.tg();
+    const stamp = new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+    this.setState((s) => ({
+      chatLog: s.chatLog.concat([{ from: "you", text, at: stamp }]),
+      chatDraft: "", chatSending: true, chatNote: "",
+    }));
+    if (!t.botToken || !t.chatId) {
+      this.setState({
+        chatSending: false, chatNoteOk: false,
+        chatNote: "Chat is not connected yet. Add the bot token and channel id under Settings, Telegram in the dashboard.",
+      });
+      return;
+    }
+    try {
+      await this.tgCall("sendMessage", { chat_id: t.chatId, text: "Store chat: " + text });
+      this.setState({ chatSending: false, chatNoteOk: true, chatNote: "Delivered to " + (t.adminHandle || "support") + "." });
+      this.pollTelegram();
+    } catch (e) {
+      this.setState({ chatSending: false, chatNoteOk: false, chatNote: "Telegram refused the message: " + e.message });
+    }
+  }
+
+  async pollTelegram() {
+    const t = this.tg();
+    if (!t.botToken || !t.chatId) return;
+    try {
+      const updates = await this.tgCall("getUpdates", { offset: this.state.chatOffset || undefined, timeout: 0 });
+      if (!updates || !updates.length) return;
+      const replies = [];
+      let offset = this.state.chatOffset;
+      updates.forEach((u) => {
+        offset = u.update_id + 1;
+        const msg = u.message || u.channel_post;
+        if (!msg || !msg.text) return;
+        if (String(msg.chat && msg.chat.id) !== String(t.chatId)) return;
+        if (msg.text.indexOf("Store chat: ") === 0) return;
+        replies.push({
+          from: "support",
+          text: msg.text,
+          at: new Date((msg.date || 0) * 1000).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }),
+        });
+      });
+      if (replies.length || offset !== this.state.chatOffset) {
+        this.setState((s) => ({ chatLog: s.chatLog.concat(replies), chatOffset: offset }));
+      }
+    } catch (e) { /* keep the panel usable when polling fails */ }
+  }
+
+  componentDidMount() {
+    const bind = () => {
+      this.unsub = window.Morpheps.subscribe(() => this.forceUpdate());
+      this.forceUpdate();
+      const secs = Number(this.tg().pollSeconds) || 5;
+      this.chatTimer = setInterval(() => this.pollTelegram(), Math.max(2, secs) * 1000);
+    };
+    if (window.Morpheps) bind();
+    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+  }
+  componentWillUnmount() {
+    if (this.unsub) this.unsub();
+    if (this.poll) clearInterval(this.poll);
+    if (this.chatTimer) clearInterval(this.chatTimer);
+  }
+
+  topicOf(f) {
+    const t = (f.q + " " + f.a).toLowerCase();
+    if (/(ship|deliver|dispatch|pack|customs|track)/.test(t)) return "shipping";
+    if (/(pay|crypto|card|sepa|discount|invoice|vat|price)/.test(t)) return "payment";
+    if (/(stor|reconstitut|temperature|shelf|handle|fridge|°c)/.test(t)) return "storage";
+    return "orders";
+  }
+
+  renderVals() {
+    const db = window.Morpheps;
+    if (!db) return { faqs: [], topics: [], channels: [], contactFields: [], chatLog: [] };
+    const tg = this.tg();
+    const all = db.data.content.faqs.filter((f) => f.live);
+    const q = this.state.query.trim().toLowerCase();
+
+    const groups = [
+      { key: "shipping", title: "Shipping & cold chain", body: "Dispatch times, packaging, customs, tracking." },
+      { key: "payment", title: "Payment & discounts", body: "Crypto, tiers, bundles, invoices, VAT." },
+      { key: "storage", title: "Storage & handling", body: "Temperatures, reconstitution, shelf life." },
+      { key: "orders", title: "Orders & returns", body: "Changes, breakages, refunds, disputes." },
+    ];
+
+    let list = all;
+    if (this.state.topic) list = list.filter((f) => this.topicOf(f) === this.state.topic);
+    if (q) list = list.filter((f) => (f.q + " " + f.a).toLowerCase().includes(q));
+
+    const cf = (key, label, opts) => {
+      const o = opts || {};
+      return {
+        label, type: o.type || "text", placeholder: o.placeholder || "",
+        value: this.state[key],
+        border: this.state.error && o.required && !String(this.state[key]).trim() ? "oklch(0.78 0.11 27)" : "oklch(0.88 0.004 250)",
+        change: (e) => this.setState({ [key]: e.target.value, sent: false }),
+      };
+    };
+
+    return {
+      query: this.state.query,
+      setQuery: (e) => this.setState({ query: e.target.value, open: -1 }),
+      hasQuery: q.length > 0 || Boolean(this.state.topic),
+      resultLine: list.length + (list.length === 1 ? " article" : " articles") + " match"
+        + (this.state.topic ? " in " + (groups.find((g) => g.key === this.state.topic) || {}).title : ""),
+
+      topics: groups.map((g) => {
+        const count = all.filter((f) => this.topicOf(f) === g.key).length;
+        const on = this.state.topic === g.key;
+        return {
+          count: count + (count === 1 ? " article" : " articles"),
+          title: g.title, body: g.body,
+          border: on ? "oklch(0.40 0.105 262)" : "oklch(0.9 0.004 250)",
+          pick: () => this.setState((s) => ({ topic: s.topic === g.key ? null : g.key, open: 0 })),
+        };
+      }),
+
+      faqHeading: this.state.topic
+        ? (groups.find((g) => g.key === this.state.topic) || {}).title
+        : "Common questions",
+      noFaqs: list.length === 0,
+      faqs: list.map((f, i) => ({
+        q: f.q, a: f.a,
+        open: this.state.open === i,
+        sign: this.state.open === i ? "−" : "+",
+        color: this.state.open === i ? "oklch(0.40 0.105 262)" : "oklch(0.19 0.008 250)",
+        toggle: () => this.setState((s) => ({ open: s.open === i ? -1 : i })),
+      })),
+
+      chatDot: tg.botToken && tg.chatId ? "oklch(0.55 0.13 145)" : "oklch(0.72 0.12 75)",
+      chatStatus: tg.botToken && tg.chatId
+        ? "Connected to Telegram, replies appear here"
+        : "Not connected yet, messages are held until the bot is configured",
+      chatHandle: tg.adminHandle || "",
+      chatGreeting: tg.greeting || "",
+      chatEmpty: this.state.chatLog.length === 0,
+      chatLog: this.state.chatLog.map((m) => ({
+        text: m.text,
+        meta: (m.from === "you" ? "you" : (tg.adminHandle || "support")) + ", " + m.at,
+        align: m.from === "you" ? "flex-end" : "flex-start",
+        bg: m.from === "you" ? "oklch(0.19 0.008 250)" : "oklch(0.972 0.003 240)",
+        color: m.from === "you" ? "oklch(0.985 0.002 240)" : "oklch(0.22 0.008 250)",
+        border: m.from === "you" ? "oklch(0.19 0.008 250)" : "oklch(0.9 0.004 250)",
+      })),
+      chatDraft: this.state.chatDraft,
+      setChatDraft: (e) => this.setState({ chatDraft: e.target.value }),
+      chatKey: (e) => { if (e.key === "Enter" && this.state.chatDraft.trim()) this.sendToTelegram(this.state.chatDraft.trim()); },
+      sendChat: () => { if (this.state.chatDraft.trim()) this.sendToTelegram(this.state.chatDraft.trim()); },
+      chatSendLabel: this.state.chatSending ? "Sending" : "Send",
+      hasChatNote: Boolean(this.state.chatNote),
+      chatNote: this.state.chatNote,
+      chatNoteColor: this.state.chatNoteOk ? "oklch(0.42 0.10 145)" : "oklch(0.5 0.13 27)",
+
+      contactOpen: this.state.contactOpen,
+      contactLabel: this.state.contactOpen ? "Close form" : "Contact support",
+      toggleContact: () => this.setState((s) => ({ contactOpen: !s.contactOpen })),
+      contactFields: [
+        cf("email", "Your email", { type: "email", placeholder: "youremail@email.com", required: true }),
+        cf("order", "Order number", { placeholder: "MP-24118" }),
+      ],
+      message: this.state.message,
+      setMessage: (e) => this.setState({ message: e.target.value, sent: false }),
+      messageBorder: this.state.error && !this.state.message.trim() ? "oklch(0.78 0.11 27)" : "oklch(0.88 0.004 250)",
+      sendLabel: this.state.sent ? "Message sent" : "Send message",
+      send: () => {
+        if (!this.state.email.includes("@") || !this.state.message.trim()) {
+          this.setState({ error: true });
+          return;
+        }
+        this.setState({ sent: true, error: false, message: "" });
+      },
+      sendNote: this.state.error
+        ? "A valid email and a message are needed."
+        : this.state.sent
+          ? "Sent. A reply lands within four hours, seven days a week."
+          : "Quoting the order number gets you a faster answer.",
+      sendNoteColor: this.state.error ? "oklch(0.5 0.13 27)" : this.state.sent ? "oklch(0.45 0.11 145)" : "oklch(0.55 0.008 250)",
+
+      channels: [
+        { label: "Email", value: "support@morpheps.com", note: "Replies within four hours, seven days a week." },
+        { label: "Telegram", value: "@morpheps_support", note: "Fastest for order status and restock questions." },
+        { label: "Order issues", value: "Quote your order number", note: "Found in the dispatch email and in your account." },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="./store-data.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: oklch(0.972 0.003 240); }
+  * { box-sizing: border-box; }
+  a { color: oklch(0.19 0.008 250); text-decoration: none; }
+  a:hover { color: oklch(0.40 0.105 262); }
+  input, select, textarea { font-family: inherit; }
+  @keyframes marquee-left { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', Helvetica, sans-serif; color: oklch(0.19 0.008 250); background: oklch(0.972 0.003 240); min-height: 100vh; -webkit-font-smoothing: antialiased;">
+
+  <dc-import name="StoreChrome" active="" hint-size="100%,222px"></dc-import>
+
+  <sc-if value="{{ isFailed }}" hint-placeholder-val="{{ false }}">
+    <section style="max-width: 780px; margin: 0 auto; padding: 96px clamp(16px, 3.5vw, 40px) 120px; display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center;">
+      <span style="width: 12px; height: 12px; background: oklch(0.5 0.13 25); display: block;"></span>
+      <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: clamp(30px, 7vw, 44px); line-height: 1.05; letter-spacing: -0.02em; font-weight: 600;">The order did not go through</h1>
+      <p style="margin: 0; max-width: 54ch; font-size: 15px; line-height: 1.7; color: oklch(0.42 0.008 250); text-wrap: pretty;">{{ failBody }}</p>
+      <p style="margin: 0; max-width: 54ch; font-size: 13.5px; line-height: 1.65; color: oklch(0.55 0.008 250);">Nothing has been charged and your cart is untouched.</p>
+      <div style="display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; justify-content: center;">
+        <button onClick="{{ retry }}" style="height: 46px; padding: 0 24px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262);">Try again</button>
+        <a href="Help-Center.dc.html" style="display: flex; align-items: center; height: 46px; padding: 0 24px; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; font-size: 13px; font-weight: 500;">Contact support</a>
+      </div>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+    <section style="max-width: 1000px; margin: 0 auto; padding: 56px clamp(16px, 3.5vw, 40px) 110px; display: flex; flex-direction: column; gap: 26px;">
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: oklch(0.40 0.105 262);">{{ doneId }}</span>
+        <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: clamp(29px, 6vw, 42px); line-height: 1.03; letter-spacing: -0.02em; font-weight: 600; text-wrap: balance;">{{ doneTitle }}</h1>
+        <p style="margin: 0; max-width: 58ch; font-size: 15px; line-height: 1.7; color: oklch(0.42 0.008 250); text-wrap: pretty;">{{ doneBody }}</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 14px;">
+        <sc-for list="{{ doneStats }}" as="s" hint-placeholder-count="3">
+          <div style="display: flex; flex-direction: column; gap: 6px; padding: 18px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
+            <span style="font-size: 12.5px; font-weight: 500; color: oklch(0.55 0.008 250);">{{ s.label }}</span>
+            <span style="font-size: 17px; font-weight: 500;">{{ s.value }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ isWalletPay }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; flex-direction: column; gap: 18px;">
+
+          <div style="display: flex; flex-direction: column; gap: 16px; padding: clamp(20px, 3.5vw, 28px); background: oklch(0.19 0.008 250); color: oklch(0.93 0.004 250);">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
+              <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 21px; color: oklch(0.985 0.002 240);">Connect a wallet</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; color: oklch(0.76 0.07 262);">{{ chainLabel }}</span>
+            </div>
+
+              <button type="button" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 52px; padding: 14px 20px; border: 0; background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 500;" style-hover="background: oklch(0.985 0.002 240); color: oklch(0.19 0.008 250);">Connect wallet</button>
+              <span style="font-size: 12.5px; line-height: 1.6; color: oklch(0.72 0.006 250);">{{ walletNote }}</span>
+
+          </div>
+
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isCardPay }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 10px; padding: clamp(20px, 3.5vw, 28px); background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
+          <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 21px;">{{ cardTitle }}</span>
+          <span style="font-size: 13.5px; line-height: 1.65; color: oklch(0.48 0.008 250); max-width: 62ch;">{{ cardNote }}</span>
+        </div>
+      </sc-if>
+
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <a href="{{ doneHref }}" style="display: flex; align-items: center; height: 46px; padding: 0 24px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">Track this order</a>
+        <a href="Shop.dc.html" style="display: flex; align-items: center; height: 46px; padding: 0 24px; border: 1px solid oklch(0.85 0.006 250); font-size: 13px; font-weight: 500;" style-hover="border-color: oklch(0.19 0.008 250);">Keep shopping</a>
+      </div>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{ isCheckout }}" hint-placeholder-val="{{ true }}">
+    <section style="max-width: 1400px; margin: 0 auto; padding: 34px clamp(16px, 3.5vw, 40px) 0;">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 26px; border-bottom: 1px solid oklch(0.9 0.004 250); flex-wrap: wrap;">
+        <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: clamp(27px, 5.5vw, 34px); line-height: 1.05; letter-spacing: -0.02em; font-weight: 600;">Checkout</h1>
+        <div style="display: flex; align-items: center; gap: clamp(10px, 2.5vw, 18px); flex-wrap: wrap;">
+          <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+            <div style="display: flex; align-items: center; gap: 9px;">
+              <span style="width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; background: {{ s.bg }}; color: {{ s.numColor }}; font-size: 10.5px;">{{ s.n }}</span>
+              <span style="font-size: 13px; font-weight: 500; letter-spacing: 0; color: {{ s.color }};">{{ s.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section style="max-width: 1400px; margin: 0 auto; padding: 32px clamp(16px, 3.5vw, 40px) 68px; display: flex; flex-wrap: wrap; gap: clamp(20px, 3vw, 40px); align-items: flex-start;">
+
+      <div style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; flex-direction: column; gap: 18px; padding: clamp(18px, 4vw, 26px) clamp(18px, 4vw, 28px); background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
+          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">Where it ships</span>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 14px;">
+            <sc-for list="{{ shipFields }}" as="f" hint-placeholder-count="6">
+              <div style="display: flex; flex-direction: column; gap: 6px; grid-column: {{ f.span }}; min-width: 0;">
+                <label style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.56 0.008 250);">{{ f.label }}</label>
+                <input type="{{ f.type }}" value="{{ f.value }}" onChange="{{ f.change }}" placeholder="{{ f.placeholder }}" style="height: 44px; padding: 0 12px; border: 1px solid {{ f.border }}; border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13.5px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);" />
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 18px; padding: clamp(18px, 4vw, 26px) clamp(18px, 4vw, 28px); background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
+          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">How you pay</span>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 148px), 1fr)); gap: 10px;">
+            <sc-for list="{{ methods }}" as="m" hint-placeholder-count="6">
+              <button onClick="{{ m.pick }}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 14px 15px; border: 1px solid {{ m.border }}; border-radius: 2px; background: {{ m.bg }}; cursor: pointer; font-family: inherit; text-align: left;">
+                <span style="font-size: 13.5px; font-weight: 500; color: {{ m.color }};">{{ m.label }}</span>
+                <span style="font-size: 12.5px; color: {{ m.noteColor }};">{{ m.note }}</span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; padding: 20px; background: oklch(0.972 0.003 240); border: 1px solid oklch(0.9 0.004 250);">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+              <span style="font-size: 13px; font-weight: 500;">Network</span>
+              <span style="font-size: 12px; color: oklch(0.55 0.008 250);">{{ chainNote }}</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 124px), 1fr)); gap: 9px;">
+              <sc-for list="{{ chains }}" as="n" hint-placeholder-count="5">
+                <button onClick="{{ n.pick }}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-height: 58px; padding: 11px 13px; border: 1px solid {{ n.border }}; border-radius: 2px; background: {{ n.bg }}; cursor: pointer; font-family: inherit; text-align: left;" style-hover="border-color: oklch(0.40 0.105 262);">
+                  <span style="font-size: 13px; font-weight: 500; color: {{ n.color }};">{{ n.label }}</span>
+                  <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; color: {{ n.noteColor }};">{{ n.note }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+          <span style="font-size: 13px; line-height: 1.55; color: oklch(0.5 0.008 250);">{{ payExplainer }}</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px; padding: clamp(18px, 4vw, 26px) clamp(18px, 4vw, 28px); background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
+          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">Anything else</span>
+          <textarea value="{{ note }}" onChange="{{ setNote }}" rows="3" placeholder="Delivery notes, invoice details, institutional PO number" style="padding: 12px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13.5px; line-height: 1.6; resize: vertical; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);"></textarea>
+        </div>
+      </div>
+
+      <aside style="flex: 1 1 320px; min-width: 0; max-width: 420px; width: 100%; display: flex; flex-direction: column; gap: 20px; position: sticky; top: 24px;">
+        <div style="display: flex; flex-direction: column; padding: clamp(18px, 4vw, 26px) clamp(18px, 4vw, 28px) 28px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
+          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.55 0.008 250); padding-bottom: 16px;">{{ lineCount }}</span>
+          <sc-for list="{{ lines }}" as="l" hint-placeholder-count="3">
+            <div style="display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; padding: 9px 0; border-top: 1px solid oklch(0.95 0.004 250); font-size: 13px;">
+              <span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ l.name }} <span style="color: oklch(0.6 0.006 250);">×{{ l.qty }}</span></span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px;">{{ l.total }}</span>
+            </div>
+          </sc-for>
+          <sc-for list="{{ summary }}" as="s" hint-placeholder-count="4">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid {{ s.line }};">
+              <span style="font-size: 13px; color: {{ s.color }};">{{ s.label }}</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: {{ s.color }};">{{ s.value }}</span>
+            </div>
+          </sc-for>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 18px 0 20px; margin-top: 4px; border-top: 1px solid oklch(0.88 0.004 250);">
+            <span style="font-size: 15px; font-weight: 500;">Total due</span>
+            <span style="font-size: 26px; font-weight: 500; letter-spacing: -0.02em;">{{ total }}</span>
+          </div>
+          <button onClick="{{ place }}" style="height: 54px; border: 0; border-radius: 2px; background: {{ placeBg }}; color: oklch(0.985 0.002 240); cursor: {{ placeCursor }}; font-family: inherit; font-size: 13px;" style-hover="background: oklch(0.40 0.105 262);">{{ placeLabel }}</button>
+          <sc-if value="{{ hasError }}" hint-placeholder-val="{{ false }}">
+            <span style="margin-top: 14px; padding: 12px 14px; border-left: 2px solid oklch(0.5 0.13 25); background: oklch(0.97 0.012 25); font-size: 13px; line-height: 1.55; color: oklch(0.42 0.13 25);">{{ error }}</span>
+          </sc-if>
+          <span style="font-size: 12.5px; line-height: 1.6; color: oklch(0.55 0.008 250); padding-top: 14px;">{{ dispatchNote }}</span>
+        </div>
+      </aside>
+    </section>
+  </sc-if>
+
+  <dc-import name="SiteFooter" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    email: "", name: "", street: "", city: "", zip: "", country: "",
+    pay: "ETH", chain: "Ethereum", note: "", error: "", placed: null, failed: "",
+    copied: "",
+  };
+
+  componentDidMount() {
+    const bind = () => {
+      this.unsub = window.Morpheps.subscribe(() => this.forceUpdate());
+      const cs = window.Morpheps.cartState;
+      this.setState({ pay: "ETH" });
+    };
+    if (window.Morpheps) bind();
+    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+  }
+  componentWillUnmount() {
+    if (this.unsub) this.unsub();
+    if (this.poll) clearInterval(this.poll);
+  }
+
+  field(key, label, opts) {
+    const o = opts || {};
+    const missing = this.state.error && !String(this.state[key]).trim() && o.required;
+    return {
+      label,
+      type: o.type || "text",
+      placeholder: o.placeholder || "",
+      value: this.state[key],
+      span: o.span || "auto",
+      border: missing ? "oklch(0.78 0.11 27)" : "oklch(0.88 0.004 250)",
+      change: (e) => this.setState({ [key]: e.target.value }),
+    };
+  }
+
+  renderVals() {
+    const db = window.Morpheps;
+    if (!db) return { lines: [], summary: [], steps: [], methods: [], shipFields: [] };
+
+    if (this.state.failed) {
+      return {
+        isFailed: true, isDone: false, isCheckout: false,
+        failBody: "We could not reserve the order. Nothing was sent from your wallet, and this is usually temporary.",
+        retry: () => this.setState({ failed: "", error: "" }),
+      };
+    }
+
+    if (this.state.placed) {
+      const o = this.state.placed;
+      const set = db.data.settings;
+      const coin = o.payMethod;
+      const chain = o.chain || "Ethereum";
+      const addr = ((set.wallets || {}).EVM || "").trim();
+      const hold = Number(set.walletHoldMinutes) || 30;
+      const copyRow = (key, text) => ({
+        canCopy: Boolean(text),
+        copyLabel: this.state.copied === key ? "Copied" : "Copy",
+        copy: () => {
+          try { navigator.clipboard.writeText(text); } catch (e) {}
+          this.setState({ copied: key });
+          setTimeout(() => this.setState({ copied: "" }), 1800);
+        },
+      });
+
+      return {
+        isFailed: false, isDone: true, isCheckout: false,
+        doneId: o.id,
+        doneHref: "Order.dc.html?id=" + o.id,
+        doneTitle: "Send " + db.money(o.total) + " to release the order",
+        doneBody: "The vials are held for " + hold + " minutes while the transfer confirms. Connect the wallet you are paying from to continue.",
+        doneStats: [
+          { label: "Order total", value: db.money(o.total) },
+          { label: "Paying in", value: coin + " on " + chain },
+          { label: "Status", value: o.status },
+        ],
+
+        isWalletPay: true,
+        isCardPay: false,
+
+        chainLabel: chain,
+        walletNote: "Works with MetaMask, WalletConnect, Coinbase Wallet and any EVM wallet on " + chain + ".",
+
+      };
+    }
+
+    const lines = db.cart.lines();
+    const pr = db.pricing({ lines, payMethod: "crypto" });
+
+    const summary = [];
+    if (pr.promoSavings > 0) summary.push({ label: "Product offers", value: "−" + db.money(pr.promoSavings), color: "oklch(0.40 0.105 262)", line: "oklch(0.91 0.004 250)" });
+    pr.applied.forEach((a) => summary.push({
+      label: a.label, value: a.kind === "shipping" ? "free" : "−" + db.money(a.value),
+      color: "oklch(0.40 0.105 262)", line: "oklch(0.95 0.004 250)",
+    }));
+    summary.push({ label: "Cold chain shipping", value: pr.shipping ? db.money(pr.shipping) : "free", color: "oklch(0.4 0.008 250)", line: "oklch(0.95 0.004 250)" });
+
+    const stepState = [
+      { label: "Shipping", done: Boolean(this.state.email && this.state.street && this.state.country) },
+      { label: "Payment", done: Boolean(this.state.pay) },
+      { label: "Pay", done: Boolean(this.state.placed) },
+    ];
+
+    const off = db.data.settings.cryptoDiscount;
+    const methods = [
+      { key: "ETH", label: "Ether", note: "−" + off + "%, native ETH" },
+      { key: "USDT", label: "USDT", note: "−" + off + "%, dollar stablecoin" },
+    ];
+    const chainList = [
+      ["Ethereum", "mainnet"],
+      ["Arbitrum One", "arbitrum"],
+      ["Base", "base"],
+      ["Optimism", "op mainnet"],
+      ["Polygon", "polygon pos"],
+    ];
+
+    return {
+      isFailed: false, isDone: false, isCheckout: true,
+      steps: stepState.map((s, i) => ({
+        n: String(i + 1).padStart(2, "0"),
+        label: s.label,
+        bg: s.done ? "oklch(0.40 0.105 262)" : "oklch(0.9 0.004 250)",
+        numColor: s.done ? "oklch(0.985 0.002 240)" : "oklch(0.5 0.008 250)",
+        color: s.done ? "oklch(0.19 0.008 250)" : "oklch(0.6 0.006 250)",
+      })),
+
+      shipFields: [
+        this.field("email", "Email", { type: "email", placeholder: "youremail@email.com", required: true, span: "1 / -1" }),
+        this.field("name", "Recipient", { placeholder: "Name or department", required: true }),
+        this.field("street", "Street address", { placeholder: "Street and number", required: true, span: "1 / -1" }),
+        this.field("city", "City", { placeholder: "City", required: true }),
+        this.field("zip", "Post code", { placeholder: "0000" }),
+        this.field("country", "Country", { placeholder: "Country", required: true }),
+      ],
+
+      methods: methods.map((m) => ({
+        label: m.label, note: m.note,
+        pick: () => { this.setState({ pay: m.key }); db.cart.setPay("crypto"); },
+        bg: this.state.pay === m.key ? "oklch(0.19 0.008 250)" : "oklch(0.972 0.003 240)",
+        border: this.state.pay === m.key ? "oklch(0.19 0.008 250)" : "oklch(0.9 0.004 250)",
+        color: this.state.pay === m.key ? "oklch(0.985 0.002 240)" : "oklch(0.25 0.008 250)",
+        noteColor: this.state.pay === m.key ? "oklch(0.78 0.006 250)" : "oklch(0.55 0.008 250)",
+      })),
+      payExplainer: "Both settle on the network you pick below. The " + off + "% crypto discount is already in the total, and the vials are reserved the moment the transfer confirms.",
+
+      chainNote: this.state.pay === "USDT" ? "USDT contract on the chain you pick" : "Native ETH on the chain you pick",
+      chains: chainList.map(([label, note]) => ({
+        label, note,
+        pick: () => this.setState({ chain: label }),
+        bg: this.state.chain === label ? "oklch(0.19 0.008 250)" : "oklch(0.985 0.002 240)",
+        border: this.state.chain === label ? "oklch(0.19 0.008 250)" : "oklch(0.9 0.004 250)",
+        color: this.state.chain === label ? "oklch(0.985 0.002 240)" : "oklch(0.24 0.008 250)",
+        noteColor: this.state.chain === label ? "oklch(0.76 0.07 262)" : "oklch(0.58 0.008 250)",
+      })),
+
+      note: this.state.note,
+      setNote: (e) => this.setState({ note: e.target.value }),
+      lineCount: lines.length + (lines.length === 1 ? " line" : " lines") + ", " + db.cart.count() + " kits",
+      lines: lines.map((l) => ({ name: l.product.name, qty: l.qty, total: db.money(l.lineTotal) })),
+      summary,
+      total: db.money(pr.total),
+
+      placeLabel: lines.length === 0 ? "Cart is empty" : "Place order, " + db.money(pr.total),
+      placeBg: lines.length === 0 ? "oklch(0.72 0.006 250)" : "oklch(0.19 0.008 250)",
+      placeCursor: lines.length === 0 ? "not-allowed" : "pointer",
+      place: () => {
+        if (lines.length === 0) return;
+        if (!this.state.email.trim() || !this.state.street.trim() || !this.state.country.trim()) {
+          this.setState({ error: "Fill in the email, street address and country before placing the order." });
+          return;
+        }
+        const gone = lines.filter((l) => { const p = db.product(l.cat); return !p || p.stock <= 0 || p.stock < l.qty; });
+        if (gone.length) {
+          this.setState({
+            error: gone.map((l) => l.cat).join(", ") + (gone.length === 1 ? " is" : " are") + " no longer available in the quantity ordered. Adjust the cart and try again.",
+          });
+          return;
+        }
+        let order = null;
+        try {
+          order = db.placeOrder({
+          email: this.state.email.trim(),
+          payMethod: this.state.pay,
+          chain: this.state.chain,
+          country: this.state.country.trim(),
+          note: this.state.note.trim(),
+          });
+        } catch (e) { order = null; }
+        if (!order || !order.id) {
+          this.setState({ failed: "network", error: "" });
+          return;
+        }
+        this.setState({ placed: order, error: "", failed: "" });
+        // Best-effort — the order is already placed either way, so a failed
+        // or slow email must never block or roll back checkout.
+        fetch("/api/send-order-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: order.email,
+            orderId: order.id,
+            total: order.total,
+            lines: order.lines.map((l) => ({
+              qty: l.qty,
+              name: (db.product(l.cat) || {}).name || l.cat,
+              price: l.unit,
+            })),
+          }),
+        }).catch(() => {});
+      },
+      retry: () => this.setState({ failed: "", error: "" }),
+      hasError: Boolean(this.state.error),
+      error: this.state.error,
+      dispatchNote: "Dispatch before " + db.data.settings.dispatchCutoff + ", " + "crypto discount applied" + ", lot reports attached on dispatch",
+    };
+  }
+}
+</script>
+</body>
+</html>

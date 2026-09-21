@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="./store-data.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: oklch(0.972 0.003 240); }
+  * { box-sizing: border-box; }
+  a { color: oklch(0.19 0.008 250); text-decoration: none; }
+  a:hover { color: oklch(0.40 0.105 262); }
+  input { font-family: inherit; }
+  @keyframes marquee-left { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', Helvetica, sans-serif; color: oklch(0.19 0.008 250); background: oklch(0.972 0.003 240); min-height: 100vh; -webkit-font-smoothing: antialiased;">
+
+  <dc-import name="StoreChrome" active="" hint-size="100%,222px"></dc-import>
+
+  <section style="max-width: 1400px; margin: 0 auto; padding: 44px clamp(16px, 3.5vw, 40px) 72px; display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start;">
+
+    <div style="flex: 1 1 420px; min-width: 0; max-width: 520px; display: flex; flex-direction: column; gap: 22px; padding: 32px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
+      <div style="display: flex; gap: 2px; padding: 3px; background: oklch(0.96 0.003 240); border: 1px solid oklch(0.91 0.004 250);">
+        <sc-for list="{{ modes }}" as="m" hint-placeholder-count="3">
+          <button onClick="{{ m.pick }}" style="flex: 1; height: 36px; border: 0; background: {{ m.bg }}; color: {{ m.color }}; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;">{{ m.label }}</button>
+        </sc-for>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 28px; line-height: 1.1; letter-spacing: -0.02em; font-weight: 600;">{{ title }}</h1>
+        <p style="margin: 0; font-size: 13.5px; line-height: 1.6; color: oklch(0.48 0.008 250); text-wrap: pretty;">{{ blurb }}</p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <sc-for list="{{ fields }}" as="f" hint-placeholder-count="2">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 12.5px; font-weight: 500; color: oklch(0.5 0.008 250);">{{ f.label }}</label>
+            <input type="{{ f.type }}" value="{{ f.value }}" onChange="{{ f.change }}" onKeyDown="{{ submitKey }}" placeholder="{{ f.placeholder }}" autocomplete="{{ f.autocomplete }}" style="width: 100%; height: 44px; padding: 0 13px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 14px; color: oklch(0.22 0.008 250); outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);" />
+            <span style="font-size: 12px; color: oklch(0.58 0.008 250);">{{ f.hint }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ hasNote }}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 12px 14px; border-left: 2px solid {{ noteColor }}; background: oklch(0.972 0.003 240);">
+          <span style="font-size: 13px; line-height: 1.55; color: {{ noteColor }};">{{ note }}</span>
+        </div>
+      </sc-if>
+
+      <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+        <button onClick="{{ submit }}" style="display: flex; align-items: center; justify-content: center; height: 46px; padding: 0 26px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13.5px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262);">{{ submitLabel }}</button>
+        <button onClick="{{ toggleReset }}" style="height: 46px; padding: 0 4px; border: 0; background: transparent; cursor: pointer; font-family: inherit; font-size: 13px; color: oklch(0.45 0.008 250); text-decoration: underline; text-underline-offset: 3px;" style-hover="color: oklch(0.40 0.105 262);">{{ altLabel }}</button>
+      </div>
+    </div>
+
+    <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 0; border-top: 1px solid oklch(0.9 0.004 250);">
+      <sc-for list="{{ perks }}" as="p" hint-placeholder-count="4">
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr); padding: 18px 2px; border-bottom: 1px solid oklch(0.93 0.004 250);">
+          <span style="display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-size: 14px; font-weight: 500;">{{ p.title }}</span>
+            <span style="font-size: 13px; line-height: 1.6; color: oklch(0.48 0.008 250); text-wrap: pretty;">{{ p.body }}</span>
+          </span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <dc-import name="SiteFooter" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1400,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = { mode: 0, email: "", password: "", name: "", country: "", note: "", ok: false };
+
+  componentDidMount() {
+    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Morpheps) bind();
+    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+  }
+  componentWillUnmount() {
+    if (this.unsub) this.unsub();
+    if (this.poll) clearInterval(this.poll);
+  }
+
+  async go() {
+    const db = window.Morpheps;
+    const m = this.state.mode;
+    let res;
+    if (m === 0) res = await db.auth.signIn(this.state.email, this.state.password);
+    else if (m === 1) res = await db.auth.signUp({ email: this.state.email, password: this.state.password, name: this.state.name, country: this.state.country });
+    else res = await db.auth.resetPassword(this.state.email);
+
+    if (res.ok && m === 0) { window.location.href = "Account.dc.html"; return; }
+    this.setState({ note: res.ok ? (res.note || "Done.") : res.error, ok: Boolean(res.ok) });
+  }
+
+  renderVals() {
+    const m = this.state.mode;
+    const f = (key, label, type, placeholder, hint, autocomplete) => ({
+      label, type, placeholder, hint: hint || "", autocomplete: autocomplete || "on",
+      value: this.state[key],
+      change: (e) => this.setState({ [key]: e.target.value, note: "" }),
+    });
+
+    const fields = m === 0
+      ? [f("email", "Email", "email", "youremail@email.com", "", "email"), f("password", "Password", "password", "", "", "current-password")]
+      : m === 1
+        ? [
+          f("name", "Name or institution", "text", "M. Reinholt", "", "name"),
+          f("email", "Email", "email", "youremail@email.com", "Order updates and lab reports go here.", "email"),
+          f("country", "Country", "text", "Norway", "Used to price cold chain shipping.", "country-name"),
+          f("password", "Password", "password", "", "Eight characters or more.", "new-password"),
+        ]
+        : [f("email", "Email", "email", "youremail@email.com", "We send a reset link that expires in an hour.", "email")];
+
+    return {
+      modes: ["Sign in", "Create account", "Reset password"].map((label, i) => ({
+        label,
+        pick: () => this.setState({ mode: i, note: "" }),
+        bg: i === m ? "oklch(0.985 0.002 240)" : "transparent",
+        color: i === m ? "oklch(0.19 0.008 250)" : "oklch(0.52 0.008 250)",
+      })),
+      title: m === 0 ? "Sign in" : m === 1 ? "Create an account" : "Reset your password",
+      blurb: m === 0
+        ? "Your order history, saved compounds and stored payment methods live behind this."
+        : m === 1
+          ? "One account covers ordering, lab report access and the weekly offsale vote."
+          : "Enter the address on the account and we will send a reset link.",
+      fields,
+      submit: () => this.go(),
+      submitKey: (e) => { if (e.key === "Enter") this.go(); },
+      submitLabel: m === 0 ? "Sign in" : m === 1 ? "Create account" : "Send reset link",
+      altLabel: m === 0 ? "Forgotten your password?" : "Back to sign in",
+      toggleReset: () => this.setState({ mode: m === 0 ? 2 : 0, note: "" }),
+      hasNote: Boolean(this.state.note),
+      note: this.state.note,
+      noteColor: this.state.ok ? "oklch(0.42 0.10 145)" : "oklch(0.5 0.13 27)",
+      perks: [
+        { n: "01", title: "Order history and reorder", body: "Every order keeps its lot numbers, so a repeat order is one click." },
+        { n: "02", title: "Saved wallets", body: "Save the wallet address you pay from and reuse it at checkout." },
+        { n: "03", title: "Lab report access", body: "New assays for compounds you have bought arrive by email." },
+        { n: "04", title: "The weekly vote", body: "Account holders pick the compound that drops to half price." },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

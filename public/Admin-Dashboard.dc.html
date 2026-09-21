@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="./store-data.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: oklch(0.972 0.003 240); }
+  * { box-sizing: border-box; }
+  a { color: oklch(0.19 0.008 250); text-decoration: none; }
+  a:hover { color: oklch(0.40 0.105 262); }
+  input, textarea, select { font-family: inherit; min-width: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', Helvetica, sans-serif; color: oklch(0.19 0.008 250); background: oklch(0.972 0.003 240); min-height: 100vh; display: grid; grid-template-columns: 244px minmax(0, 1fr); -webkit-font-smoothing: antialiased;">
+
+  <aside style="display: flex; flex-direction: column; gap: 20px; padding: 24px 0; background: oklch(0.19 0.008 250); color: oklch(0.85 0.006 250); position: sticky; top: 0; height: 100vh; overflow-y: auto;">
+    <div style="display: flex; align-items: baseline; gap: 9px; padding: 0 22px;">
+      <span style="width: 9px; height: 9px; background: oklch(0.40 0.105 262); display: block;"></span>
+      <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 22px; color: oklch(0.972 0.003 240);">Morpheps</span>
+      <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.6 0.006 250);">/admindb</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <sc-for list="{{ navSections }}" as="sec" hint-placeholder-count="5">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="padding: 0 22px 7px; font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.5 0.006 250);">{{ sec.title }}</span>
+          <sc-for list="{{ sec.items }}" as="n" hint-placeholder-count="4">
+            <button onClick="{{ n.pick }}" style="display: flex; align-items: center; gap: 10px; padding: 9px 22px; border: 0; border-left: 2px solid {{ n.line }}; background: {{ n.bg }}; color: {{ n.color }}; cursor: pointer; font-family: inherit; font-size: 13px; text-align: left;" style-hover="background: oklch(0.245 0.008 250); color: oklch(0.985 0.002 240);">
+              <span style="flex: 1;">{{ n.label }}</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; padding: 1px 5px; background: {{ n.badgeBg }}; color: {{ n.badgeColor }};">{{ n.badge }}</span>
+            </button>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="margin-top: auto; display: flex; flex-direction: column; gap: 11px; padding: 18px 22px 0; border-top: 1px solid oklch(0.27 0.008 250);">
+      <div style="display: flex; align-items: center; gap: 9px;">
+        <span style="width: 6px; height: 6px; background: {{ dbDotColor }}; border-radius: 50%; display: block;"></span>
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.72 0.006 250);">{{ dbLabel }}</span>
+      </div>
+      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; line-height: 1.6; color: oklch(0.55 0.006 250);">{{ dbDetail }}</span>
+      <a href="Morpheps.dc.html" style="margin-top: 4px; font-size: 12px; color: oklch(0.75 0.006 250);" style-hover="color: oklch(0.76 0.07 262);">Back to store</a>
+    </div>
+  </aside>
+
+  <main style="display: flex; flex-direction: column; min-width: 0;">
+    <div style="position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 18px 32px; background: oklch(0.985 0.002 240); border-bottom: 1px solid oklch(0.9 0.004 250); flex-wrap: wrap;">
+      <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+        <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">{{ crumb }}</span>
+        <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 28px; line-height: 1; letter-spacing: -0.015em; font-weight: 600; white-space: nowrap;">{{ paneTitle }}</h1>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <span style="display: flex; align-items: center; gap: 8px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; color: {{ dirtyColor }}; white-space: nowrap;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: {{ dirtyColor }}; display: block; flex-shrink: 0;"></span>{{ dirtyLabel }}
+        </span>
+        <button onClick="{{ revert }}" style="height: 38px; padding: 0 16px; border: 1px solid oklch(0.86 0.006 250); border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.4 0.008 250); white-space: nowrap;" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">{{ revertLabel }}</button>
+        <button onClick="{{ publish }}" style="height: 38px; padding: 0 22px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0; white-space: nowrap;" style-hover="background: oklch(0.40 0.105 262);">Publish changes</button>
+      </div>
+    </div>
+
+    <div style="padding: 28px 32px 84px; display: flex; flex-direction: column; gap: 24px;">
+
+      <sc-if value="{{ isOverview }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; flex-direction: column; gap: 22px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(196px, 1fr)); gap: 16px;">
+            <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="5">
+              <div style="display: flex; flex-direction: column; gap: 7px; padding: 20px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250); border-radius: 2px;">
+                <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.55 0.008 250);">{{ k.label }}</span>
+                <span style="font-size: 27px; font-weight: 500; letter-spacing: -0.02em;">{{ k.value }}</span>
+                <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; color: {{ k.deltaColor }};">{{ k.delta }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{ hasAlerts }}" hint-placeholder-val="{{ true }}">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px;">
+              <sc-for list="{{ alerts }}" as="a" hint-placeholder-count="3">
+                <button onClick="{{ a.go }}" style="display: flex; align-items: flex-start; gap: 12px; padding: 15px 16px; background: {{ a.bg }}; border: 1px solid {{ a.border }}; border-radius: 2px; cursor: pointer; text-align: left; font-family: inherit;" style-hover="border-color: oklch(0.40 0.105 262);">
+                  <span style="width: 7px; height: 7px; margin-top: 4px; background: {{ a.dot }}; display: block; flex-shrink: 0;"></span>
+                  <span style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+                    <span style="font-size: 13.5px; font-weight: 500; color: oklch(0.19 0.008 250);">{{ a.title }}</span>
+                    <span style="font-size: 12.5px; line-height: 1.5; color: oklch(0.5 0.008 250);">{{ a.body }}</span>
+                  </span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 20px; align-items: start;">
+            <div style="border: 1px solid oklch(0.9 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); overflow-x: auto;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 15px 20px; border-bottom: 1px solid oklch(0.9 0.004 250); min-width: 420px;">
+                <span style="font-size: 14px; font-weight: 500; white-space: nowrap;">Recent orders</span>
+                <button onClick="{{ goOrders }}" style="border: 0; background: transparent; cursor: pointer; padding: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.55 0.008 250);" style-hover="color: oklch(0.40 0.105 262);">Open orders</button>
+              </div>
+              <sc-for list="{{ recentOrders }}" as="o" hint-placeholder-count="6">
+                <div style="display: grid; grid-template-columns: 88px minmax(120px, 1fr) 46px 104px 80px; gap: 12px; min-width: 420px; align-items: center; padding: 11px 20px; border-bottom: 1px solid oklch(0.945 0.004 250); font-size: 13px;">
+                  <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: oklch(0.45 0.008 250); white-space: nowrap;">{{ o.id }}</span>
+                  <span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ o.summary }}</span>
+                  <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: oklch(0.5 0.008 250);">{{ o.payMethod }}</span>
+                  <select value="{{ o.status }}" onChange="{{ o.setStatus }}" style="height: 30px; padding: 0 6px; border: 1px solid oklch(0.89 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 11.5px; color: oklch(0.28 0.008 250); outline: none;">
+                    <sc-for list="{{ statuses }}" as="st" hint-placeholder-count="5">
+                      <option value="{{ st }}">{{ st }}</option>
+                    </sc-for>
+                  </select>
+                  <span style="text-align: right; font-weight: 500; white-space: nowrap;">{{ o.total }}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <div style="display: flex; flex-direction: column; gap: 14px; padding: 20px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250); border-radius: 2px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span style="font-size: 14px; font-weight: 500;">Best sellers, all time</span>
+                  <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.55 0.008 250);">units</span>
+                </div>
+                <sc-for list="{{ bestSellers }}" as="b" hint-placeholder-count="5">
+                  <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-size: 13px;">
+                      <span>{{ b.name }}</span>
+                      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: oklch(0.5 0.008 250);">{{ b.units }}</span>
+                    </div>
+                    <span style="height: 4px; background: oklch(0.93 0.004 250); display: block; position: relative; overflow: hidden;">
+                      <span style="position: absolute; top: 0; bottom: 0; left: 0; width: {{ b.width }}; background: oklch(0.19 0.008 250); display: block;"></span>
+                    </span>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 13px; padding: 20px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250); border-radius: 2px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span style="font-size: 14px; font-weight: 500;">{{ voteHeading }}</span>
+                  <button onClick="{{ goVotes }}" style="border: 0; background: transparent; cursor: pointer; padding: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.55 0.008 250);" style-hover="color: oklch(0.40 0.105 262);">Manage</button>
+                </div>
+                <sc-for list="{{ voteRows }}" as="v" hint-placeholder-count="4">
+                  <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-size: 13px;">
+                      <span>{{ v.name }}</span>
+                      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: oklch(0.5 0.008 250);">{{ v.count }}</span>
+                    </div>
+                    <span style="height: 4px; background: oklch(0.93 0.004 250); display: block; position: relative; overflow: hidden;">
+                      <span style="position: absolute; top: 0; bottom: 0; left: 0; width: {{ v.width }}; background: {{ v.color }}; display: block;"></span>
+                    </span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isOrders }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <sc-for list="{{ statusFilters }}" as="f" hint-placeholder-count="6">
+              <button onClick="{{ f.pick }}" style="height: 32px; padding: 0 13px; border: 1px solid {{ f.border }}; border-radius: 2px; background: {{ f.bg }}; color: {{ f.color }}; cursor: pointer; font-family: inherit; font-size: 11.5px; letter-spacing: 0.06em;" style-hover="border-color: oklch(0.40 0.105 262);">{{ f.label }} <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; opacity: 0.65;">{{ f.count }}</span></button>
+            </sc-for>
+            <input type="text" value="{{ orderQuery }}" onChange="{{ setOrderQuery }}" placeholder="Search id, email, country" style="margin-left: auto; width: 260px; height: 32px; padding: 0 11px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 12.5px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);" />
+          </div>
+
+          <div style="border: 1px solid oklch(0.9 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); overflow-x: auto;">
+            <div style="display: grid; grid-template-columns: 96px minmax(180px, 1.4fr) 92px 64px 116px 92px 28px; gap: 12px; min-width: 780px; padding: 12px 20px; border-bottom: 1px solid oklch(0.9 0.004 250); background: oklch(0.972 0.003 240); font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.5 0.008 250);">
+              <span>Order</span><span>Customer</span><span>Date</span><span>Pay</span><span>Status</span><span style="text-align: right;">Total</span><span></span>
+            </div>
+            <sc-for list="{{ orderRows }}" as="o" hint-placeholder-count="6">
+              <div style="border-bottom: 1px solid oklch(0.945 0.004 250); min-width: 780px;">
+                <div style="display: grid; grid-template-columns: 96px minmax(180px, 1.4fr) 92px 64px 116px 92px 28px; gap: 12px; align-items: center; padding: 12px 20px; font-size: 13px; background: {{ o.rowBg }};">
+                  <button onClick="{{ o.toggle }}" style="border: 0; background: transparent; padding: 0; cursor: pointer; text-align: left; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: oklch(0.3 0.008 250);" style-hover="color: oklch(0.40 0.105 262);">{{ o.id }}</button>
+                  <span style="min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                    <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ o.email }}</span>
+                    <span style="font-size: 11.5px; color: oklch(0.58 0.008 250); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ o.summary }}</span>
+                  </span>
+                  <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; color: oklch(0.52 0.008 250);">{{ o.date }}</span>
+                  <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; color: oklch(0.52 0.008 250);">{{ o.payMethod }}</span>
+                  <select value="{{ o.status }}" onChange="{{ o.setStatus }}" style="height: 30px; padding: 0 6px; border: 1px solid {{ o.statusBorder }}; border-radius: 2px; background: {{ o.statusBg }}; font-size: 11.5px; color: {{ o.statusColor }}; outline: none;">
+                    <sc-for list="{{ statuses }}" as="st" hint-placeholder-count="5">
+                      <option value="{{ st }}">{{ st }}</option>
+                    </sc-for>
+                  </select>
+                  <span style="text-align: right; font-weight: 500; white-space: nowrap;">{{ o.total }}</span>
+                  <button onClick="{{ o.toggle }}" style="width: 26px; height: 26px; border: 1px solid oklch(0.9 0.004 250); border-radius: 2px; background: transparent; cursor: pointer; font-size: 10px; color: oklch(0.45 0.008 250);" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">{{ o.chevron }}</button>
+                </div>
+
+                <sc-if value="{{ o.open }}" hint-placeholder-val="{{ false }}">
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 26px; padding: 22px 20px 24px; background: oklch(0.972 0.003 240); border-top: 1px solid oklch(0.93 0.004 250);">
+                    <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0;">
+                      <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.55 0.008 250);">Lines</span>
+                      <div style="display: flex; flex-direction: column; border: 1px solid oklch(0.91 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240);">
+                        <sc-for list="{{ o.lines }}" as="l" hint-placeholder-count="2">
+                          <div style="display: grid; grid-template-columns: 76px minmax(0, 1fr) 44px 76px; gap: 12px; align-items: center; padding: 10px 14px; border-bottom: 1px solid oklch(0.95 0.004 250); font-size: 12.5px;">
+                            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; color: oklch(0.5 0.008 250);">{{ l.cat }}</span>
+                            <span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ l.name }}</span>
+                            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px;">×{{ l.qty }}</span>
+                            <span style="text-align: right; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px;">{{ l.total }}</span>
+                          </div>
+                        </sc-for>
+                        <sc-for list="{{ o.totals }}" as="t" hint-placeholder-count="4">
+                          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 8px 14px; font-size: 12.5px; color: {{ t.color }}; border-top: 1px solid {{ t.line }};">
+                            <span>{{ t.label }}</span>
+                            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: {{ t.weight }};">{{ t.value }}</span>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 14px;">
+                      <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.55 0.008 250);">Tracking number</label>
+                        <input type="text" value="{{ o.tracking }}" onChange="{{ o.setTracking }}" placeholder="Carrier + number" style="height: 38px; padding: 0 11px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 13px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);" />
+                      </div>
+                      <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.55 0.008 250);">Internal note</label>
+                        <textarea value="{{ o.note }}" onChange="{{ o.setNote }}" rows="3" style="padding: 10px 11px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 13px; line-height: 1.55; resize: vertical; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);"></textarea>
+                      </div>
+                      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <button onClick="{{ o.advance }}" style="height: 36px; padding: 0 15px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262);">{{ o.advanceLabel }}</button>
+                        <button onClick="{{ o.refund }}" style="height: 36px; padding: 0 15px; border: 1px solid oklch(0.86 0.03 25); border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.5 0.13 25);" style-hover="background: oklch(0.40 0.105 262); border-color: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">Refund &amp; restock</button>
+                      </div>
+                      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; line-height: 1.6; color: oklch(0.58 0.008 250);">{{ o.meta }}</span>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noOrders }}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 52px 20px;">
+                <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 22px; color: oklch(0.45 0.008 250);">No orders match</span>
+                <span style="font-size: 13px; color: oklch(0.58 0.008 250);">Clear the filter or search for something else.</span>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isDiscounts }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 22px;">
+          <div style="display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 20px; align-items: start;">
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+                <span style="font-size: 13.5px; color: oklch(0.5 0.008 250); max-width: 62ch; line-height: 1.55;">Automatic rules apply themselves at checkout. Coded rules need the customer to type the code. Percent tiers never stack with each other, the best one wins.</span>
+                <div style="display: flex; gap: 8px;">
+                  <button onClick="{{ addAutoDiscount }}" style="height: 36px; padding: 0 15px; border: 1px solid oklch(0.86 0.006 250); border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.3 0.008 250);" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">Add automatic rule</button>
+                  <button onClick="{{ addCodeDiscount }}" style="height: 36px; padding: 0 15px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262);">Add coupon code</button>
+                </div>
+              </div>
+
+              <sc-for list="{{ discountRows }}" as="d" hint-placeholder-count="4">
+                <div style="display: flex; flex-direction: column; gap: 15px; padding: 18px 20px; background: oklch(0.985 0.002 240); border: 1px solid {{ d.border }}; border-radius: 2px;">
+                  <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <span style="padding: 4px 8px; background: {{ d.kindBg }}; color: {{ d.kindColor }}; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase;">{{ d.kindLabel }}</span>
+                    <span style="font-size: 14.5px; font-weight: 500;">{{ d.label }}</span>
+                    <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: oklch(0.40 0.105 262);">{{ d.effect }}</span>
+                    <div style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
+                      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; color: oklch(0.6 0.006 250);">{{ d.usage }}</span>
+                      <button onClick="{{ d.toggleLive }}" style="height: 28px; padding: 0 11px; border: 1px solid {{ d.liveBorder }}; border-radius: 2px; background: {{ d.liveBg }}; color: {{ d.liveColor }}; cursor: pointer; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase;">{{ d.liveLabel }}</button>
+                      <button onClick="{{ d.duplicate }}" style="height: 28px; padding: 0 11px; border: 1px solid oklch(0.89 0.004 250); border-radius: 2px; background: transparent; cursor: pointer; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(0.42 0.008 250);" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">Duplicate</button>
+                      <button onClick="{{ d.remove }}" style="height: 28px; padding: 0 11px; border: 1px solid {{ d.deleteBorder }}; border-radius: 2px; background: {{ d.deleteBg }}; color: {{ d.deleteColor }}; cursor: pointer; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase;">{{ d.deleteLabel }}</button>
+                    </div>
+                  </div>
+
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 12px;">
+                    <sc-for list="{{ d.fields }}" as="f" hint-placeholder-count="8">
+                      <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+                        <label style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.56 0.008 250);">{{ f.label }}</label>
+                        <sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}">
+                          <select value="{{ f.value }}" onChange="{{ f.change }}" style="height: 36px; padding: 0 8px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 12.5px; color: oklch(0.22 0.008 250); outline: none;">
+                            <sc-for list="{{ f.options }}" as="op" hint-placeholder-count="3">
+                              <option value="{{ op }}">{{ op }}</option>
+                            </sc-for>
+                          </select>
+                        </sc-if>
+                        <sc-if value="{{ f.isToggle }}" hint-placeholder-val="{{ false }}">
+                          <button onClick="{{ f.toggle }}" style="height: 36px; border: 1px solid {{ f.tBorder }}; border-radius: 2px; background: {{ f.tBg }}; color: {{ f.tColor }}; cursor: pointer; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 500; letter-spacing: 0;">{{ f.tLabel }}</button>
+                        </sc-if>
+                        <sc-if value="{{ f.isPlain }}" hint-placeholder-val="{{ true }}">
+                          <input type="{{ f.type }}" value="{{ f.value }}" onChange="{{ f.change }}" placeholder="{{ f.placeholder }}" style="height: 36px; padding: 0 10px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 12.5px; color: oklch(0.22 0.008 250); outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);" />
+                        </sc-if>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <span style="font-size: 12.5px; line-height: 1.5; color: oklch(0.52 0.008 250);">{{ d.plain }}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 14px; padding: 20px; background: oklch(0.19 0.008 250); border-radius: 2px; color: oklch(0.9 0.006 250); position: sticky; top: 104px;">
+              <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.76 0.07 262);">Price sandbox</span>
+              <span style="font-size: 13px; line-height: 1.55; color: oklch(0.7 0.006 250);">A test basket priced through the live rules. Change the inputs to see what a customer would pay.</span>
+              <div style="display: flex; flex-direction: column; gap: 9px; padding-top: 4px;">
+                <sc-for list="{{ sandboxLines }}" as="l" hint-placeholder-count="3">
+                  <div style="display: grid; grid-template-columns: minmax(0, 1fr) 58px 22px; gap: 8px; align-items: center;">
+                    <select value="{{ l.cat }}" onChange="{{ l.setCat }}" style="height: 32px; padding: 0 7px; border: 1px solid oklch(0.34 0.008 250); border-radius: 2px; background: oklch(0.24 0.008 250); color: oklch(0.93 0.004 250); font-size: 12px; outline: none;">
+                      <sc-for list="{{ productCodes }}" as="c" hint-placeholder-count="8">
+                        <option value="{{ c }}">{{ c }}</option>
+                      </sc-for>
+                    </select>
+                    <input type="number" value="{{ l.qty }}" onChange="{{ l.setQty }}" style="height: 32px; padding: 0 8px; border: 1px solid oklch(0.34 0.008 250); border-radius: 2px; background: oklch(0.24 0.008 250); color: oklch(0.93 0.004 250); font-size: 12px; outline: none;" />
+                    <button onClick="{{ l.remove }}" style="width: 22px; height: 32px; border: 0; background: transparent; cursor: pointer; color: oklch(0.6 0.006 250); font-size: 13px;" style-hover="color: oklch(0.76 0.07 262);">×</button>
+                  </div>
+                </sc-for>
+                <button onClick="{{ addSandboxLine }}" style="height: 32px; border: 1px dashed oklch(0.38 0.008 250); border-radius: 2px; background: transparent; cursor: pointer; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: oklch(0.68 0.006 250);" style-hover="border-color: oklch(0.76 0.07 262); color: oklch(0.85 0.05 24);">+ line</button>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <select value="{{ sandboxPay }}" onChange="{{ setSandboxPay }}" style="flex: 1; height: 32px; padding: 0 7px; border: 1px solid oklch(0.34 0.008 250); border-radius: 2px; background: oklch(0.24 0.008 250); color: oklch(0.93 0.004 250); font-size: 12px; outline: none;">
+                  <option value="crypto">Crypto</option>
+                </select>
+                <input type="text" value="{{ sandboxCode }}" onChange="{{ setSandboxCode }}" placeholder="CODE" style="flex: 1; height: 32px; padding: 0 8px; border: 1px solid oklch(0.34 0.008 250); border-radius: 2px; background: oklch(0.24 0.008 250); color: oklch(0.93 0.004 250); font-size: 13px; font-weight: 500; letter-spacing: 0; outline: none;" />
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 2px; padding-top: 8px; border-top: 1px solid oklch(0.3 0.008 250);">
+                <sc-for list="{{ sandboxRows }}" as="r" hint-placeholder-count="4">
+                  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 6px 0; font-size: 12.5px; color: {{ r.color }};">
+                    <span>{{ r.label }}</span>
+                    <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace;">{{ r.value }}</span>
+                  </div>
+                </sc-for>
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 12px 0 0; margin-top: 6px; border-top: 1px solid oklch(0.3 0.008 250);">
+                  <span style="font-size: 13px;">Customer pays</span>
+                  <span style="font-size: 22px; font-weight: 500; letter-spacing: -0.02em; color: oklch(0.985 0.002 240);">{{ sandboxTotal }}</span>
+                </div>
+                <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; line-height: 1.6; color: oklch(0.66 0.006 250); padding-top: 8px;">{{ sandboxNote }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isInventory }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 18px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px;">
+            <sc-for list="{{ stockStats }}" as="s" hint-placeholder-count="4">
+              <div style="display: flex; flex-direction: column; gap: 6px; padding: 18px 20px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250); border-radius: 2px;">
+                <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.55 0.008 250);">{{ s.label }}</span>
+                <span style="font-size: 24px; font-weight: 500; letter-spacing: -0.02em; color: {{ s.color }};">{{ s.value }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="border: 1px solid oklch(0.9 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); overflow-x: auto;">
+            <div style="display: grid; grid-template-columns: 80px minmax(160px, 1fr) 120px 108px 96px 96px minmax(120px, 130px); gap: 14px; min-width: 840px; padding: 12px 20px; border-bottom: 1px solid oklch(0.9 0.004 250); background: oklch(0.972 0.003 240); font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.5 0.008 250);">
+              <span>Cat.</span><span>Product</span><span>Stock</span><span>Low at</span><span>Sold</span><span>Value</span><span>Restock</span>
+            </div>
+            <sc-for list="{{ stockRows }}" as="r" hint-placeholder-count="8">
+              <div style="display: grid; grid-template-columns: 80px minmax(160px, 1fr) 120px 108px 96px 96px minmax(120px, 130px); gap: 14px; min-width: 840px; align-items: center; padding: 11px 20px; border-bottom: 1px solid oklch(0.945 0.004 250); font-size: 13px; background: {{ r.rowBg }};">
+                <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: oklch(0.45 0.008 250);">{{ r.cat }}</span>
+                <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                  <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ r.name }}</span>
+                  <span style="font-size: 11px; color: {{ r.stateColor }};">{{ r.state }}</span>
+                </span>
+                <div style="display: flex; align-items: center; border: 1px solid oklch(0.89 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240);">
+                  <button onClick="{{ r.dec }}" style="width: 28px; height: 30px; border: 0; background: transparent; cursor: pointer; color: oklch(0.45 0.008 250); font-size: 13px;" style-hover="color: oklch(0.40 0.105 262);">−</button>
+                  <input type="number" value="{{ r.stock }}" onChange="{{ r.setStock }}" style="width: 100%; height: 30px; padding: 0 4px; border: 0; background: transparent; text-align: center; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; outline: none;" />
+                  <button onClick="{{ r.inc }}" style="width: 28px; height: 30px; border: 0; background: transparent; cursor: pointer; color: oklch(0.45 0.008 250); font-size: 13px;" style-hover="color: oklch(0.40 0.105 262);">+</button>
+                </div>
+                <input type="number" value="{{ r.lowAt }}" onChange="{{ r.setLowAt }}" style="height: 30px; padding: 0 9px; border: 1px solid oklch(0.89 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; outline: none;" />
+                <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: oklch(0.5 0.008 250);">{{ r.sold }}</span>
+                <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px;">{{ r.value }}</span>
+                <button onClick="{{ r.restock }}" style="height: 30px; border: 1px solid oklch(0.89 0.004 250); border-radius: 2px; background: transparent; cursor: pointer; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(0.4 0.008 250);" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">+ 50 vials</button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isCustomers }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <span style="font-size: 13.5px; color: oklch(0.5 0.008 250);">{{ customerNote }}</span>
+            <input type="text" value="{{ customerQuery }}" onChange="{{ setCustomerQuery }}" placeholder="Search email, name, country" style="margin-left: auto; width: 260px; height: 32px; padding: 0 11px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 12.5px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);" />
+          </div>
+          <div style="border: 1px solid oklch(0.9 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); overflow-x: auto;">
+            <div style="display: grid; grid-template-columns: minmax(200px, 1.5fr) 118px 62px 92px 104px 128px 78px; gap: 14px; min-width: 860px; padding: 12px 20px; border-bottom: 1px solid oklch(0.9 0.004 250); background: oklch(0.972 0.003 240); font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.5 0.008 250);">
+              <span>Customer</span><span>Country</span><span>Ord.</span><span>Spent</span><span>Credit</span><span>Tier</span><span></span>
+            </div>
+            <sc-for list="{{ customerRows }}" as="c" hint-placeholder-count="5">
+              <div style="display: grid; grid-template-columns: minmax(200px, 1.5fr) 118px 62px 92px 104px 128px 78px; gap: 14px; min-width: 860px; align-items: center; padding: 12px 20px; border-bottom: 1px solid oklch(0.945 0.004 250); font-size: 13px; background: {{ c.rowBg }};">
+                <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                  <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ c.name }}</span>
+                  <span style="font-size: 11.5px; color: oklch(0.58 0.008 250); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ c.email }}</span>
+                </span>
+                <span style="font-size: 12.5px; color: oklch(0.45 0.008 250);">{{ c.country }}</span>
+                <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px;">{{ c.ordersCount }}</span>
+                <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px;">{{ c.spent }}</span>
+                <input type="number" value="{{ c.credit }}" onChange="{{ c.setCredit }}" style="height: 30px; padding: 0 9px; border: 1px solid oklch(0.89 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; outline: none;" />
+                <select value="{{ c.tier }}" onChange="{{ c.setTier }}" style="height: 30px; padding: 0 7px; border: 1px solid oklch(0.89 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 12px; outline: none;">
+                  <option value="standard">standard</option>
+                  <option value="repeat">repeat</option>
+                  <option value="institutional">institutional</option>
+                </select>
+                <button onClick="{{ c.toggleFlag }}" style="height: 30px; border: 1px solid {{ c.flagBorder }}; border-radius: 2px; background: {{ c.flagBg }}; color: {{ c.flagColor }}; cursor: pointer; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase;">{{ c.flagLabel }}</button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isVotes }}" hint-placeholder-val="{{ false }}">
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 20px; align-items: start;">
+          <div style="display: flex; flex-direction: column; gap: 16px; padding: 22px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250); border-radius: 2px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+              <sc-for list="{{ voteFields }}" as="f" hint-placeholder-count="3">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <label style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.56 0.008 250);">{{ f.label }}</label>
+                  <input type="{{ f.type }}" value="{{ f.value }}" onChange="{{ f.change }}" style="height: 38px; padding: 0 11px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);" />
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 6px;">
+              <sc-for list="{{ voteOptions }}" as="v" hint-placeholder-count="4">
+                <div style="display: grid; grid-template-columns: minmax(0, 1fr) 92px 30px; gap: 12px; align-items: center;">
+                  <div style="display: flex; flex-direction: column; gap: 7px; min-width: 0;">
+                    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                      <select value="{{ v.cat }}" onChange="{{ v.setCat }}" style="height: 32px; padding: 0 8px; border: 1px solid oklch(0.89 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 12.5px; outline: none;">
+                        <sc-for list="{{ productCodes }}" as="c" hint-placeholder-count="8">
+                          <option value="{{ c }}">{{ c }}</option>
+                        </sc-for>
+                      </select>
+                      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: {{ v.pctColor }};">{{ v.pctLabel }}</span>
+                    </div>
+                    <span style="height: 5px; background: oklch(0.93 0.004 250); display: block; position: relative; overflow: hidden;">
+                      <span style="position: absolute; top: 0; bottom: 0; left: 0; width: {{ v.width }}; background: {{ v.color }}; display: block;"></span>
+                    </span>
+                  </div>
+                  <input type="number" value="{{ v.count }}" onChange="{{ v.setCount }}" style="height: 32px; padding: 0 9px; border: 1px solid oklch(0.89 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; outline: none;" />
+                  <button onClick="{{ v.remove }}" style="width: 30px; height: 32px; border: 1px solid oklch(0.89 0.004 250); border-radius: 2px; background: transparent; cursor: pointer; color: oklch(0.5 0.008 250); font-size: 13px;" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">×</button>
+                </div>
+              </sc-for>
+              <button onClick="{{ addVoteOption }}" style="height: 36px; border: 1px dashed oklch(0.85 0.006 250); border-radius: 2px; background: transparent; cursor: pointer; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: oklch(0.5 0.008 250);" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">+ Add candidate</button>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px; padding: 22px; background: oklch(0.19 0.008 250); border-radius: 2px; color: oklch(0.9 0.006 250);">
+            <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.76 0.07 262);">{{ voteStateLabel }}</span>
+            <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 26px; line-height: 1.1; color: oklch(0.985 0.002 240);">{{ voteLeaderName }}</span>
+            <span style="font-size: 13px; line-height: 1.6; color: oklch(0.72 0.006 250);">{{ voteBlurb }}</span>
+            <div style="display: flex; flex-direction: column; gap: 7px; padding: 12px 0; border-top: 1px solid oklch(0.3 0.008 250); border-bottom: 1px solid oklch(0.3 0.008 250);">
+              <div style="display: flex; align-items: baseline; justify-content: space-between; font-size: 12.5px;">
+                <span style="color: oklch(0.7 0.006 250);">Votes cast</span>
+                <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace;">{{ voteTotalLabel }}</span>
+              </div>
+              <span style="height: 4px; background: oklch(0.3 0.008 250); display: block; position: relative; overflow: hidden;">
+                <span style="position: absolute; top: 0; bottom: 0; left: 0; width: {{ voteProgress }}; background: oklch(0.76 0.07 262); display: block;"></span>
+              </span>
+            </div>
+            <button onClick="{{ closeVote }}" style="height: 42px; border: 0; border-radius: 2px; background: oklch(0.972 0.003 240); color: oklch(0.19 0.008 250); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">{{ closeVoteLabel }}</button>
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; line-height: 1.6; color: oklch(0.62 0.006 250);">{{ voteHint }}</span>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; align-items: start;">
+          <sc-for list="{{ settingGroups }}" as="g" hint-placeholder-count="3">
+            <div style="display: flex; flex-direction: column; gap: 16px; padding: 22px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250); border-radius: 2px;">
+              <div style="display: flex; flex-direction: column; gap: 5px;">
+                <span style="font-size: 15px; font-weight: 500;">{{ g.title }}</span>
+                <span style="font-size: 12.5px; line-height: 1.55; color: oklch(0.52 0.008 250);">{{ g.subtitle }}</span>
+              </div>
+              <sc-for list="{{ g.fields }}" as="f" hint-placeholder-count="4">
+                <div style="display: grid; grid-template-columns: minmax(0, 1fr) 152px; gap: 14px; align-items: center;">
+                  <span style="display: flex; flex-direction: column; gap: 3px;">
+                    <span style="font-size: 13.5px;">{{ f.label }}</span>
+                    <span style="font-size: 11.5px; line-height: 1.45; color: oklch(0.58 0.008 250);">{{ f.hint }}</span>
+                  </span>
+                  <sc-if value="{{ f.isToggle }}" hint-placeholder-val="{{ false }}">
+                    <button onClick="{{ f.toggle }}" style="height: 34px; border: 1px solid {{ f.tBorder }}; border-radius: 2px; background: {{ f.tBg }}; color: {{ f.tColor }}; cursor: pointer; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 500; letter-spacing: 0;">{{ f.tLabel }}</button>
+                  </sc-if>
+                  <sc-if value="{{ f.isPlain }}" hint-placeholder-val="{{ true }}">
+                    <input type="{{ f.type }}" value="{{ f.value }}" onChange="{{ f.change }}" placeholder="{{ f.placeholder }}" style="height: 34px; padding: 0 10px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 12.5px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);" />
+                  </sc-if>
+                </div>
+              </sc-for>
+              <sc-if value="{{ g.isDb }}" hint-placeholder-val="{{ false }}">
+                <div style="display: flex; flex-direction: column; gap: 12px; padding-top: 4px;">
+                  <div style="display: flex; gap: 8px;">
+                    <button onClick="{{ testConnection }}" style="flex: 1; height: 38px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262);">Test connection</button>
+                    <button onClick="{{ copySchema }}" style="flex: 1; height: 38px; border: 1px solid oklch(0.86 0.006 250); border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.3 0.008 250);" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">{{ copyLabel }}</button>
+                  </div>
+                  <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; line-height: 1.65; color: oklch(0.5 0.008 250); background: oklch(0.972 0.003 240); border: 1px solid oklch(0.92 0.004 250); padding: 11px 12px;">{{ dbStatus }}</span>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 26px;">
+          <sc-for list="{{ groups }}" as="g" hint-placeholder-count="2">
+            <section style="border: 1px solid oklch(0.9 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240);">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 17px 20px; border-bottom: 1px solid oklch(0.9 0.004 250); flex-wrap: wrap;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <span style="font-size: 15px; font-weight: 500;">{{ g.title }}</span>
+                  <span style="font-size: 12.5px; color: oklch(0.55 0.008 250);">{{ g.subtitle }}</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.55 0.008 250);">{{ g.table }}</span>
+                  <sc-if value="{{ g.canAdd }}" hint-placeholder-val="{{ true }}">
+                    <button onClick="{{ g.add }}" style="height: 34px; padding: 0 15px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262);">{{ g.addLabel }}</button>
+                  </sc-if>
+                </div>
+              </div>
+
+              <sc-if value="{{ g.isSlots }}" hint-placeholder-val="{{ false }}">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; padding: 20px;">
+                  <sc-for list="{{ g.slots }}" as="s" hint-placeholder-count="4">
+                    <div style="display: flex; flex-direction: column; gap: 10px; padding: 12px; border: 1px solid oklch(0.91 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240);">
+                      <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: 0.1em; color: oklch(0.55 0.008 250);">slot {{ s.n }}</span>
+                        <button onClick="{{ s.clear }}" style="border: 0; background: transparent; cursor: pointer; padding: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(0.62 0.006 250);" style-hover="color: oklch(0.40 0.105 262);">clear</button>
+                      </div>
+                      <div style="position: relative; aspect-ratio: 1 / 1; overflow: hidden; background-color: oklch(0.96 0.003 250); background-image: {{ s.background }}; background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 8px;">
+                        <span style="font-size: 11px; color: oklch(0.5 0.008 250);">{{ s.imageNote }}</span>
+                      </div>
+                      <select value="{{ s.value }}" onChange="{{ s.change }}" style="height: 36px; padding: 0 8px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 12.5px; color: oklch(0.25 0.008 250); outline: none;">
+                        <sc-for list="{{ g.options }}" as="o" hint-placeholder-count="8">
+                          <option value="{{ o }}">{{ o }}</option>
+                        </sc-for>
+                      </select>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ g.isRecords }}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; flex-direction: column;">
+                  <sc-for list="{{ g.rows }}" as="row" hint-placeholder-count="3">
+                    <div style="display: flex; flex-direction: column; gap: 16px; padding: 20px; border-bottom: 1px solid oklch(0.945 0.004 250);" style-hover="background: oklch(0.978 0.002 240);">
+
+                      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.08em; color: oklch(0.62 0.006 250);">{{ row.index }}</span>
+                        <span style="font-size: 14.5px; font-weight: 500; min-width: 0;">{{ row.heading }}</span>
+                        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; color: {{ row.metaColor }};">{{ row.meta }}</span>
+                        <sc-if value="{{ row.hasFlag }}" hint-placeholder-val="{{ false }}">
+                          <button onClick="{{ row.toggleFlag }}" style="height: 26px; padding: 0 10px; border: 1px solid {{ row.flagBorder }}; border-radius: 2px; background: {{ row.flagBg }}; cursor: pointer; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: {{ row.flagColor }};">{{ row.flagLabel }}</button>
+                        </sc-if>
+                        <div style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
+                          <button onClick="{{ row.up }}" title="Move up" style="width: 30px; height: 30px; border: 1px solid oklch(0.89 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); cursor: pointer; font-size: 12px; color: oklch(0.42 0.008 250);" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">↑</button>
+                          <button onClick="{{ row.down }}" title="Move down" style="width: 30px; height: 30px; border: 1px solid oklch(0.89 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); cursor: pointer; font-size: 12px; color: oklch(0.42 0.008 250);" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">↓</button>
+                          <sc-if value="{{ row.canDuplicate }}" hint-placeholder-val="{{ true }}">
+                            <button onClick="{{ row.duplicate }}" style="height: 30px; padding: 0 12px; border: 1px solid oklch(0.89 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); cursor: pointer; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(0.42 0.008 250);" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">Duplicate</button>
+                          </sc-if>
+                          <button onClick="{{ row.remove }}" style="height: 30px; padding: 0 12px; border: 1px solid {{ row.deleteBorder }}; border-radius: 2px; background: {{ row.deleteBg }}; cursor: pointer; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: {{ row.deleteColor }};">{{ row.deleteLabel }}</button>
+                        </div>
+                      </div>
+
+                      <sc-if value="{{ row.hasImages }}" hint-placeholder-val="{{ false }}">
+                        <div style="display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap;">
+                          <sc-for list="{{ row.images }}" as="img" hint-placeholder-count="2">
+                            <div style="position: relative; width: 92px; height: 92px; border: 1px solid oklch(0.9 0.004 250); border-radius: 2px; overflow: hidden; background-color: oklch(0.96 0.003 250); background-image: {{ img.background }}; background-size: cover; background-position: center;">
+                              <button onClick="{{ img.remove }}" title="Remove image" style="position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250 / 0.78); color: oklch(0.985 0.002 240); cursor: pointer; font-size: 12px; line-height: 1; z-index: 3;">×</button>
+                            </div>
+                          </sc-for>
+                          <label style="width: 92px; height: 92px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; border: 1px dashed oklch(0.84 0.006 250); border-radius: 2px; background: transparent; cursor: pointer; font-size: 11px; font-weight: 500; text-align: center; color: oklch(0.55 0.008 250);" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">
+                            <span style="font-size: 16px; line-height: 1;">+</span>Add image
+                            <input type="file" accept="image/*" multiple onChange="{{ row.addImage }}" style="display: none;" />
+                          </label>
+                        </div>
+                      </sc-if>
+
+                      <sc-if value="{{ row.hasWide }}" hint-placeholder-val="{{ false }}">
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                          <sc-for list="{{ row.wide }}" as="f" hint-placeholder-count="2">
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                              <label style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.56 0.008 250);">{{ f.label }}</label>
+                              <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ true }}">
+                                <textarea value="{{ f.value }}" onChange="{{ f.change }}" rows="3" style="width: 100%; padding: 11px 12px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13.5px; line-height: 1.6; color: oklch(0.22 0.008 250); resize: vertical; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);"></textarea>
+                              </sc-if>
+                              <sc-if value="{{ f.isPlain }}" hint-placeholder-val="{{ false }}">
+                                <input type="{{ f.type }}" value="{{ f.value }}" onChange="{{ f.change }}" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13.5px; color: oklch(0.22 0.008 250); outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);" />
+                              </sc-if>
+                              <sc-if value="{{ f.isFile }}" hint-placeholder-val="{{ false }}">
+                                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                  <input type="text" value="{{ f.value }}" onChange="{{ f.change }}" placeholder="https://... or attach a file" style="flex: 1 1 200px; min-width: 0; height: 40px; padding: 0 12px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13.5px; color: oklch(0.22 0.008 250); outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);" />
+                                  <label style="display: flex; align-items: center; height: 40px; padding: 0 14px; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; background: oklch(0.985 0.002 240); cursor: pointer; font-size: 13px; font-weight: 500; color: oklch(0.3 0.008 250); white-space: nowrap;" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">
+                                    {{ f.fileLabel }}
+                                    <input type="file" onChange="{{ f.pickFile }}" style="display: none;" />
+                                  </label>
+                                  <sc-if value="{{ f.hasFile }}" hint-placeholder-val="{{ false }}">
+                                    <button onClick="{{ f.clearFile }}" style="height: 40px; padding: 0 12px; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 13px; color: oklch(0.5 0.13 25);" style-hover="border-color: oklch(0.5 0.13 25);">Remove</button>
+                                  </sc-if>
+                                </div>
+                              </sc-if>
+                            </div>
+                          </sc-for>
+                        </div>
+                      </sc-if>
+
+                      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(146px, 1fr)); gap: 12px;">
+                        <sc-for list="{{ row.fields }}" as="f" hint-placeholder-count="4">
+                          <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+                            <label style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.56 0.008 250);">{{ f.label }}</label>
+                            <sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}">
+                              <select value="{{ f.value }}" onChange="{{ f.change }}" style="width: 100%; height: 38px; padding: 0 9px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13px; color: oklch(0.22 0.008 250); outline: none;">
+                                <sc-for list="{{ f.options }}" as="op" hint-placeholder-count="3">
+                                  <option value="{{ op }}">{{ op }}</option>
+                                </sc-for>
+                              </select>
+                            </sc-if>
+                            <sc-if value="{{ f.isPlain }}" hint-placeholder-val="{{ true }}">
+                              <input type="{{ f.type }}" value="{{ f.value }}" onChange="{{ f.change }}" style="width: 100%; height: 38px; padding: 0 11px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13px; color: oklch(0.22 0.008 250); outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);" />
+                            </sc-if>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </sc-for>
+
+                  <sc-if value="{{ g.isEmpty }}" hint-placeholder-val="{{ false }}">
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 52px 20px;">
+                      <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 22px; color: oklch(0.45 0.008 250);">Nothing here yet</span>
+                      <span style="font-size: 13px; color: oklch(0.58 0.008 250);">{{ g.emptyHint }}</span>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+      </sc-if>
+
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    pane: 0, dirty: false, confirm: null, openOrder: null,
+    orderFilter: "All", orderQuery: "", customerQuery: "", copied: false,
+    sandbox: { lines: [{ cat: "TR5", qty: 2 }, { cat: "BP5", qty: 1 }, { cat: "PPB10", qty: 1 }], pay: "crypto", code: "" },
+  };
+
+  get db() { return window.Morpheps; }
+
+  componentDidMount() {
+    this.unsub = this.db.subscribe(() => this.forceUpdate());
+    this.checkAdmin();
+  }
+  componentWillUnmount() { if (this.unsub) this.unsub(); }
+
+  // Client-side redirect only — real enforcement is server-side in
+  // requireAdmin() (lib/admin.js), which every /api/admin/* route checks
+  // regardless of what this guard does. This just keeps non-admins from
+  // sitting on the page.
+  async checkAdmin() {
+    const c = this.db.connect();
+    if (!c) { window.location.href = "Sign-In.dc.html"; return; }
+    const { data } = await c.auth.getSession();
+    const token = data.session && data.session.access_token;
+    if (!token) { window.location.href = "Sign-In.dc.html"; return; }
+    const res = await fetch("/api/admin/whoami", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + token },
+    });
+    const body = await res.json();
+    if (!body.isAdmin) { window.location.href = "Morpheps.dc.html"; return; }
+  }
+
+  edit(fn) {
+    this.db.edit(fn);
+    this.setState({ dirty: true, confirm: null });
+  }
+
+  panes = [
+    { key: "overview", label: "Overview", title: "Store overview", crumb: "Dashboard", section: "Operations", kind: "overview" },
+    { key: "orders", label: "Orders", title: "Orders & fulfilment", crumb: "Operations", section: "Operations", kind: "orders" },
+    { key: "inventory", label: "Inventory", title: "Inventory & stock", crumb: "Operations", section: "Operations", kind: "inventory" },
+    { key: "customers", label: "Customers", title: "Customers", crumb: "Operations", section: "Operations", kind: "customers" },
+    { key: "products", label: "Products", title: "Products", crumb: "Catalogue", section: "Catalogue", kind: "list" },
+    { key: "categories", label: "Categories", title: "Categories", crumb: "Catalogue", section: "Catalogue", kind: "list" },
+    { key: "bundles", label: "Bundles", title: "Bundles", crumb: "Catalogue", section: "Catalogue", kind: "list" },
+    { key: "discounts", label: "Discounts", title: "Discounts & coupons", crumb: "Pricing", section: "Pricing", kind: "discounts" },
+    { key: "votes", label: "Offsale vote", title: "Offsale vote", crumb: "Pricing", section: "Pricing", kind: "votes" },
+    { key: "tiers", label: "Tiers & units", title: "Quantity tiers & dosage units", crumb: "Pricing", section: "Pricing", kind: "list" },
+    { key: "homepage", label: "Homepage", title: "Homepage content", crumb: "Content", section: "Content", kind: "list" },
+    { key: "promos", label: "Promotions", title: "Promotions", crumb: "Content", section: "Content", kind: "list" },
+    { key: "chrome", label: "Navigation", title: "Navigation & chrome", crumb: "Site", section: "Content", kind: "list" },
+    { key: "footer", label: "Footer links", title: "Footer links", crumb: "Site", section: "Content", kind: "list" },
+    { key: "labReports", label: "Lab reports", title: "Lab reports", crumb: "Trust", section: "Trust", kind: "list" },
+    { key: "reviews", label: "Reviews", title: "Reviews & results", crumb: "Trust", section: "Trust", kind: "list" },
+    { key: "faqs", label: "Help articles", title: "Help articles", crumb: "Support", section: "Trust", kind: "list" },
+    { key: "settings", label: "Settings", title: "Store settings", crumb: "System", section: "System", kind: "settings" },
+  ];
+
+  /* ---- generic field builders ---------------------------------------- */
+  fieldOn(getRec, setProp, prop, label, opts) {
+    const o = opts || {};
+    const rec = getRec() || {};
+    const raw = rec[prop];
+    return {
+      label,
+      type: o.type || "text",
+      placeholder: o.placeholder || "",
+      value: raw === undefined || raw === null ? "" : raw,
+      isPlain: !o.options && !o.toggle,
+      isSelect: Boolean(o.options),
+      isArea: false,
+      isToggle: Boolean(o.toggle),
+      options: o.options || [],
+      change: (e) => {
+        let v = e.target.value;
+        if (o.type === "number") v = v === "" ? 0 : Number(v);
+        if (o.upper) v = String(v).toUpperCase();
+        setProp(prop, v);
+      },
+      toggle: () => setProp(prop, !rec[prop]),
+      tLabel: rec[prop] ? (o.onLabel || "On") : (o.offLabel || "Off"),
+      tBg: rec[prop] ? "oklch(0.19 0.008 250)" : "oklch(0.96 0.003 240)",
+      tColor: rec[prop] ? "oklch(0.985 0.002 240)" : "oklch(0.5 0.008 250)",
+      tBorder: rec[prop] ? "oklch(0.19 0.008 250)" : "oklch(0.88 0.004 250)",
+    };
+  }
+
+  listField(path, id, prop, label, opts) {
+    return this.fieldOn(
+      () => this.resolve(path).find((r) => r.id === id),
+      (p, v) => this.edit((d) => { const r = this.resolve(path, d).find((x) => x.id === id); if (r) r[p] = v; }),
+      prop, label, opts);
+  }
+
+  areaField(path, id, prop, label) {
+    const f = this.listField(path, id, prop, label);
+    return { ...f, isPlain: false, isArea: true };
+  }
+
+  fileField(path, id, prop, label, nameProp) {
+    const f = this.listField(path, id, prop, label);
+    const setBoth = (url, name) => this.edit((d) => {
+      const r = this.resolve(path, d).find((x) => x.id === id);
+      if (!r) return;
+      r[prop] = url;
+      if (nameProp && name) r[nameProp] = name;
+    });
+    return {
+      ...f, isPlain: false, isArea: false, isFile: true,
+      fileLabel: f.value ? "Replace file" : "Attach file",
+      hasFile: Boolean(f.value),
+      clearFile: () => setBoth("", ""),
+      pickFile: (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => setBoth(String(reader.result), file.name);
+        reader.readAsDataURL(file);
+      },
+    };
+  }
+
+  resolve(path, root) {
+    const base = root || this.db.data;
+    return path.split(".").reduce((o, k) => (o ? o[k] : undefined), base);
+  }
+
+  records(path, cfg) {
+    const list = this.resolve(path) || [];
+    const key = path.split(".").pop();
+    return list.map((rec, i) => {
+      const confirming = this.state.confirm === path + ":" + rec.id;
+      const flagOn = cfg.flagField ? rec[cfg.flagField] : rec.live;
+      return {
+        index: String(i + 1).padStart(2, "0"),
+        heading: cfg.heading(rec),
+        meta: cfg.meta ? cfg.meta(rec) : "",
+        metaColor: cfg.metaColor ? cfg.metaColor(rec) : "oklch(0.6 0.006 250)",
+        canDuplicate: cfg.duplicate !== false,
+        hasFlag: cfg.flag !== false && "live" in rec,
+        flagLabel: flagOn ? (cfg.flagOn || "Live") : (cfg.flagOff || "Hidden"),
+        flagBg: flagOn ? "oklch(0.19 0.008 250)" : "oklch(0.96 0.003 240)",
+        flagColor: flagOn ? "oklch(0.985 0.002 240)" : "oklch(0.5 0.008 250)",
+        flagBorder: flagOn ? "oklch(0.19 0.008 250)" : "oklch(0.88 0.004 250)",
+        toggleFlag: () => this.edit((d) => { const r = this.resolve(path, d).find((x) => x.id === rec.id); r.live = !r.live; }),
+        hasImages: cfg.images !== false,
+        images: (rec.images || []).map((src, k) => ({
+          background: src ? "url(" + src + ")" : "none",
+          remove: () => this.edit((d) => {
+            const r = this.resolve(path, d).find((x) => x.id === rec.id);
+            r.images = (r.images || []).filter((_, j) => j !== k);
+          }),
+        })),
+        addImage: (e) => {
+          const files = Array.from((e.target && e.target.files) || []);
+          if (!files.length) return;
+          const input = e.target;
+          Promise.all(files.map((file) => new Promise((res) => {
+            const reader = new FileReader();
+            reader.onload = () => res(String(reader.result));
+            reader.onerror = () => res("");
+            reader.readAsDataURL(file);
+          }))).then((urls) => {
+            const clean = urls.filter(Boolean);
+            if (!clean.length) return;
+            this.edit((d) => {
+              const r = this.resolve(path, d).find((x) => x.id === rec.id);
+              r.images = [...(r.images || []), ...clean];
+            });
+            if (input) input.value = "";
+          });
+        },
+        hasWide: (cfg.wide || []).length > 0,
+        wide: (cfg.wide || []).map((f) => f[2] === "text"
+          ? this.listField(path, rec.id, f[0], f[1])
+          : f[2] === "file"
+            ? this.fileField(path, rec.id, f[0], f[1], f[3])
+            : this.areaField(path, rec.id, f[0], f[1])),
+        fields: (cfg.fields || []).map((f) => this.listField(path, rec.id, f[0], f[1], f[2])),
+        up: () => this.edit((d) => { if (i === 0) return; const a = this.resolve(path, d); const t = a[i - 1]; a[i - 1] = a[i]; a[i] = t; }),
+        down: () => this.edit((d) => { const a = this.resolve(path, d); if (i === a.length - 1) return; const t = a[i + 1]; a[i + 1] = a[i]; a[i] = t; }),
+        duplicate: () => this.edit((d) => {
+          const copy = JSON.parse(JSON.stringify(rec));
+          copy.id = this.db.uid(key.slice(0, 2));
+          if (copy.cat) copy.cat = copy.cat + "-C";
+          copy.images = (copy.images || []).map(() => copy.id + "-" + Math.random().toString(36).slice(2, 6));
+          this.resolve(path, d).splice(i + 1, 0, copy);
+        }),
+        deleteLabel: confirming ? "Confirm delete" : "Delete",
+        deleteBg: confirming ? "oklch(0.40 0.105 262)" : "transparent",
+        deleteColor: confirming ? "oklch(0.985 0.002 240)" : "oklch(0.5 0.13 25)",
+        deleteBorder: confirming ? "oklch(0.40 0.105 262)" : "oklch(0.86 0.03 25)",
+        remove: () => {
+          if (confirming) this.edit((d) => {
+            const parentPath = path.split(".");
+            const last = parentPath.pop();
+            const parent = parentPath.length ? this.resolve(parentPath.join("."), d) : d;
+            parent[last] = parent[last].filter((x) => x.id !== rec.id);
+          });
+          else this.setState({ confirm: path + ":" + rec.id });
+        },
+      };
+    });
+  }
+
+  group(path, cfg) {
+    const rows = this.records(path, cfg);
+    const key = path.split(".").pop();
+    return {
+      title: cfg.title, subtitle: cfg.subtitle, table: cfg.table,
+      isRecords: true, isSlots: false, canAdd: true,
+      addLabel: cfg.addLabel,
+      isEmpty: rows.length === 0,
+      emptyHint: cfg.emptyHint || "Use the button above to add the first entry.",
+      rows,
+      add: () => this.edit((d) => {
+        const blank = { ...cfg.blank, id: this.db.uid(key.slice(0, 2)) };
+        if (cfg.images !== false) blank.images = [];
+        this.resolve(path, d).unshift(blank);
+      }),
+    };
+  }
+
+  slotGroup(key, cfg) {
+    const list = this.db.data.content[key];
+    const codes = this.db.data.products.map((p) => p.cat);
+    return {
+      title: cfg.title, subtitle: cfg.subtitle, table: cfg.table,
+      isSlots: true, isRecords: false, canAdd: false, isEmpty: false,
+      options: codes,
+      slots: list.map((value, i) => {
+        const p = this.db.data.products.find((x) => x.cat === value);
+        const src = p && (p.images || [])[0];
+        return {
+          n: String(i + cfg.offset).padStart(2, "0"),
+          value,
+          background: src ? "url(" + src + ")" : "none",
+          imageNote: src ? "" : "No photo on this product yet",
+          change: (e) => { const v = e.target.value; this.edit((d) => { d.content[key][i] = v; }); },
+          clear: () => this.edit((d) => { d.content[key][i] = ""; }),
+        };
+      }),
+    };
+  }
+
+  /* ---- pane data ------------------------------------------------------ */
+  groupsFor(key) {
+    const codes = this.db.data.products.map((p) => p.cat);
+    const catSlugs = this.db.categorySlugs();
+    if (key === "categories") return [this.group("content.categories", {
+      title: "Categories", subtitle: "Shown as filters on the shop page and as the Type field on every product. Deleting a category leaves its products in place, reassign them first.", addLabel: "Add category", images: false,
+      heading: (r) => (r.label || "Untitled category") + ", " + this.db.categoryCount(r.slug) + " products",
+      meta: (r) => (r.slug ? "slug: " + r.slug : "needs a slug"),
+      wide: [["blurb", "Short description", "text"]],
+      fields: [["label", "Label"], ["slug", "Slug"]],
+      blank: { label: "New category", slug: "new-category", blurb: "", live: true },
+    })];
+    if (key === "products") return [this.group("products", {
+      title: "Catalogue", subtitle: "Prices are numbers, the store computes badges, savings and tier pricing from them.", table: "products", addLabel: "Add product",
+      heading: (r) => (r.cat ? r.cat + ", " : "") + (r.name || "Untitled product"),
+      meta: (r) => (r.stock <= 0 ? "out of stock" : r.stock <= (r.lowStockAt || 10) ? "low stock, " + r.stock : ""),
+      metaColor: (r) => (r.stock <= 0 ? "oklch(0.5 0.13 25)" : "oklch(0.55 0.14 60)"),
+      wide: [["body", "Product description"]],
+      fields: [
+        ["cat", "Cat. no."], ["name", "Name"],
+        ["doseValue", "Strength"], ["doseUnit", "Unit", { options: this.db.doseUnits().map((u) => u.unit) }],
+        ["category", "Type", { options: catSlugs }],
+        ["price", "Price $", { type: "number" }], ["list", "List price $", { type: "number" }],
+        ["stock", "Stock", { type: "number" }], ["lowStockAt", "Low at", { type: "number" }],
+        ["purity", "Purity"], ["lot", "Current lot"],
+      ],
+      blank: { cat: "NEW-1", name: "New compound", doseValue: "5 mg", doseUnit: "mg/vial", dose: "5 mg/vial", category: "compound", price: 0, list: 0, stock: 0, lowStockAt: 10, purity: "", lot: "", body: "", live: false },
+    })];
+
+    if (key === "tiers") return [
+      this.group("content.qtyTiers", {
+        title: "Quantity tiers", subtitle: "Per-line volume pricing. These build the pricelist columns and the tier box on that page, lowest quantity first.", table: "qty_tiers", addLabel: "Add tier",
+        heading: (r) => (r.label || Number(r.minQty) + "+ kits") + ", " + (Number(r.off) > 0 ? "−" + r.off + "%" : "list price"),
+        fields: [["label", "Label"], ["minQty", "From qty", { type: "number" }], ["off", "Discount %", { type: "number" }]],
+        images: false,
+        blank: { label: "New tier", minQty: 20, off: 30, live: true },
+      }),
+      this.group("content.doseUnits", {
+        title: "Dosage units", subtitle: "The unit list offered on every product's Dosage field. Add a row for any presentation you sell.", table: "dose_units", addLabel: "Add unit",
+        heading: (r) => (r.unit || "unit") + ", " + (r.label || ""),
+        meta: (r) => (r.example ? "e.g. " + r.example : ""),
+        fields: [["unit", "Unit"], ["label", "Presentation"], ["example", "Example strength"]],
+        images: false,
+        blank: { unit: "mg/vial", label: "New presentation", example: "5 mg/vial", live: true },
+      }),
+    ];
+
+    if (key === "bundles") return [this.group("content.bundles", {
+      title: "Bundles", subtitle: "Fixed sets shown on the bundles page and in the cart upsell.", table: "bundles", addLabel: "Add bundle",
+      heading: (r) => r.name || "Untitled bundle",
+      wide: [["body", "Description"], ["contents", "Contents", "text"]],
+      fields: [["name", "Name"], ["save", "Saving badge"], ["price", "Price $", { type: "number" }], ["was", "List price $", { type: "number" }]],
+      blank: { name: "New bundle", save: "−0%", price: 0, was: 0, body: "", contents: "", images: [], live: false },
+    })];
+
+    if (key === "homepage") return [
+      this.slotGroup("featured", { title: "Featured row, 4 products", subtitle: "Homepage slots 1 to 4. Pick the catalogue number; the photo comes from that product under Catalogue, Products.", table: "home_featured", offset: 1 }),
+      this.slotGroup("lineup", { title: "Fast movers row, 5 products", subtitle: "Homepage slots 5 to 9, below the voting block. Photos come from each product.", table: "home_lineup", offset: 5 }),
+      this.group("content.hero", {
+        title: "Hero carousel", subtitle: "2.35:1 slides. Order here is the order on the page.", table: "home_hero", addLabel: "Add slide",
+        heading: (r) => r.title || "Untitled slide",
+        wide: [["title", "Title", "text"], ["body", "Body copy"]],
+        fields: [["eyebrow", "Eyebrow"], ["cta", "Button 1"], ["ctaHref", "Button 1 link"], ["cta2", "Button 2"], ["cta2Href", "Button 2 link"]],
+        blank: { eyebrow: "New", title: "New hero slide", body: "", cta: "Shop", ctaHref: "Shop.dc.html", cta2: "Learn more", cta2Href: "#", live: true },
+      }),
+      this.group("content.blocks", {
+        title: "Editable content blocks", subtitle: "Voting offsale, discounts, customer results, community.", table: "home_blocks", addLabel: "Add block",
+        heading: (r) => r.label || r.title,
+        wide: [["title", "Title", "text"], ["body", "Description"]],
+        fields: [["label", "Block name"], ["cta", "Button 1"], ["cta2", "Button 2"], ["note", "Small print"]],
+        flag: false,
+        blank: { label: "New block", title: "", body: "", cta: "", cta2: "", note: "" },
+      }),
+      this.group("content.marquee", {
+        title: "Marquee strip", subtitle: "Looping headline under the nav. Each phrase links where you point it.", table: "home_marquee", addLabel: "Add phrase",
+        heading: (r) => r.text || "Empty phrase",
+        fields: [["text", "Phrase"], ["href", "Links to"]],
+        images: false, flag: false,
+        blank: { text: "New phrase", href: "Promotions.dc.html" },
+      }),
+    ];
+
+    if (key === "promos") return [this.group("content.promos", {
+      title: "Promotions", subtitle: "Cards on the promotions page. The first live promo becomes the headline offer.", table: "promotions", addLabel: "Add promotion",
+      heading: (r) => r.title || "Untitled promotion",
+      wide: [["title", "Title", "text"], ["body", "Body copy"]],
+      fields: [["tag", "Tag"], ["cta", "Button"], ["href", "Links to"]],
+      blank: { tag: "New", title: "New promotion", body: "", cta: "Shop now", href: "Shop.dc.html", live: false },
+    })];
+
+    if (key === "chrome") return [
+      this.group("content.nav", {
+        title: "Main menu", subtitle: "The row under the header. Order here is the order on the site.", table: "nav_items", addLabel: "Add link",
+        heading: (r) => r.label || "Untitled link",
+        fields: [["label", "Label"], ["href", "Links to"]],
+        images: false, flag: false,
+        blank: { label: "New link", href: "#" },
+      }),
+      this.group("content.strip", {
+        title: "Top strip", subtitle: "The thin line above the header.", table: "top_strip", addLabel: "Add line",
+        heading: (r) => r.text || "Empty line",
+        fields: [["text", "Text"]],
+        images: false, flag: false,
+        blank: { text: "New line" },
+      }),
+      this.group("content.languages", {
+        title: "Languages", subtitle: "Options in the header language switch.", table: "locales", addLabel: "Add language",
+        heading: (r) => r.name + ", " + r.code,
+        fields: [["name", "Name"], ["code", "Code", { upper: true }]],
+        images: false, flag: false,
+        blank: { name: "New language", code: "XX" },
+      }),
+    ];
+
+    if (key === "footer") return [
+      this.group("content.footerLinks", {
+        title: "Footer link columns", subtitle: "Rows group into columns by the Column name, reuse a name to add to that column, type a new one to start another. Footer wording is under Settings Footer.", table: "footer_links", addLabel: "Add link",
+        heading: (r) => (r.column || "More") + ", " + (r.label || "Untitled link"),
+        fields: [["column", "Column"], ["label", "Label"], ["href", "Links to"]],
+        images: false, flag: false,
+        blank: { column: "Shop", label: "New link", href: "#" },
+      }),
+      this.group("content.legalLinks", {
+        title: "Policy links", subtitle: "The small row on the bottom rule.", table: "legal_links", addLabel: "Add policy link",
+        heading: (r) => r.label || "Untitled link",
+        fields: [["label", "Label"], ["href", "Links to"]],
+        images: false, flag: false,
+        blank: { label: "New policy", href: "#" },
+      }),
+    ];
+
+    if (key === "labReports") return [this.group("labReports", {
+      title: "Lab reports", subtitle: "One row per lot. Attach the report file, or paste a link to it, and the public table gains View and Download buttons. Hidden rows stay out of that table.", table: "lab_reports", addLabel: "Add report",
+      heading: (r) => "Lot " + (r.lot || "") + ", " + (r.productCat || ""),
+      meta: (r) => (r.fileUrl ? "file attached" : "no file attached"),
+      metaColor: (r) => (r.fileUrl ? "oklch(0.45 0.11 145)" : "oklch(0.55 0.14 60)"),
+      images: false,
+      wide: [["fileUrl", "Report file (link, or attach)", "file", "fileName"]],
+      fields: [["lot", "Lot"], ["productCat", "Compound", { options: codes }], ["method", "Method", { options: ["HPLC + MS", "HPLC", "NMR", "Endotoxin"] }], ["purity", "Purity"], ["reportedOn", "Reported", { type: "date" }], ["fileName", "File name"]],
+      blank: { lot: "26-0000", productCat: codes[0] || "", method: "HPLC + MS", purity: "", reportedOn: this.db.today(), fileName: "", fileUrl: "", live: false },
+    })];
+
+    if (key === "reviews") return [this.group("reviews", {
+      title: "Reviews & customer results", subtitle: "Add a review yourself or publish a submitted one. Drop result photos on the entry; the avatar is a separate square image.", table: "reviews", addLabel: "Add review",
+      heading: (r) => (r.author || "Anonymous") + ", " + (r.productCat || ""),
+      wide: [["body", "Review text"], ["avatar", "Profile picture (link, or attach)", "file"]],
+      fields: [["author", "Author"], ["role", "Author note"], ["productCat", "Product", { options: codes }], ["lot", "Lot"], ["stars", "Stars", { type: "number" }], ["date", "Date", { type: "date" }]],
+      flagOn: "Published", flagOff: "Held",
+      blank: { author: "", role: "", productCat: codes[0] || "", lot: "", stars: 5, date: this.db.today(), body: "", avatar: "", images: [], live: false },
+    })];
+
+    if (key === "faqs") return [this.group("content.faqs", {
+      title: "Help articles", subtitle: "Accordion entries on the Help Center page.", table: "help_articles", addLabel: "Add article",
+      heading: (r) => r.q || "Untitled question",
+      wide: [["q", "Question", "text"], ["a", "Answer"]],
+      images: false,
+      blank: { q: "New question", a: "", live: true },
+    })];
+
+    return [];
+  }
+
+  /* ---- discounts ------------------------------------------------------ */
+  discountRows() {
+    const codes = this.db.data.products.map((p) => p.cat);
+    return this.db.data.discounts.map((d) => {
+      const confirming = this.state.confirm === "discounts:" + d.id;
+      const set = (prop, v) => this.edit((x) => { const r = x.discounts.find((y) => y.id === d.id); if (r) r[prop] = v; });
+      const f = (prop, label, opts) => this.fieldOn(() => this.db.data.discounts.find((y) => y.id === d.id), set, prop, label, opts);
+      const effect = d.kind === "percent" ? "−" + d.value + "%" : d.kind === "fixed" ? "−" + this.db.money(d.value) : "free shipping";
+      const conditions = [];
+      if (Number(d.minSubtotal) > 0) conditions.push("order over " + this.db.money(d.minSubtotal));
+      if (Number(d.minDistinct) > 0) conditions.push(d.minDistinct + "+ different compounds");
+      if (d.payMethod) conditions.push(d.payMethod + " payment");
+      if (d.scope === "product") conditions.push("only " + (d.scopeValue || ""));
+      if (d.scope === "category") conditions.push("only " + (d.scopeValue || "") + "s");
+      if (d.endsAt) conditions.push("ends " + d.endsAt);
+      return {
+        label: d.label,
+        border: d.live ? "oklch(0.9 0.004 250)" : "oklch(0.93 0.004 250)",
+        kindLabel: d.code ? "code " + d.code : "automatic",
+        kindBg: d.code ? "oklch(0.19 0.008 250)" : "oklch(0.93 0.03 24)",
+        kindColor: d.code ? "oklch(0.985 0.002 240)" : "oklch(0.40 0.105 262)",
+        effect,
+        usage: d.maxUses ? d.uses + " / " + d.maxUses + " used" : d.uses + " used",
+        plain: (d.code ? "Customer types " + d.code + " at checkout. " : "Applies automatically. ")
+          + (d.scope === "product" || d.scope === "category"
+            ? (d.auto
+              ? "Discounts the shelf price of matching products directly. "
+              : "Discounts only the matching lines, not the whole order. ")
+            : "")
+          + (conditions.length ? "Conditions: " + conditions.join(", ") + "." : "No conditions.")
+          + (d.stackable ? "" : " Does not stack with anything else."),
+        liveLabel: d.live ? "Active" : "Paused",
+        liveBg: d.live ? "oklch(0.19 0.008 250)" : "oklch(0.96 0.003 240)",
+        liveColor: d.live ? "oklch(0.985 0.002 240)" : "oklch(0.5 0.008 250)",
+        liveBorder: d.live ? "oklch(0.19 0.008 250)" : "oklch(0.88 0.004 250)",
+        toggleLive: () => set("live", !d.live),
+        duplicate: () => this.edit((x) => {
+          const copy = JSON.parse(JSON.stringify(d));
+          copy.id = this.db.uid("d");
+          copy.uses = 0;
+          copy.code = d.code ? d.code + "2" : "";
+          copy.label = d.label + " (copy)";
+          copy.live = false;
+          x.discounts.splice(x.discounts.indexOf(x.discounts.find((y) => y.id === d.id)) + 1, 0, copy);
+        }),
+        deleteLabel: confirming ? "Confirm" : "Delete",
+        deleteBg: confirming ? "oklch(0.40 0.105 262)" : "transparent",
+        deleteColor: confirming ? "oklch(0.985 0.002 240)" : "oklch(0.5 0.13 25)",
+        deleteBorder: confirming ? "oklch(0.40 0.105 262)" : "oklch(0.86 0.03 25)",
+        remove: () => {
+          if (confirming) this.edit((x) => { x.discounts = x.discounts.filter((y) => y.id !== d.id); });
+          else this.setState({ confirm: "discounts:" + d.id });
+        },
+        fields: [
+          f("label", "Name"),
+          f("code", "Code (blank = auto)", { upper: true, placeholder: "SAVE10" }),
+          f("kind", "Type", { options: ["percent", "fixed", "shipping"] }),
+          f("value", d.kind === "percent" ? "Value %" : "Value $", { type: "number" }),
+          f("scope", "Applies to", { options: ["order", "product", "category"] }),
+          f("scopeValue", "Target", { options: d.scope === "category" ? this.db.categorySlugs() : d.scope === "product" ? codes : [] }),
+          f("minSubtotal", "Min order $", { type: "number" }),
+          f("minDistinct", "Min compounds", { type: "number" }),
+          f("payMethod", "Payment", { options: ["", "crypto", "card"] }),
+          f("maxUses", "Max uses", { type: "number" }),
+          f("startsAt", "Starts", { type: "date" }),
+          f("endsAt", "Ends", { type: "date" }),
+          f("auto", "Automatic", { toggle: true, onLabel: "Automatic", offLabel: "Needs code" }),
+          f("stackable", "Stacking", { toggle: true, onLabel: "Stacks", offLabel: "Exclusive" }),
+        ],
+      };
+    });
+  }
+
+  addDiscount(withCode) {
+    this.edit((d) => {
+      d.discounts.unshift({
+        id: this.db.uid("d"),
+        code: withCode ? "NEW" + String(d.discounts.length + 1).padStart(2, "0") : "",
+        label: withCode ? "New coupon" : "New automatic rule",
+        kind: "percent", value: 10, scope: "order", scopeValue: "",
+        minSubtotal: 0, minDistinct: 0, payMethod: "", stackable: true,
+        auto: !withCode, uses: 0, maxUses: null, startsAt: "", endsAt: "", live: false,
+      });
+    });
+  }
+
+  sandbox() {
+    const s = this.state.sandbox;
+    const lines = s.lines.map((l) => {
+      const p = this.db.product(l.cat) || { name: l.cat, price: 0, list: 0 };
+      const unit = this.db.effectivePrice(p);
+      return { cat: l.cat, qty: l.qty, product: p, unit, list: p.list || unit, lineTotal: unit * l.qty, lineList: (p.list || unit) * l.qty };
+    });
+    return this.db.pricing({ lines, payMethod: s.pay, code: s.code });
+  }
+
+  /* ---- render --------------------------------------------------------- */
+  renderVals() {
+    const db = this.db;
+    const d = db.data;
+    const pane = this.panes[this.state.pane];
+    const m = db.metrics();
+    const sections = ["Operations", "Catalogue", "Pricing", "Content", "Trust", "System"];
+    const codes = d.products.map((p) => p.cat);
+    const badges = {
+      orders: String(m.awaiting + m.toPack || ""),
+      products: String(d.products.length),
+      bundles: String(d.content.bundles.length),
+      discounts: String(d.discounts.filter((x) => x.live).length),
+      reviews: String(m.pendingReviews || ""),
+      labReports: String(d.labReports.length),
+      promos: String(d.content.promos.length),
+      faqs: String(d.content.faqs.length),
+      customers: String(d.customers.length),
+      inventory: String(m.lowStock.length + m.outOfStock.length || ""),
+    };
+    const urgent = { orders: true, reviews: true, inventory: true };
+
+    const vote = d.votes;
+    const voteTotal = (vote.options || []).reduce((t, v) => t + Number(v.count), 0);
+    const leader = (vote.options || []).slice().sort((a, b) => b.count - a.count)[0];
+    const sb = this.sandbox();
+
+    const orderFilters = ["All"].concat(db.statuses);
+    const filtered = d.orders.filter((o) => {
+      if (this.state.orderFilter !== "All" && o.status !== this.state.orderFilter) return false;
+      const q = this.state.orderQuery.trim().toLowerCase();
+      if (!q) return true;
+      return (o.id + " " + o.email + " " + o.country + " " + o.payMethod).toLowerCase().includes(q);
+    });
+
+    const setOrder = (id, prop, v) => this.edit((x) => { const o = x.orders.find((y) => y.id === id); if (o) o[prop] = v; });
+
+    const custQ = this.state.customerQuery.trim().toLowerCase();
+    const customers = d.customers.filter((c) => !custQ || (c.email + " " + c.name + " " + c.country).toLowerCase().includes(custQ));
+
+    const tgSetting = (prop, label, hint, opts) => ({
+      label, hint,
+      ...this.fieldOn(() => (d.settings.telegram = d.settings.telegram || {}), (p, v) => this.edit((x) => {
+        x.settings.telegram = x.settings.telegram || {};
+        x.settings.telegram[p] = v;
+      }), prop, label, opts),
+    });
+
+    const foot = (prop, label, hint, opts) => ({
+      label, hint,
+      ...this.fieldOn(() => (d.content.footer = d.content.footer || {}), (p, v) => this.edit((x) => {
+        x.content.footer = x.content.footer || {};
+        x.content.footer[p] = v;
+      }), prop, label, opts),
+    });
+
+    const setting = (prop, label, hint, opts) => ({
+      label, hint,
+      ...this.fieldOn(() => d.settings, (p, v) => this.edit((x) => { x.settings[p] = v; }), prop, label, opts),
+    });
+    const walletSetting = (coin, label, hint) => ({
+      label, hint,
+      ...this.fieldOn(() => d.settings.wallets || {}, (p, v) => this.edit((x) => { x.settings.wallets = x.settings.wallets || {}; x.settings.wallets[p] = v; }), coin, label, { placeholder: "Paste the receiving address" }),
+    });
+
+    return {
+      navSections: sections.map((title) => ({
+        title,
+        items: this.panes.map((n, i) => ({ n, i })).filter((x) => x.n.section === title).map(({ n, i }) => ({
+          label: n.label,
+          badge: badges[n.key] || "",
+          badgeBg: urgent[n.key] && badges[n.key] ? "oklch(0.40 0.105 262)" : "transparent",
+          badgeColor: urgent[n.key] && badges[n.key] ? "oklch(0.985 0.002 240)" : "oklch(0.56 0.006 250)",
+          pick: () => this.setState({ pane: i, confirm: null }),
+          bg: i === this.state.pane ? "oklch(0.245 0.008 250)" : "transparent",
+          color: i === this.state.pane ? "oklch(0.985 0.002 240)" : "oklch(0.78 0.006 250)",
+          line: i === this.state.pane ? "oklch(0.40 0.105 262)" : "transparent",
+        })),
+      })),
+      paneTitle: pane.title,
+      crumb: pane.crumb,
+      isOverview: pane.kind === "overview",
+      isOrders: pane.kind === "orders",
+      isInventory: pane.kind === "inventory",
+      isCustomers: pane.kind === "customers",
+      isDiscounts: pane.kind === "discounts",
+      isVotes: pane.kind === "votes",
+      isSettings: pane.kind === "settings",
+      isList: pane.kind === "list",
+      groups: pane.kind === "list" ? this.groupsFor(pane.key) : [],
+
+      dirtyLabel: this.state.dirty ? "Unpublished changes" : "All changes published",
+      dirtyColor: this.state.dirty ? "oklch(0.55 0.14 60)" : "oklch(0.45 0.11 145)",
+      publish: () => this.setState({ dirty: false }),
+      revertLabel: this.state.confirm === "reset" ? "Confirm reset" : "Reset seed data",
+      revert: () => {
+        if (this.state.confirm === "reset") { db.reset(); this.setState({ dirty: false, confirm: null }); }
+        else this.setState({ confirm: "reset" });
+      },
+      dbLabel: db.supabaseConfigured ? "Supabase connected" : "Local mode",
+      dbDotColor: db.supabaseConfigured ? "oklch(0.6 0.14 145)" : "oklch(0.7 0.12 70)",
+      dbDetail: db.supabaseConfigured
+        ? (d.settings.supabaseUrl.replace(/^https?:\/\//, "").slice(0, 28) + "\nrls enabled, 2 policies")
+        : "browser storage, add keys in\nSettings to sync to Postgres",
+
+      statuses: db.statuses,
+
+      /* overview */
+      kpis: [
+        { label: "Revenue, all orders", value: db.money(m.revenue), delta: m.orders + " paid orders", deltaColor: "oklch(0.45 0.11 145)" },
+        { label: "Avg order value", value: db.money(m.aov), delta: "across " + m.customers + " customers", deltaColor: "oklch(0.5 0.008 250)" },
+        { label: "Crypto share", value: m.cryptoShare + "%", delta: "−" + d.settings.cryptoDiscount + "% at checkout", deltaColor: "oklch(0.45 0.11 145)" },
+        { label: "Inventory value", value: db.money(m.inventoryValue), delta: d.products.length + " products", deltaColor: "oklch(0.5 0.008 250)" },
+        { label: "Live discounts", value: String(d.discounts.filter((x) => x.live).length), delta: d.discounts.filter((x) => x.live && x.auto).length + " automatic", deltaColor: "oklch(0.5 0.008 250)" },
+      ],
+      hasAlerts: true,
+      alerts: [
+        { title: m.toPack + " orders waiting to be packed", body: m.awaiting + " more are still awaiting payment.", dot: "oklch(0.55 0.14 60)", bg: "oklch(0.985 0.002 240)", border: "oklch(0.9 0.004 250)", go: () => this.setState({ pane: 1, orderFilter: "Paid" }) },
+        { title: m.lowStock.length + " products low, " + m.outOfStock.length + " out", body: m.lowStock.concat(m.outOfStock).slice(0, 3).map((p) => p.cat).join(", ") || "Everything is stocked.", dot: "oklch(0.5 0.13 25)", bg: "oklch(0.985 0.002 240)", border: "oklch(0.9 0.004 250)", go: () => this.setState({ pane: 2 }) },
+        { title: m.pendingReviews + " reviews held for approval", body: m.hiddenProducts + " products are hidden from the storefront.", dot: "oklch(0.6 0.14 145)", bg: "oklch(0.985 0.002 240)", border: "oklch(0.9 0.004 250)", go: () => this.setState({ pane: 12 }) },
+      ],
+      goOrders: () => this.setState({ pane: 1 }),
+      goVotes: () => this.setState({ pane: this.panes.findIndex((p) => p.key === "votes") }),
+      recentOrders: d.orders.slice(0, 6).map((o) => ({
+        id: "#" + o.id,
+        summary: (o.lines || []).length + " lines, " + (o.lines || []).map((l) => l.cat).join(", "),
+        payMethod: o.payMethod,
+        status: o.status,
+        total: db.money(db.orderTotalOf(o)),
+        setStatus: (e) => setOrder(o.id, "status", e.target.value),
+      })),
+      bestSellers: m.best.map((b) => ({
+        name: (b.product && b.product.name) || b.cat,
+        units: b.units,
+        width: Math.round((b.units / (m.best[0].units || 1)) * 100) + "%",
+      })),
+      voteHeading: vote.open ? "Vote in progress, " + vote.cycle : "Vote closed, " + vote.cycle,
+      voteRows: (vote.options || []).map((v, i) => {
+        const p = db.product(v.cat);
+        return {
+          name: (p && p.name) || v.cat,
+          count: v.count.toLocaleString(),
+          width: Math.round((v.count / (voteTotal || 1)) * 100) + "%",
+          color: i < 2 ? "oklch(0.40 0.105 262)" : "oklch(0.68 0.06 24)",
+        };
+      }),
+
+      /* orders */
+      statusFilters: orderFilters.map((label) => ({
+        label,
+        count: label === "All" ? d.orders.length : d.orders.filter((o) => o.status === label).length,
+        pick: () => this.setState({ orderFilter: label }),
+        bg: this.state.orderFilter === label ? "oklch(0.19 0.008 250)" : "oklch(0.985 0.002 240)",
+        color: this.state.orderFilter === label ? "oklch(0.985 0.002 240)" : "oklch(0.35 0.008 250)",
+        border: this.state.orderFilter === label ? "oklch(0.19 0.008 250)" : "oklch(0.89 0.004 250)",
+      })),
+      orderQuery: this.state.orderQuery,
+      setOrderQuery: (e) => this.setState({ orderQuery: e.target.value }),
+      noOrders: filtered.length === 0,
+      orderRows: filtered.map((o) => {
+        const open = this.state.openOrder === o.id;
+        const tone = { Awaiting: "oklch(0.55 0.14 60)", Paid: "oklch(0.45 0.11 145)", Packed: "oklch(0.40 0.105 262)", Shipped: "oklch(0.3 0.008 250)", Refunded: "oklch(0.5 0.13 25)" }[o.status];
+        const next = { Awaiting: "Paid", Paid: "Packed", Packed: "Shipped", Shipped: "Shipped", Refunded: "Refunded" }[o.status];
+        return {
+          id: "#" + o.id,
+          email: o.email,
+          summary: (o.lines || []).map((l) => l.cat + " ×" + l.qty).join(", "),
+          date: o.createdAt,
+          payMethod: o.payMethod,
+          status: o.status,
+          statusColor: tone,
+          statusBg: open ? "oklch(0.985 0.002 240)" : "oklch(0.972 0.003 240)",
+          statusBorder: "oklch(0.89 0.004 250)",
+          total: db.money(db.orderTotalOf(o)),
+          rowBg: open ? "oklch(0.978 0.002 240)" : "transparent",
+          chevron: open ? "▲" : "▼",
+          open,
+          toggle: () => this.setState((s) => ({ openOrder: s.openOrder === o.id ? null : o.id })),
+          lines: (o.lines || []).map((l) => {
+            const p = db.product(l.cat);
+            return { cat: l.cat, name: (p && p.name) || l.cat, qty: l.qty, total: db.money(l.unit * l.qty) };
+          }),
+          totals: [
+            { label: "Subtotal", value: db.money(o.subtotal), color: "oklch(0.5 0.008 250)", weight: "400", line: "oklch(0.91 0.004 250)" },
+            { label: "Discounts", value: "−" + db.money(o.discount), color: "oklch(0.40 0.105 262)", weight: "400", line: "oklch(0.95 0.004 250)" },
+            { label: "Shipping", value: o.shipping ? db.money(o.shipping) : "free", color: "oklch(0.5 0.008 250)", weight: "400", line: "oklch(0.95 0.004 250)" },
+            { label: "Total", value: db.money(db.orderTotalOf(o)), color: "oklch(0.19 0.008 250)", weight: "500", line: "oklch(0.91 0.004 250)" },
+          ],
+          tracking: o.tracking || "",
+          setTracking: (e) => setOrder(o.id, "tracking", e.target.value),
+          note: o.note || "",
+          setNote: (e) => setOrder(o.id, "note", e.target.value),
+          advanceLabel: o.status === "Shipped" ? "Mark delivered" : "Advance to " + next,
+          advance: () => setOrder(o.id, "status", o.status === "Shipped" ? "Shipped" : next),
+          refund: () => this.edit((x) => {
+            const order = x.orders.find((y) => y.id === o.id);
+            if (!order || order.status === "Refunded") return;
+            order.status = "Refunded";
+            (order.lines || []).forEach((l) => { const p = x.products.find((y) => y.cat === l.cat); if (p) p.stock += l.qty; });
+          }),
+          meta: o.country + ", " + o.payMethod + ", placed " + o.createdAt + (o.tracking ? "\ntracking " + o.tracking : ""),
+        };
+      }),
+
+      /* inventory */
+      stockStats: [
+        { label: "Inventory value", value: db.money(m.inventoryValue), color: "oklch(0.19 0.008 250)" },
+        { label: "Low stock", value: String(m.lowStock.length), color: m.lowStock.length ? "oklch(0.55 0.14 60)" : "oklch(0.45 0.11 145)" },
+        { label: "Out of stock", value: String(m.outOfStock.length), color: m.outOfStock.length ? "oklch(0.5 0.13 25)" : "oklch(0.45 0.11 145)" },
+        { label: "Units on hand", value: String(d.products.reduce((t, p) => t + p.stock, 0)), color: "oklch(0.19 0.008 250)" },
+      ],
+      stockRows: d.products.map((p) => {
+        const sold = d.orders.reduce((t, o) => t + (o.lines || []).filter((l) => l.cat === p.cat).reduce((s, l) => s + l.qty, 0), 0);
+        const state = db.stockLabel(p);
+        const set = (prop, v) => this.edit((x) => { const r = x.products.find((y) => y.cat === p.cat); if (r) r[prop] = v; });
+        return {
+          cat: p.cat, name: p.name,
+          state: state.label,
+          stateColor: state.tone === "out" ? "oklch(0.5 0.13 25)" : state.tone === "low" ? "oklch(0.55 0.14 60)" : "oklch(0.55 0.008 250)",
+          rowBg: state.tone === "out" ? "oklch(0.975 0.012 25)" : state.tone === "low" ? "oklch(0.98 0.012 80)" : "transparent",
+          stock: p.stock,
+          setStock: (e) => set("stock", Math.max(0, Number(e.target.value) || 0)),
+          inc: () => set("stock", p.stock + 1),
+          dec: () => set("stock", Math.max(0, p.stock - 1)),
+          lowAt: p.lowStockAt || 10,
+          setLowAt: (e) => set("lowStockAt", Math.max(0, Number(e.target.value) || 0)),
+          sold: String(sold),
+          value: db.money(p.price * p.stock),
+          restock: () => set("stock", p.stock + 50),
+        };
+      }),
+
+      /* customers */
+      customerNote: customers.length + " of " + d.customers.length + " customers, credit is applied automatically at checkout",
+      customerQuery: this.state.customerQuery,
+      setCustomerQuery: (e) => this.setState({ customerQuery: e.target.value }),
+      customerRows: customers.map((c) => {
+        const set = (prop, v) => this.edit((x) => { const r = x.customers.find((y) => y.id === c.id); if (r) r[prop] = v; });
+        return {
+          name: c.name || "", email: c.email, country: c.country,
+          ordersCount: c.ordersCount, spent: db.money(c.spent),
+          credit: c.credit,
+          setCredit: (e) => set("credit", Number(e.target.value) || 0),
+          tier: c.tier,
+          setTier: (e) => set("tier", e.target.value),
+          flagLabel: c.flagged ? "Flagged" : "OK",
+          flagBg: c.flagged ? "oklch(0.40 0.105 262)" : "transparent",
+          flagColor: c.flagged ? "oklch(0.985 0.002 240)" : "oklch(0.5 0.008 250)",
+          flagBorder: c.flagged ? "oklch(0.40 0.105 262)" : "oklch(0.89 0.004 250)",
+          toggleFlag: () => set("flagged", !c.flagged),
+          rowBg: c.flagged ? "oklch(0.978 0.008 25)" : "transparent",
+        };
+      }),
+
+      /* discounts */
+      discountRows: this.discountRows(),
+      addAutoDiscount: () => this.addDiscount(false),
+      addCodeDiscount: () => this.addDiscount(true),
+      productCodes: codes,
+      sandboxLines: this.state.sandbox.lines.map((l, i) => ({
+        cat: l.cat, qty: l.qty,
+        setCat: (e) => { const v = e.target.value; this.setState((s) => ({ sandbox: { ...s.sandbox, lines: s.sandbox.lines.map((x, j) => j === i ? { ...x, cat: v } : x) } })); },
+        setQty: (e) => { const v = Math.max(1, Number(e.target.value) || 1); this.setState((s) => ({ sandbox: { ...s.sandbox, lines: s.sandbox.lines.map((x, j) => j === i ? { ...x, qty: v } : x) } })); },
+        remove: () => this.setState((s) => ({ sandbox: { ...s.sandbox, lines: s.sandbox.lines.filter((_, j) => j !== i) } })),
+      })),
+      addSandboxLine: () => this.setState((s) => ({ sandbox: { ...s.sandbox, lines: [...s.sandbox.lines, { cat: codes[0], qty: 1 }] } })),
+      sandboxPay: this.state.sandbox.pay,
+      setSandboxPay: (e) => { const v = e.target.value; this.setState((s) => ({ sandbox: { ...s.sandbox, pay: v } })); },
+      sandboxCode: this.state.sandbox.code,
+      setSandboxCode: (e) => { const v = e.target.value.toUpperCase(); this.setState((s) => ({ sandbox: { ...s.sandbox, code: v } })); },
+      sandboxRows: [{ label: "List price", value: db.money(sb.listTotal), color: "oklch(0.68 0.006 250)" }]
+        .concat(sb.promoSavings > 0 ? [{ label: "Product offers", value: "−" + db.money(sb.promoSavings), color: "oklch(0.85 0.05 24)" }] : [])
+        .concat(sb.applied.map((a) => ({ label: a.label, value: a.kind === "shipping" ? "free ship" : "−" + db.money(a.value), color: "oklch(0.85 0.05 24)" })))
+        .concat([{ label: "Cold chain shipping", value: sb.shipping ? db.money(sb.shipping) : "free", color: "oklch(0.68 0.006 250)" }]),
+      sandboxTotal: db.money(sb.total),
+      sandboxNote: sb.codeState === "applied" ? "Code accepted."
+        : sb.codeState === "invalid" ? "No live rule matches that code."
+        : sb.codeState === "unmet" ? "That code exists but the basket does not meet its conditions."
+        : sb.codeState === "notapplicable" ? "That code is scoped to products this basket does not contain."
+        : sb.codeState === "spent" ? "That code has hit its maximum uses."
+        : sb.codeState === "expired" ? "That code is outside its start/end dates."
+        : sb.codeState === "exclusive" ? "That code cannot stack with the automatic rules already applied."
+        : "Saving " + db.money(sb.savings) + " of " + db.money(sb.listTotal) + " list.",
+
+      /* votes */
+      voteFields: [
+        this.fieldOn(() => d.votes, (p, v) => this.edit((x) => { x.votes[p] = v; }), "cycle", "Cycle name"),
+        this.fieldOn(() => d.votes, (p, v) => this.edit((x) => { x.votes[p] = v; }), "closesOn", "Closes on", { type: "date" }),
+        this.fieldOn(() => d.votes, (p, v) => this.edit((x) => { x.votes[p] = v; }), "target", "Vote target", { type: "number" }),
+      ],
+      voteOptions: (vote.options || []).map((v, i) => {
+        const p = db.product(v.cat);
+        const share = Math.round((v.count / (voteTotal || 1)) * 100);
+        return {
+          cat: v.cat, count: v.count,
+          pctLabel: share + "%, " + ((p && p.name) || v.cat),
+          pctColor: i === 0 ? "oklch(0.40 0.105 262)" : "oklch(0.55 0.008 250)",
+          width: share + "%",
+          color: v === leader ? "oklch(0.40 0.105 262)" : "oklch(0.78 0.04 262)",
+          setCat: (e) => { const val = e.target.value; this.edit((x) => { x.votes.options[i].cat = val; }); },
+          setCount: (e) => { const val = Math.max(0, Number(e.target.value) || 0); this.edit((x) => { x.votes.options[i].count = val; }); },
+          remove: () => this.edit((x) => { x.votes.options.splice(i, 1); }),
+        };
+      }),
+      addVoteOption: () => this.edit((x) => { x.votes.options.push({ cat: codes[0], count: 0 }); }),
+      voteStateLabel: vote.open ? "Open, closes " + vote.closesOn : "Closed",
+      voteLeaderName: leader ? ((db.product(leader.cat) || {}).name || leader.cat) : "No candidates",
+      voteBlurb: vote.open
+        ? "Closing the vote pauses voting and switches on the half-price rule for the leader. The storefront picks it up immediately."
+        : "The winner's offsale rule is live in Discounts. Reopen by adding a new cycle name and switching the vote back on.",
+      voteTotalLabel: voteTotal.toLocaleString() + " / " + Number(vote.target).toLocaleString(),
+      voteProgress: Math.min(100, Math.round((voteTotal / (Number(vote.target) || 1)) * 100)) + "%",
+      closeVoteLabel: vote.open ? "Close vote & stage offsale" : "Reopen voting",
+      closeVote: () => this.edit((x) => {
+        if (x.votes.open) {
+          x.votes.open = false;
+          const win = (x.votes.options || []).slice().sort((a, b) => b.count - a.count)[0];
+          if (win) {
+            const existing = x.discounts.find((y) => y.id === "d-vote");
+            const rule = {
+              id: existing ? existing.id : this.db.uid("d"),
+              code: "", label: "Offsale winner, " + win.cat + " half price",
+              kind: "percent", value: 50, scope: "product", scopeValue: win.cat,
+              minSubtotal: 0, minDistinct: 0, payMethod: "", stackable: false,
+              auto: true, uses: existing ? existing.uses : 0, maxUses: null,
+              startsAt: this.db.today(), endsAt: "", live: true,
+            };
+            if (existing) Object.assign(existing, rule);
+            else x.discounts.unshift(rule);
+          }
+        } else {
+          x.votes.open = true;
+          const r = x.discounts.find((y) => y.label.startsWith("Offsale winner"));
+          if (r) r.live = false;
+        }
+      }),
+      voteHint: "Votes are counted in the votes table. Editing a count here overwrites the tally.",
+
+      /* settings */
+      settingGroups: [
+        {
+          title: "Storefront", subtitle: "Names and notices shown to customers.", isDb: false,
+          fields: [
+            setting("storeName", "Store name", "Header, invoices, order emails."),
+            setting("dispatchCutoff", "Dispatch cutoff", "Same-day dispatch before this time."),
+            setting("showStockCounts", "Show stock counts", "Print remaining units on product cards.", { toggle: true, onLabel: "Shown", offLabel: "Hidden" }),
+          ],
+        },
+        {
+          title: "Crypto wallets", subtitle: "The receiving address shown on the payment screen. Leave it blank and customers are told to contact support before sending.", isDb: false,
+          fields: [
+            walletSetting("EVM", "Receiving address", "One address, used for ETH and USDT on Ethereum, Arbitrum, Base, Optimism and Polygon."),
+            setting("walletHoldMinutes", "Stock hold", "Minutes the vials stay reserved while a transfer confirms.", { type: "number" }),
+          ],
+        },
+        {
+          title: "Pricing & shipping", subtitle: "Defaults the discount engine builds on.", isDb: false,
+          fields: [
+            setting("currency", "Currency", "Three-letter code."),
+            setting("shippingFlat", "Cold chain shipping", "Flat rate per order, in store currency.", { type: "number" }),
+            setting("freeShippingOver", "Free shipping over", "Set 0 to always charge shipping.", { type: "number" }),
+            setting("cryptoDiscount", "Crypto discount %", "Keep in step with the automatic crypto rule.", { type: "number" }),
+            setting("lowStockThreshold", "Low stock threshold", "Default for new products.", { type: "number" }),
+            setting("holdOverStock", "Cap cart at stock", "Stop customers ordering more than you hold.", { toggle: true, onLabel: "Capped", offLabel: "Uncapped" }),
+          ],
+        },
+        {
+          title: "Footer", subtitle: "Text in the dark band at the bottom of every page. Its link columns live under Content Footer links.", isDb: false,
+          fields: [
+            foot("blurb", "Short description", "Sits under the wordmark."),
+            foot("newsletterTitle", "Newsletter heading", "Above the email field."),
+            foot("newsletterNote", "Newsletter note", "The line of copy beside it."),
+            foot("payments", "Payment badges", "Comma separated, e.g. ETH, USDT, Base."),
+            foot("legal", "Legal line", "Bottom rule, beside the policy links."),
+          ],
+        },
+        {
+          title: "Telegram live chat", subtitle: "The Help Center chat panel talks to a bot. Create one with @BotFather, add it to your support channel as an admin, and paste the token and channel id here.", isDb: false,
+          fields: [
+            tgSetting("enabled", "Live chat", "Show the chat panel on the Help Center page.", { toggle: true, onLabel: "Shown", offLabel: "Hidden" }),
+            tgSetting("botToken", "Bot token", "From @BotFather, e.g. 8123456789:AAH...", { placeholder: "8123456789:AAH..." }),
+            tgSetting("chatId", "Channel or chat id", "Numeric id of the channel the bot posts into, e.g. -1002233445566.", { placeholder: "-1002233445566" }),
+            tgSetting("adminHandle", "Support handle", "Shown to customers beside each reply."),
+            tgSetting("greeting", "Opening line", "Shown before the first message is sent."),
+            tgSetting("pollSeconds", "Reply check, seconds", "How often the page looks for new replies.", { type: "number" }),
+          ],
+        },
+        {
+          title: "Supabase", subtitle: "With keys in place every page reads and writes Postgres instead of browser storage.", isDb: true,
+          fields: [
+            setting("supabaseUrl", "Project URL", "https://xxxx.supabase.co", { placeholder: "https://xxxx.supabase.co" }),
+            setting("supabaseAnonKey", "Anon key", "Public key, server writes use the service role.", { placeholder: "eyJhbGciOi..." }),
+          ],
+        },
+      ],
+      testConnection: async () => {
+        const res = await db.pull();
+        this.setState({ dirty: false, confirm: res.ok ? "db-ok" : "db-local" });
+      },
+      copyLabel: this.state.copied ? "Schema copied" : "Copy SQL schema",
+      copySchema: () => {
+        const sql = "-- Morpheps schema: see the comment block at the top of store-data.js\n-- products, discounts, orders, customers, lab_reports, reviews, votes, content";
+        try { navigator.clipboard.writeText(sql); } catch (e) {}
+        this.setState({ copied: true });
+        setTimeout(() => this.setState({ copied: false }), 2200);
+      },
+      dbStatus: db.supabaseConfigured
+        ? (this.state.confirm === "db-ok" ? "Connected. Tables pulled into the dashboard." : "Keys saved. Press Test connection to pull the live tables.")
+        : "Local mode. Everything you edit is stored in this browser under " + db.KEY + ". Paste a project URL and anon key to switch to Postgres.",
+    };
+  }
+}
+</script>
+</body>
+</html>

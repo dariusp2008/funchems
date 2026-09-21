@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="./store-data.js"></script>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', Helvetica, sans-serif; display: flex; flex-direction: column; background: oklch(0.985 0.002 240); border: 1px solid {{ border }}; border-radius: 2px; overflow: hidden; height: 100%;" style-hover="border-color: oklch(0.72 0.008 250);">
+  <a href="{{ href }}" style="position: relative; display: block; aspect-ratio: 1 / 1; background-color: oklch(0.96 0.003 250); background-image: {{ image }}; background-size: cover; background-position: center; overflow: hidden;">
+    <sc-if value="{{ hasBadge }}" hint-placeholder-val="{{ true }}">
+      <span style="position: absolute; top: 12px; left: 12px; padding: 4px 8px; background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240); font-size: 11px; letter-spacing: 0.06em; font-weight: 500;">{{ badge }}</span>
+    </sc-if>
+    <sc-if value="{{ isOut }}" hint-placeholder-val="{{ false }}">
+      <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: oklch(0.93 0.005 250 / 0.72); font-size: 13px; color: oklch(0.35 0.008 250);">Out of stock</span>
+    </sc-if>
+  </a>
+
+  <div style="display: flex; flex-direction: column; gap: 6px; padding: 16px 16px 0; flex: 1;">
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
+      <a href="{{ href }}" style="font-size: 14.5px; font-weight: 500; letter-spacing: -0.005em; line-height: 1.3; min-height: 2.6em;">{{ name }}</a>
+      <button onClick="{{ toggleWish }}" title="Save for later" style="width: 26px; height: 26px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 1px solid {{ wishBorder }}; border-radius: 2px; background: {{ wishBg }}; cursor: pointer; color: {{ wishColor }};">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="{{ wishFill }}" stroke="currentColor" stroke-width="1.6"><path d="M12 20s-7.5-4.7-7.5-9.4A4.2 4.2 0 0 1 12 8a4.2 4.2 0 0 1 7.5 2.6C19.5 15.3 12 20 12 20z"></path></svg>
+      </button>
+    </div>
+    <span style="font-size: 11.5px; color: oklch(0.56 0.008 250);">{{ sizeLine }}</span>
+    <sc-if value="{{ hasLot }}" hint-placeholder-val="{{ true }}">
+      <span style="font-size: 11.5px; color: oklch(0.56 0.008 250);">Lot <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; color: oklch(0.42 0.008 250);">{{ lot }}</span>, {{ purity }} assayed</span>
+    </sc-if>
+    <div style="display: flex; align-items: baseline; gap: 9px; margin-top: 6px;">
+      <span style="font-size: 12.5px; color: oklch(0.56 0.008 250);">{{ fromLabel }}</span>
+      <span style="font-size: 17px; font-weight: 500;">{{ price }}</span>
+      <sc-if value="{{ hasList }}" hint-placeholder-val="{{ true }}">
+        <span style="font-size: 12.5px; color: oklch(0.62 0.006 250); text-decoration: line-through;">{{ list }}</span>
+      </sc-if>
+    </div>
+    <span style="font-size: 11.5px; color: {{ stockColor }};">{{ stockLabel }}</span>
+  </div>
+
+  <a href="{{ href }}" style="display: flex; align-items: center; justify-content: center; margin: 16px; margin-top: 14px; height: 40px; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; color: oklch(0.3 0.008 250); font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.19 0.008 250); border-color: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240);">{{ btnLabel }}</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:300,&quot;height&quot;:420},&quot;cat&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;TR5&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { added: 0 };
+
+  componentDidMount() {
+    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Morpheps) bind();
+    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+  }
+  componentWillUnmount() {
+    if (this.unsub) this.unsub();
+    if (this.poll) clearInterval(this.poll);
+    if (this.t) clearTimeout(this.t);
+  }
+
+  renderVals() {
+    const db = window.Morpheps;
+    const cat = this.props.cat;
+    if (!db || !cat) return {};
+    const p = db.product(cat);
+    if (!p) return { name: cat, dose: "", price: "", stockLabel: "Unknown product", btnLabel: "Unavailable" };
+
+    const variants = db.variantsOf(p.cat);
+    const many = variants.length > 1;
+    const prices = variants.map((v) => db.effectivePrice(v));
+    const unit = many ? Math.min.apply(null, prices) : db.effectivePrice(p);
+    const off = db.discountPct(p);
+    const state = db.stockLabel(p);
+    const out = many ? !variants.some((v) => v.stock > 0) : p.stock <= 0;
+    const wished = db.cart.wished(p.cat);
+
+    const sizes = variants.map((v) => (v.doseValue ? v.doseValue + " " + String(v.doseUnit).split("/")[0] : v.dose));
+    const sizeLine = many
+      ? sizes.length + " sizes, " + sizes[0] + " to " + sizes[sizes.length - 1]
+      : p.cat + ", " + p.dose;
+
+    return {
+      href: "Product-Detail.dc.html?p=" + p.cat,
+      image: (p.images || [])[0] ? "url(" + p.images[0] + ")" : "none",
+      name: p.name,
+      sizeLine,
+      fromLabel: many ? "from" : "",
+      hasLot: !many && Boolean(p.lot && p.purity),
+      lot: p.lot,
+      purity: p.purity,
+      price: db.money(unit),
+      list: db.money(p.list),
+      hasList: !many && p.list > unit,
+      hasBadge: off > 0,
+      badge: "−" + off + "%",
+      isOut: out,
+      border: out ? "oklch(0.93 0.004 250)" : "oklch(0.9 0.004 250)",
+      stockLabel: out ? "Out of stock" : many ? variants.filter((v) => v.stock > 0).length + " of " + variants.length + " sizes in stock" : (db.data.settings.showStockCounts ? state.label : "In stock"),
+      stockColor: state.tone === "out" ? "oklch(0.5 0.13 25)" : state.tone === "low" ? "oklch(0.55 0.14 60)" : "oklch(0.5 0.11 145)",
+
+      wishFill: wished ? "oklch(0.40 0.105 262)" : "none",
+      wishColor: wished ? "oklch(0.40 0.105 262)" : "oklch(0.6 0.006 250)",
+      wishBg: wished ? "oklch(0.96 0.02 24)" : "transparent",
+      wishBorder: wished ? "oklch(0.80 0.05 262)" : "oklch(0.9 0.004 250)",
+      toggleWish: () => db.cart.toggleWish(p.cat),
+
+      btnLabel: many ? "Choose a size" : "View product",
+    };
+  }
+}
+</script>
+</body>
+</html>

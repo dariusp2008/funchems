@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="./store-data.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: oklch(0.972 0.003 240); }
+  * { box-sizing: border-box; }
+  a { color: oklch(0.19 0.008 250); text-decoration: none; }
+  a:hover { color: oklch(0.40 0.105 262); }
+  input, select, textarea { font-family: inherit; }
+  @keyframes marquee-left { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', Helvetica, sans-serif; color: oklch(0.19 0.008 250); background: oklch(0.972 0.003 240); min-height: 100vh; -webkit-font-smoothing: antialiased;">
+
+  <dc-import name="StoreChrome" active="Reviews" hint-size="100%,222px"></dc-import>
+
+  <section style="max-width: 1400px; margin: 0 auto; padding: 34px clamp(16px, 3.5vw, 40px) 0;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 56px; align-items: end; padding-bottom: 32px; border-bottom: 1px solid oklch(0.9 0.004 250);">
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">{{ countLabel }}</span>
+        <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 48px; line-height: 1; letter-spacing: -0.02em; font-weight: 600;">Reviews &amp; customer results</h1>
+        <p style="margin: 0; max-width: 64ch; font-size: 14px; line-height: 1.65; color: oklch(0.46 0.008 250); text-wrap: pretty;">Only orders we can match to a lot number are published. Each entry names the compound and the lot, so a review can be read against the assay it belongs to.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; align-items: baseline; gap: 14px;">
+          <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 60px; line-height: 0.9; letter-spacing: -0.03em;">{{ avg }}</span>
+          <div style="display: flex; flex-direction: column; gap: 5px;">
+            <div style="display: flex; gap: 3px;">
+              <sc-for list="{{ starRow }}" as="s" hint-placeholder-count="5">
+                <span style="width: 9px; height: 9px; background: {{ s.fill }}; display: block; transform: rotate(45deg);"></span>
+              </sc-for>
+            </div>
+            <span style="font-size: 12.5px; color: oklch(0.52 0.008 250);">{{ avgNote }}</span>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <sc-for list="{{ distribution }}" as="d" hint-placeholder-count="5">
+            <div style="display: grid; grid-template-columns: 20px minmax(0, 1fr) 44px; gap: 12px; align-items: center;">
+              <span style="font-size: 12px; color: oklch(0.55 0.008 250);">{{ d.label }}</span>
+              <span style="height: 4px; background: oklch(0.9 0.004 250); display: block; position: relative; overflow: hidden;">
+                <span style="position: absolute; top: 0; bottom: 0; left: 0; width: {{ d.width }}; background: oklch(0.40 0.105 262); display: block;"></span>
+              </span>
+              <span style="font-size: 12px; color: oklch(0.55 0.008 250); text-align: right;">{{ d.pct }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="max-width: 1400px; margin: 0 auto; padding: 30px clamp(16px, 3.5vw, 40px) 0;">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+        <button onClick="{{ t.pick }}" style="height: 36px; padding: 0 16px; border: 1px solid {{ t.border }}; border-radius: 2px; background: {{ t.bg }}; color: {{ t.color }}; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="border-color: oklch(0.40 0.105 262);">{{ t.label }}</button>
+      </sc-for>
+      <select value="{{ productFilter }}" onChange="{{ setProductFilter }}" style="height: 36px; padding: 0 10px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 12.5px; color: oklch(0.3 0.008 250); outline: none;">
+        <option value="">All compounds</option>
+        <sc-for list="{{ productOptions }}" as="o" hint-placeholder-count="6">
+          <option value="{{ o.cat }}">{{ o.label }}</option>
+        </sc-for>
+      </select>
+      <button onClick="{{ openForm }}" style="margin-left: auto; display: flex; align-items: center; height: 36px; padding: 0 18px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262);">{{ formToggleLabel }}</button>
+    </div>
+
+    <sc-if value="{{ formOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 18px; padding: 28px; margin-bottom: 24px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.86 0.006 250); border-radius: 2px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 26px;">Submit a result</span>
+          <span style="font-size: 12.5px; color: oklch(0.55 0.008 250);">Held for review before publishing. Approved entries earn store credit.</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px;">
+          <sc-for list="{{ formFields }}" as="f" hint-placeholder-count="4">
+            <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+              <label style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.56 0.008 250);">{{ f.label }}</label>
+              <sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}">
+                <select value="{{ f.value }}" onChange="{{ f.change }}" style="height: 42px; padding: 0 10px; border: 1px solid {{ f.border }}; border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13.5px; outline: none;">
+                  <sc-for list="{{ f.options }}" as="o" hint-placeholder-count="6">
+                    <option value="{{ o.value }}">{{ o.label }}</option>
+                  </sc-for>
+                </select>
+              </sc-if>
+              <sc-if value="{{ f.isPlain }}" hint-placeholder-val="{{ true }}">
+                <input type="{{ f.type }}" value="{{ f.value }}" onChange="{{ f.change }}" placeholder="{{ f.placeholder }}" style="height: 42px; padding: 0 12px; border: 1px solid {{ f.border }}; border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13.5px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);" />
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.56 0.008 250);">Your result</label>
+          <textarea value="{{ body }}" onChange="{{ setBody }}" rows="4" placeholder="What you ordered, how it arrived, what the assay looked like against the printed lot." style="padding: 12px; border: 1px solid {{ bodyBorder }}; border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13.5px; line-height: 1.6; resize: vertical; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);"></textarea>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+          <button onClick="{{ submit }}" style="height: 46px; padding: 0 26px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px;" style-hover="background: oklch(0.40 0.105 262);">{{ submitLabel }}</button>
+          <span style="font-size: 12.5px; line-height: 1.5; color: {{ noteColor }};">{{ formNote }}</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px;">
+      <sc-for list="{{ reviews }}" as="r" hint-placeholder-count="6">
+        <div style="display: flex; flex-direction: column; gap: 16px; padding: 26px 28px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250); border-radius: 2px;">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <div style="display: flex; gap: 3px;">
+              <sc-for list="{{ r.stars }}" as="s" hint-placeholder-count="5">
+                <span style="width: 8px; height: 8px; background: {{ s.fill }}; display: block; transform: rotate(45deg);"></span>
+              </sc-for>
+            </div>
+            <span style="font-size: 13px; font-weight: 500; color: oklch(0.45 0.11 145);">Verified order</span>
+            <span style="margin-left: auto; font-size: 12.5px; color: oklch(0.6 0.006 250);">{{ r.date }}</span>
+          </div>
+          <p style="margin: 0; font-size: 14px; line-height: 1.65; color: oklch(0.26 0.008 250); text-wrap: pretty;">{{ r.body }}</p>
+          <sc-if value="{{ r.hasPhotos }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; gap: 8px;">
+              <sc-for list="{{ r.photos }}" as="ph" hint-placeholder-count="2">
+                <div style="position: relative; width: 76px; height: 76px; border: 1px solid oklch(0.91 0.004 250); overflow: hidden; background-color: oklch(0.95 0.004 250); background-image: {{ ph.image }}; background-size: cover; background-position: center;"></div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <div style="display: flex; align-items: center; gap: 14px; padding-top: 14px; border-top: 1px solid oklch(0.94 0.004 250); font-size: 11px; color: oklch(0.55 0.008 250); flex-wrap: wrap;">
+            <span style="display: flex; align-items: center; gap: 9px; color: oklch(0.3 0.008 250);">
+              <span style="width: 26px; height: 26px; border-radius: 50%; background: {{ r.avatarBg }}; background-image: {{ r.avatarImage }}; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Sans', Helvetica, sans-serif; font-size: 10.5px; font-weight: 600; color: oklch(0.985 0.002 240); flex: none;">{{ r.initials }}</span>
+              {{ r.author }}
+            </span>
+            <span style="width: 3px; height: 3px; background: oklch(0.78 0.006 250); display: block; transform: rotate(45deg);"></span>
+            <a href="{{ r.href }}" style="color: oklch(0.40 0.105 262);">{{ r.product }}</a>
+            <span style="margin-left: auto;">lot {{ r.lot }}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 80px 20px; border: 1px dashed oklch(0.87 0.006 250);">
+        <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 28px; color: oklch(0.42 0.008 250);">No published results here yet</span>
+        <span style="font-size: 13.5px; color: oklch(0.55 0.008 250);">Be the first to submit one for this compound.</span>
+      </div>
+    </sc-if>
+  </section>
+
+  <section style="max-width: 1400px; margin: 0 auto; padding: 56px clamp(16px, 3.5vw, 40px) 68px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 34px clamp(16px, 3.5vw, 40px); background: oklch(0.19 0.008 250); border-radius: 2px; color: oklch(0.972 0.003 240); flex-wrap: wrap;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <h2 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 30px; line-height: 1.05; letter-spacing: -0.015em; font-weight: 600;">Submit a result, get store credit</h2>
+        <span style="font-size: 13.5px; color: oklch(0.75 0.006 250);">Photographs and dates optional. Lot number required, that is what makes it verifiable.</span>
+      </div>
+      <button onClick="{{ openForm }}" style="display: flex; align-items: center; height: 46px; padding: 0 28px; border: 0; border-radius: 2px; background: oklch(0.972 0.003 240); color: oklch(0.19 0.008 250); cursor: pointer; font-family: inherit; font-size: 13px;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">Write a review</button>
+    </div>
+  </section>
+
+  <dc-import name="SiteFooter" hint-size="100%,540px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    tab: 0, productFilter: "", formOpen: false, sent: false, error: "",
+    form: { author: "", productCat: "", lot: "", stars: "5" }, body: "",
+  };
+
+  componentDidMount() {
+    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Morpheps) bind();
+    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+  }
+  componentWillUnmount() {
+    if (this.unsub) this.unsub();
+    if (this.poll) clearInterval(this.poll);
+  }
+
+  stars(n) {
+    return [0, 1, 2, 3, 4].map((i) => ({ fill: i < n ? "oklch(0.40 0.105 262)" : "oklch(0.86 0.006 250)" }));
+  }
+
+  renderVals() {
+    const db = window.Morpheps;
+    if (!db) return { reviews: [], tabs: [], distribution: [], starRow: [], formFields: [] };
+    const live = db.data.reviews.filter((r) => r.live);
+    const products = db.products({ liveOnly: true });
+
+    let list = live.filter((r) => !this.state.productFilter || r.productCat === this.state.productFilter);
+    if (this.state.tab === 0) list = list.slice().sort((a, b) => String(b.date).localeCompare(String(a.date)));
+    if (this.state.tab === 1) list = list.slice().sort((a, b) => b.stars - a.stars);
+    if (this.state.tab === 2) list = list.filter((r) => (r.images || []).length > 0);
+    if (this.state.tab === 3) list = list.filter((r) => { const p = db.product(r.productCat); return p && p.category === "compound"; });
+
+    const avgNum = live.length ? live.reduce((t, r) => t + Number(r.stars), 0) / live.length : 0;
+    const counts = [5, 4, 3, 2, 1].map((n) => live.filter((r) => Number(r.stars) === n).length);
+    const total = live.length || 1;
+
+    const err = (key) => this.state.error && !String(this.state.form[key]).trim();
+    const setForm = (key) => (e) => { const v = e.target.value; this.setState((s) => ({ form: { ...s.form, [key]: v }, sent: false })); };
+    const field = (key, label, opts) => {
+      const o = opts || {};
+      return {
+        label,
+        type: o.type || "text",
+        placeholder: o.placeholder || "",
+        value: this.state.form[key],
+        isSelect: Boolean(o.options),
+        isPlain: !o.options,
+        options: o.options || [],
+        border: err(key) ? "oklch(0.78 0.11 27)" : "oklch(0.88 0.004 250)",
+        change: setForm(key),
+      };
+    };
+
+    return {
+      countLabel: live.length + " verified submission" + (live.length === 1 ? "" : "s"),
+      avg: avgNum ? avgNum.toFixed(1) : "",
+      starRow: this.stars(Math.round(avgNum)),
+      avgNote: "across " + live.length + " verified order" + (live.length === 1 ? "" : "s"),
+      distribution: [5, 4, 3, 2, 1].map((n, i) => {
+        const pct = Math.round((counts[i] / total) * 100);
+        return { label: String(n), pct: pct + "%", width: pct + "%" };
+      }),
+
+      tabs: ["Most recent", "Highest rated", "With photos", "Compounds only"].map((label, i) => ({
+        label,
+        pick: () => this.setState({ tab: i }),
+        bg: i === this.state.tab ? "oklch(0.19 0.008 250)" : "oklch(0.985 0.002 240)",
+        color: i === this.state.tab ? "oklch(0.985 0.002 240)" : "oklch(0.35 0.008 250)",
+        border: i === this.state.tab ? "oklch(0.19 0.008 250)" : "oklch(0.88 0.004 250)",
+      })),
+      productFilter: this.state.productFilter,
+      setProductFilter: (e) => this.setState({ productFilter: e.target.value }),
+      productOptions: products.map((p) => ({ cat: p.cat, label: p.cat + ", " + p.name })),
+
+      isEmpty: list.length === 0,
+      reviews: list.map((r) => {
+        const p = db.product(r.productCat);
+        return {
+          stars: this.stars(Number(r.stars)),
+          date: r.date ? new Date(r.date + "T00:00:00").toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) : "",
+          body: r.body,
+          author: r.author || "Verified customer",
+          avatarImage: r.avatar ? "url(" + r.avatar + ")" : "none",
+          avatarBg: r.avatar ? "oklch(0.9 0.004 250)" : "oklch(0.40 0.105 262)",
+          initials: r.avatar ? "" : (r.author || "VC").split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase(),
+          product: (p && p.name) || r.productCat,
+          href: "Product-Detail.dc.html?p=" + r.productCat,
+          lot: r.lot || "",
+          hasPhotos: (r.images || []).length > 0,
+          photos: (r.images || []).map((src) => ({ image: "url(" + src + ")" })),
+        };
+      }),
+
+      formOpen: this.state.formOpen,
+      formToggleLabel: this.state.formOpen ? "Close form" : "Submit a result",
+      openForm: () => this.setState((s) => ({ formOpen: !s.formOpen })),
+      formFields: [
+        field("author", "Your name or initials", { placeholder: "M. Reinholt" }),
+        field("productCat", "Compound", { options: [{ value: "", label: "Choose one" }].concat(products.map((p) => ({ value: p.cat, label: p.cat + ", " + p.name }))) }),
+        field("lot", "Lot number", { placeholder: "26-0814" }),
+        field("stars", "Rating", { options: [5, 4, 3, 2, 1].map((n) => ({ value: String(n), label: n + " star" + (n === 1 ? "" : "s") })) }),
+      ],
+      body: this.state.body,
+      setBody: (e) => this.setState({ body: e.target.value, sent: false }),
+      bodyBorder: this.state.error && !this.state.body.trim() ? "oklch(0.78 0.11 27)" : "oklch(0.88 0.004 250)",
+      submitLabel: this.state.sent ? "Submitted" : "Submit for review",
+      submit: () => {
+        const f = this.state.form;
+        if (!f.author.trim() || !f.productCat || !f.lot.trim() || !this.state.body.trim()) {
+          this.setState({ error: "missing" });
+          return;
+        }
+        db.edit((x) => {
+          x.reviews.unshift({
+            id: db.uid("rv"), productCat: f.productCat, author: f.author.trim(),
+            lot: f.lot.trim(), stars: Number(f.stars), date: db.today(),
+            body: this.state.body.trim(), images: [], live: false,
+          });
+        });
+        this.setState({ sent: true, error: "", body: "", form: { author: "", productCat: "", lot: "", stars: "5" } });
+      },
+      formNote: this.state.error === "missing"
+        ? "Name, compound, lot number and the result text are all required."
+        : this.state.sent
+          ? "Received. It appears here once we match it to an order, usually within a day."
+          : "Your lot number is checked against our dispatch records before publishing.",
+      noteColor: this.state.error === "missing" ? "oklch(0.5 0.13 27)"
+        : this.state.sent ? "oklch(0.45 0.11 145)" : "oklch(0.55 0.008 250)",
+    };
+  }
+}
+</script>
+</body>
+</html>

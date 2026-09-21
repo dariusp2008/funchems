@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="./store-data.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: oklch(0.972 0.003 240); }
+  * { box-sizing: border-box; }
+  a { color: oklch(0.19 0.008 250); text-decoration: none; }
+  a:hover { color: oklch(0.40 0.105 262); }
+  input, select { font-family: inherit; }
+  @keyframes marquee-left { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', Helvetica, sans-serif; color: oklch(0.19 0.008 250); background: oklch(0.972 0.003 240); min-height: 100vh; -webkit-font-smoothing: antialiased;">
+
+  <dc-import name="StoreChrome" active="Shop" hint-size="100%,222px"></dc-import>
+
+  <div style="max-width: 1400px; margin: 0 auto; padding: 26px clamp(16px, 3.5vw, 40px) 0; display: flex; align-items: center; gap: 10px; font-size: 13px; color: oklch(0.58 0.006 250);">
+    <a href="Morpheps.dc.html" style="color: oklch(0.58 0.006 250);">Home</a><span>/</span><span style="color: oklch(0.3 0.008 250);">Shop</span>
+  </div>
+
+  <section style="max-width: 1400px; margin: 0 auto; padding: 18px clamp(16px, 3.5vw, 40px) 0;">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 24px; border-bottom: 1px solid oklch(0.9 0.004 250); flex-wrap: wrap;">
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 34px; line-height: 1.05; letter-spacing: -0.02em; font-weight: 600;">All compounds</h1>
+        <span style="font-size: 13.5px; color: oklch(0.5 0.008 250);">{{ countLine }}. Prices are per kit of 10 vials, <a href="Pricelist.dc.html" style="color: oklch(0.40 0.105 262);">tier pricing is on the pricelist</a>.</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 13px; color: oklch(0.58 0.006 250);">Sort</span>
+        <select value="{{ sort }}" onChange="{{ setSort }}" style="height: 38px; padding: 0 12px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 13px; color: oklch(0.25 0.008 250); outline: none;">
+          <option value="popular">Most popular</option>
+          <option value="price-asc">Price, low to high</option>
+          <option value="price-desc">Price, high to low</option>
+          <option value="newest">Newest batch</option>
+          <option value="discount">Biggest discount</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section style="max-width: 1400px; margin: 0 auto; padding: 32px clamp(16px, 3.5vw, 40px) 68px; display: flex; flex-wrap: wrap; gap: 40px; align-items: start;">
+
+    <aside style="flex: 0 1 236px; min-width: min(100%, 200px); display: flex; flex-direction: column; gap: 26px; position: sticky; top: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <input type="text" value="{{ query }}" onChange="{{ setQuery }}" placeholder="Filter by name or cat. no." style="height: 38px; padding: 0 11px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 13px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);" />
+        <sc-if value="{{ hasActive }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ clearAll }}" style="height: 32px; border: 1px solid oklch(0.86 0.03 25); border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 12.5px; color: oklch(0.5 0.13 25);" style-hover="background: oklch(0.40 0.105 262); border-color: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">Clear {{ activeCount }} filters</button>
+        </sc-if>
+      </div>
+
+      <sc-for list="{{ filters }}" as="group" hint-placeholder-count="3">
+        <div style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 24px; border-bottom: 1px solid oklch(0.9 0.004 250);">
+          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">{{ group.title }}</span>
+          <div style="display: flex; flex-direction: column; gap: 9px; max-height: 268px; overflow-y: auto;">
+            <sc-for list="{{ group.items }}" as="opt" hint-placeholder-count="4">
+              <button onClick="{{ opt.toggle }}" style="display: flex; align-items: center; gap: 10px; min-height: 30px; padding: 0; border: 0; background: transparent; cursor: pointer; font-family: inherit; font-size: 13.5px; color: {{ opt.color }}; text-align: left;" style-hover="color: oklch(0.40 0.105 262);">
+                <span style="width: 14px; height: 14px; flex-shrink: 0; border: 1px solid {{ opt.boxBorder }}; background: {{ opt.boxBg }}; border-radius: 1px; display: flex; align-items: center; justify-content: center;">
+                  <span style="width: 6px; height: 6px; background: {{ opt.dot }}; display: block;"></span>
+                </span>
+                <span style="flex: 1;">{{ opt.label }}</span>
+                <span style="font-size: 12px; color: oklch(0.65 0.006 250);">{{ opt.count }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">Price</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <input type="number" value="{{ min }}" onChange="{{ setMin }}" style="width: 100%; height: 36px; padding: 0 10px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 13px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);" />
+          <span style="color: oklch(0.65 0.006 250);"></span>
+          <input type="number" value="{{ max }}" onChange="{{ setMax }}" style="width: 100%; height: 36px; padding: 0 10px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 13px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);" />
+        </div>
+        <button onClick="{{ toggleStock }}" style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0; border: 0; background: transparent; cursor: pointer; font-family: inherit; font-size: 13.5px; color: {{ stockColor }};" style-hover="color: oklch(0.40 0.105 262);">
+          <span style="width: 14px; height: 14px; flex-shrink: 0; border: 1px solid {{ stockBorder }}; background: {{ stockBg }}; border-radius: 1px; display: flex; align-items: center; justify-content: center;">
+            <span style="width: 6px; height: 6px; background: {{ stockDot }}; display: block;"></span>
+          </span>In stock only
+        </button>
+      </div>
+    </aside>
+
+    <div style="flex: 1 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 32px;">
+      <sc-if value="{{ hasResults }}" hint-placeholder-val="{{ true }}">
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 232px), 1fr)); gap: 20px;">
+          <sc-for list="{{ pageItems }}" as="p" hint-placeholder-count="12">
+            <dc-import name="ProductCard" cat="{{ p.cat }}" hint-size="100%,404px"></dc-import>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 88px 20px; border: 1px dashed oklch(0.87 0.006 250);">
+          <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 30px; color: oklch(0.4 0.008 250);">No compounds match</span>
+          <span style="font-size: 13.5px; color: oklch(0.55 0.008 250);">Loosen a filter, or widen the price range.</span>
+          <button onClick="{{ clearAll }}" style="height: 42px; padding: 0 22px; margin-top: 6px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262);">Reset filters</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ hasPages }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-top: 28px; border-top: 1px solid oklch(0.9 0.004 250); flex-wrap: wrap;">
+          <span style="font-size: 13px; color: oklch(0.55 0.008 250);">{{ showing }}</span>
+          <div style="display: flex; gap: 6px;">
+            <sc-for list="{{ pages }}" as="pg" hint-placeholder-count="4">
+              <button onClick="{{ pg.go }}" style="display: flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; padding: 0 10px; border: 1px solid {{ pg.border }}; border-radius: 2px; background: {{ pg.bg }}; color: {{ pg.color }}; cursor: pointer; font-family: inherit; font-size: 13px;" style-hover="border-color: oklch(0.19 0.008 250);">{{ pg.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </section>
+
+  <dc-import name="SiteFooter" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { cats: {}, doses: {}, query: "", sort: "popular", min: 0, max: null, inStock: false, page: 0 };
+
+  ceiling() {
+    const db = window.Morpheps;
+    if (!db) return 1000;
+    const prices = db.products({ liveOnly: true }).map((p) => db.effectivePrice(p));
+    return Math.ceil(Math.max.apply(null, prices) / 50) * 50;
+  }
+
+  componentDidMount() {
+    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Morpheps) bind();
+    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+    const q = new URLSearchParams(window.location.search).get("q");
+    if (q) this.setState({ query: q });
+  }
+  componentWillUnmount() {
+    if (this.unsub) this.unsub();
+    if (this.poll) clearInterval(this.poll);
+  }
+
+  doseKey(p) {
+    if (String(p.dose).includes("+")) return "Blend dose";
+    const v = parseFloat(p.doseValue);
+    if (isNaN(v) || !String(p.doseUnit).startsWith("mg")) return "Other";
+    return v + " mg";
+  }
+
+  matches(p) {
+    const s = this.state;
+    const cats = Object.keys(s.cats).filter((k) => s.cats[k]);
+    const doses = Object.keys(s.doses).filter((k) => s.doses[k]);
+    const unit = window.Morpheps.effectivePrice(p);
+    if (cats.length && !cats.includes(p.category)) return false;
+    if (doses.length && !doses.includes(this.doseKey(p))) return false;
+    if (s.query.trim() && !(p.name + " " + p.cat + " " + p.dose).toLowerCase().includes(s.query.trim().toLowerCase())) return false;
+    const cap = s.max === null ? this.ceiling() : Number(s.max);
+    if (unit < Number(s.min) || unit > cap) return false;
+    if (s.inStock && p.stock <= 0) return false;
+    return true;
+  }
+
+  renderVals() {
+    const db = window.Morpheps;
+    if (!db) return { filters: [], pageItems: [], pages: [] };
+    const all = db.products({ liveOnly: true });
+    // Cards are per compound, not per strength: a family shows if any of its sizes match.
+    let list = db.families({ liveOnly: true }).filter((f) => f.variants.some((p) => this.matches(p)));
+
+    if (this.state.sort === "price-asc") list = list.slice().sort((a, b) => a.from - b.from);
+    if (this.state.sort === "price-desc") list = list.slice().sort((a, b) => b.from - a.from);
+    if (this.state.sort === "discount") list = list.slice().sort((a, b) => db.discountPct(b.variants[0]) - db.discountPct(a.variants[0]));
+    if (this.state.sort === "newest") list = list.slice().sort((a, b) => String(b.variants[0].lot).localeCompare(String(a.variants[0].lot)));
+
+    const perPage = 12;
+    const pageCount = Math.max(1, Math.ceil(list.length / perPage));
+    const page = Math.min(this.state.page, pageCount - 1);
+    const items = list.slice(page * perPage, page * perPage + perPage);
+
+    const toggle = (bucket, key) => () => this.setState((s) => ({ [bucket]: { ...s[bucket], [key]: !s[bucket][key] }, page: 0 }));
+    const chip = (bucket, key, label, count) => {
+      const on = Boolean(this.state[bucket][key]);
+      return {
+        label, count,
+        color: on ? "oklch(0.19 0.008 250)" : "oklch(0.42 0.008 250)",
+        boxBorder: on ? "oklch(0.40 0.105 262)" : "oklch(0.82 0.006 250)",
+        boxBg: on ? "oklch(0.40 0.105 262)" : "oklch(0.985 0.002 240)",
+        dot: on ? "oklch(0.985 0.002 240)" : "transparent",
+        toggle: toggle(bucket, key),
+      };
+    };
+
+    const catCounts = {};
+    const doseCounts = {};
+    db.families({ liveOnly: true }).forEach((f) => {
+      const cats = {};
+      const doses = {};
+      f.variants.forEach((p) => { cats[p.category] = true; doses[this.doseKey(p)] = true; });
+      Object.keys(cats).forEach((k) => { catCounts[k] = (catCounts[k] || 0) + 1; });
+      Object.keys(doses).forEach((k) => { doseCounts[k] = (doseCounts[k] || 0) + 1; });
+    });
+
+    const cap = this.ceiling();
+    const activeCount = ["cats", "doses"].reduce((t, b) => t + Object.values(this.state[b]).filter(Boolean).length, 0)
+      + (this.state.query.trim() ? 1 : 0) + (this.state.inStock ? 1 : 0)
+      + (Number(this.state.min) > 0 || (this.state.max !== null && Number(this.state.max) < cap) ? 1 : 0);
+
+    return {
+      countLine: db.families({ liveOnly: true }).length + " compounds, " + all.length + " catalogue lines",
+      sort: this.state.sort,
+      setSort: (e) => this.setState({ sort: e.target.value, page: 0 }),
+      query: this.state.query,
+      setQuery: (e) => this.setState({ query: e.target.value, page: 0 }),
+      hasActive: activeCount > 0,
+      activeCount,
+      clearAll: () => this.setState({ cats: {}, doses: {}, query: "", min: 0, max: null, inStock: false, page: 0 }),
+
+      filters: [
+        { title: "Category", items: window.Morpheps.categories({ liveOnly: true }).map((c) => chip("cats", c.slug, c.label, catCounts[c.slug] || 0)) },
+        { title: "Dosage", items: Object.keys(doseCounts).sort((a, b) => (parseFloat(a) || 1e9) - (parseFloat(b) || 1e9)).map((k) => chip("doses", k, k, doseCounts[k])) },
+      ],
+
+      min: this.state.min,
+      max: this.state.max === null ? cap : this.state.max,
+      setMin: (e) => this.setState({ min: Number(e.target.value) || 0, page: 0 }),
+      setMax: (e) => this.setState({ max: Number(e.target.value) || 0, page: 0 }),
+      toggleStock: () => this.setState((s) => ({ inStock: !s.inStock, page: 0 })),
+      stockColor: this.state.inStock ? "oklch(0.19 0.008 250)" : "oklch(0.42 0.008 250)",
+      stockBorder: this.state.inStock ? "oklch(0.40 0.105 262)" : "oklch(0.82 0.006 250)",
+      stockBg: this.state.inStock ? "oklch(0.40 0.105 262)" : "oklch(0.985 0.002 240)",
+      stockDot: this.state.inStock ? "oklch(0.985 0.002 240)" : "transparent",
+
+      hasResults: items.length > 0,
+      isEmpty: items.length === 0,
+      pageItems: items.map((f) => ({ cat: f.cat })),
+      showing: "Showing " + (list.length ? page * perPage + 1 : 0) + "–" + Math.min(list.length, (page + 1) * perPage) + " of " + list.length,
+      hasPages: pageCount > 1,
+      pages: Array.from({ length: pageCount }, (_, i) => i).concat([-1]).map((i) => ({
+        label: i === -1 ? "Next" : String(i + 1),
+        go: () => this.setState({ page: i === -1 ? Math.min(pageCount - 1, page + 1) : i }),
+        bg: i === page ? "oklch(0.19 0.008 250)" : "oklch(0.985 0.002 240)",
+        color: i === page ? "oklch(0.985 0.002 240)" : "oklch(0.3 0.008 250)",
+        border: i === page ? "oklch(0.19 0.008 250)" : "oklch(0.88 0.004 250)",
+      })),
+    };
+  }
+}
+</script>
+</body>
+</html>

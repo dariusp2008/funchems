@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="./store-data.js"></script>
+<style>
+  @font-face { font-family: Synthra; src: url("./Synthra-Regular.otf") format("opentype"); font-weight: 400; font-display: swap; }
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', Helvetica, sans-serif; color: oklch(0.19 0.008 250); position: relative;">
+
+  <header style="background: oklch(0.985 0.002 240); border-bottom: 1px solid oklch(0.9 0.004 250);">
+    <div style="max-width: 1400px; margin: 0 auto; padding: 14px clamp(16px, 3.5vw, 40px); min-height: 84px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px;">
+
+      <a href="Morpheps.dc.html" style="display: flex; align-items: baseline;">
+        <span style="font-family: Synthra, Archivo, Helvetica, sans-serif; font-size: 30px; line-height: 1; letter-spacing: 0.01em;">Morpheps</span>
+      </a>
+
+      <div style="position: relative; flex: 1 1 240px; max-width: 520px; min-width: 0; margin: 0 auto;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="oklch(0.55 0.006 250)" stroke-width="2" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%);"><circle cx="11" cy="11" r="7"></circle><path d="M16.5 16.5 21 21"></path></svg>
+        <input type="text" value="{{ query }}" onChange="{{ setQuery }}" onKeyDown="{{ onSearchKey }}" onFocus="{{ openSuggest }}" placeholder="Search peptides, blends, catalogue no." style="width: 100%; height: 42px; padding: 0 88px 0 38px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13.5px; color: oklch(0.19 0.008 250); outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(1 0 0);" />
+        <span style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.6 0.006 250); border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; padding: 3px 7px; background: oklch(0.985 0.002 240);">↵ Enter</span>
+
+        <sc-if value="{{ suggestOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position: absolute; top: 48px; left: 0; right: 0; background: oklch(1 0 0); border: 1px solid oklch(0.88 0.004 250); box-shadow: 0 18px 42px -18px oklch(0.19 0.008 250 / 0.3); z-index: 60; padding: 6px;">
+            <sc-for list="{{ suggestions }}" as="s" hint-placeholder-count="5">
+              <a href="{{ s.href }}" style="display: grid; grid-template-columns: 62px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 8px 10px;" style-hover="background: oklch(0.965 0.003 240);">
+                <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; color: oklch(0.55 0.008 250);">{{ s.cat }}</span>
+                <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                  <span style="font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ s.name }}</span>
+                  <span style="font-size: 11.5px; color: oklch(0.58 0.008 250);">{{ s.dose }}</span>
+                </span>
+                <span style="font-size: 13px; font-weight: 500; white-space: nowrap;">{{ s.price }}</span>
+              </a>
+            </sc-for>
+            <sc-if value="{{ noSuggestions }}" hint-placeholder-val="{{ false }}">
+              <span style="display: block; padding: 14px 10px; font-size: 13px; color: oklch(0.55 0.008 250);">Nothing matches that yet. Press Enter to search the full catalogue.</span>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px; margin-left: auto;">
+        <div style="position: relative;">
+          <button onClick="{{ toggleLang }}" style="display: flex; align-items: center; gap: 7px; height: 34px; padding: 0 10px; border: 1px solid transparent; border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 13px; color: oklch(0.35 0.008 250);" style-hover="border-color: oklch(0.88 0.004 250); background: oklch(0.972 0.003 240);">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18"></path></svg>
+            {{ langLabel }}
+            <span style="font-size: 8px; color: oklch(0.6 0.006 250);">▾</span>
+          </button>
+          <sc-if value="{{ langOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position: absolute; top: 40px; right: 0; width: 176px; background: oklch(1 0 0); border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; box-shadow: 0 12px 32px -12px oklch(0.19 0.008 250 / 0.22); padding: 5px; z-index: 40;">
+              <sc-for list="{{ languages }}" as="lang" hint-placeholder-count="5">
+                <button onClick="{{ lang.select }}" style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 10px; border: 0; border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 13px; color: oklch(0.19 0.008 250); text-align: left;" style-hover="background: oklch(0.965 0.003 240);">
+                  <span>{{ lang.name }}</span>
+                  <span style="font-size: 10px; letter-spacing: 0.1em; color: oklch(0.62 0.006 250);">{{ lang.code }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+
+        <span style="width: 1px; height: 22px; background: oklch(0.9 0.004 250); margin: 0 6px;"></span>
+
+        <a href="{{ accountHref }}" title="{{ accountTitle }}" style="display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid transparent; border-radius: 2px;" style-hover="border-color: oklch(0.88 0.004 250); background: oklch(0.972 0.003 240);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8.5" r="3.8"></circle><path d="M4.5 20c1.4-3.8 4.2-5.4 7.5-5.4s6.1 1.6 7.5 5.4"></path></svg>
+        </a>
+
+        <a href="Account.dc.html" title="Saved products" style="position: relative; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid transparent; border-radius: 2px;" style-hover="border-color: oklch(0.88 0.004 250); background: oklch(0.972 0.003 240);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20s-7.5-4.7-7.5-9.4A4.2 4.2 0 0 1 12 8a4.2 4.2 0 0 1 7.5 2.6C19.5 15.3 12 20 12 20z"></path></svg>
+          <sc-if value="{{ hasWishlist }}" hint-placeholder-val="{{ false }}">
+            <span style="position: absolute; top: 2px; right: 2px; min-width: 15px; height: 15px; padding: 0 4px; display: flex; align-items: center; justify-content: center; background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px;">{{ wishCount }}</span>
+          </sc-if>
+        </a>
+
+        <button onClick="{{ toggleCart }}" style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 14px 0 12px; margin-left: 6px; border: 0; border-radius: 2px; background: {{ cartBg }}; color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262);">
+          <span style="min-width: 19px; height: 19px; padding: 0 5px; display: flex; align-items: center; justify-content: center; border-radius: 2px; background: oklch(0.40 0.105 262); font-size: 11px; letter-spacing: 0; font-weight: 500;">{{ cartCount }}</span>
+          <span>Cart</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <sc-if value="{{ cartOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 90; display: flex; justify-content: flex-end; background: oklch(0.19 0.008 250 / 0.32);">
+      <div onClick="{{ closeCart }}" style="position: absolute; inset: 0;"></div>
+      <div style="position: relative; width: 404px; max-width: 100%; height: 100%; display: flex; flex-direction: column; background: oklch(0.985 0.002 240); border-left: 1px solid oklch(0.88 0.004 250); box-shadow: -24px 0 60px -24px oklch(0.19 0.008 250 / 0.35);">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 22px 24px; border-bottom: 1px solid oklch(0.9 0.004 250);">
+          <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 24px;">Your cart</span>
+          <button onClick="{{ closeCart }}" style="width: 30px; height: 30px; border: 1px solid oklch(0.89 0.004 250); border-radius: 2px; background: transparent; cursor: pointer; font-size: 14px; color: oklch(0.4 0.008 250);" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">×</button>
+        </div>
+
+        <div style="flex: 1; overflow-y: auto; display: flex; flex-direction: column;">
+          <sc-for list="{{ miniLines }}" as="l" hint-placeholder-count="3">
+            <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 14px; padding: 16px 24px; border-bottom: 1px solid oklch(0.945 0.004 250); align-items: start;">
+              <div style="aspect-ratio: 1 / 1; background-color: oklch(0.93 0.005 250); background-image: repeating-linear-gradient(115deg, oklch(0.895 0.008 250) 0 1px, transparent 1px 9px);"></div>
+              <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+                <a href="{{ l.href }}" style="font-size: 13.5px; font-weight: 500; line-height: 1.3;">{{ l.name }}</a>
+                <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; color: oklch(0.55 0.008 250);">{{ l.meta }}</span>
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 2px;">
+                  <div style="display: flex; align-items: center; border: 1px solid oklch(0.88 0.004 250);">
+                    <button onClick="{{ l.dec }}" style="width: 26px; height: 26px; border: 0; background: transparent; cursor: pointer; font-size: 13px; color: oklch(0.42 0.008 250);" style-hover="color: oklch(0.40 0.105 262);">−</button>
+                    <span style="min-width: 22px; text-align: center; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px;">{{ l.qty }}</span>
+                    <button onClick="{{ l.inc }}" style="width: 26px; height: 26px; border: 0; background: transparent; cursor: pointer; font-size: 13px; color: oklch(0.42 0.008 250);" style-hover="color: oklch(0.40 0.105 262);">+</button>
+                  </div>
+                  <button onClick="{{ l.remove }}" style="border: 0; background: transparent; padding: 0; cursor: pointer; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.6 0.006 250);" style-hover="color: oklch(0.40 0.105 262);">Remove</button>
+                </div>
+              </div>
+              <span style="font-size: 14px; font-weight: 500; white-space: nowrap;">{{ l.total }}</span>
+            </div>
+          </sc-for>
+          <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 64px 24px;">
+              <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 22px; color: oklch(0.45 0.008 250);">Nothing in the cart</span>
+              <a href="Shop.dc.html" style="font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">Browse the catalogue</a>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px; padding: 20px 24px 24px; border-top: 1px solid oklch(0.9 0.004 250); background: oklch(0.972 0.003 240);">
+          <sc-if value="{{ hasTierHint }}" hint-placeholder-val="{{ false }}">
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; line-height: 1.6; letter-spacing: 0; color: oklch(0.40 0.105 262);">{{ tierHint }}</span>
+          </sc-if>
+          <div style="display: flex; align-items: baseline; justify-content: space-between;">
+            <span style="font-size: 13.5px; color: oklch(0.45 0.008 250);">Subtotal after offers</span>
+            <span style="font-size: 20px; font-weight: 500; letter-spacing: -0.02em;">{{ miniSubtotal }}</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <a href="Cart.dc.html" style="flex: 1; display: flex; align-items: center; justify-content: center; height: 44px; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.3 0.008 250);" style-hover="border-color: oklch(0.19 0.008 250);">View cart</a>
+            <a href="Checkout.dc.html" style="flex: 1; display: flex; align-items: center; justify-content: center; height: 44px; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">Checkout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <nav style="background: oklch(0.972 0.003 240); border-bottom: 1px solid oklch(0.9 0.004 250);">
+    <div style="max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3.5vw, 40px); height: 46px; display: flex; align-items: stretch; overflow-x: auto; scrollbar-width: none;">
+      <sc-for list="{{ menu }}" as="item" hint-placeholder-count="9">
+        <a href="{{ item.href }}" style="display: flex; align-items: center; flex-shrink: 0; white-space: nowrap; padding: 0 18px; font-size: 13px; font-weight: 500; letter-spacing: 0; color: {{ item.color }}; border-bottom: 2px solid {{ item.line }}; margin-bottom: -1px;" style-hover="color: oklch(0.40 0.105 262); border-bottom-color: oklch(0.40 0.105 262);">{{ item.label }}</a>
+      </sc-for>
+    </div>
+  </nav>
+
+  <a href="Promotions.dc.html" style="display: block; height: 54px; overflow: hidden; background: oklch(0.19 0.008 250);">
+    <x-import component="TextLoop" from="./TextLoop.jsx" hint-size="100%,54px" style="display: block; height: 100%;"
+      text="{{ loopText }}" shape="line" speed="{{ loopSpeed }}" direction="forward"
+      separator="◆" curviness="0" view-h="54" font-size="13" font-weight="{{ loopWeight }}"
+      letter-spacing="2.4" uppercase="{{ loopUpper }}" color="oklch(0.985 0.002 240)"
+      ribbon="{{ loopRibbon }}" ribbon-width="54" ribbon-color="transparent"
+      pause-on-hover="{{ loopPause }}"></x-import>
+  </a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1400,&quot;height&quot;:260},&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Home&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;Home&quot;,&quot;Shop&quot;,&quot;Pricelist&quot;,&quot;Bundles&quot;,&quot;Promotions&quot;,&quot;Help Center&quot;,&quot;Lab tests&quot;,&quot;Reviews&quot;]},&quot;cartCount&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:3,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:0,&quot;max&quot;:99},&quot;loopSpeed&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:90,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:0,&quot;max&quot;:260,&quot;step&quot;:10,&quot;unit&quot;:&quot;px/s&quot;,&quot;section&quot;:&quot;Marquee&quot;}}">
+class Component extends DCLogic {
+  state = { langOpen: false, lang: 0, cartOpen: false, query: "", suggestOpen: false };
+
+  componentDidMount() {
+    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Morpheps) bind();
+    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+  }
+  componentWillUnmount() {
+    if (this.unsub) this.unsub();
+    if (this.poll) clearInterval(this.poll);
+  }
+
+  renderVals() {
+    const db = window.Morpheps;
+    if (!db) {
+      return {
+        cartCount: this.props.cartCount ?? 0,
+        marqueeItems: [], menu: [], strip: [], languages: [], suggestions: [], miniLines: [],
+        loopText: "Find your best deal", loopSpeed: 90, loopWeight: 500,
+        loopUpper: true, loopRibbon: false, loopPause: true,
+        accountHref: "Sign-In.dc.html", accountTitle: "Sign in",
+        langLabel: "EN", query: "", cartBg: "oklch(0.19 0.008 250)",
+        miniSubtotal: "", tierHint: "", wishCount: "0",
+      };
+    }
+
+    const d = db.data;
+    const active = this.props.active ?? "Home";
+    const langs = d.content.languages;
+    const lang = langs[Math.min(this.state.lang, langs.length - 1)] || { code: "EN" };
+    const q = this.state.query.trim();
+    const matches = q ? db.products({ liveOnly: true, query: q }).slice(0, 6) : [];
+    const lines = db.cart.lines();
+    const pr = db.pricing({ lines });
+    const phrases = d.content.marquee.map((m) => m.text).filter(Boolean);
+    const marqueeItems = [];
+    for (let i = 0; i < 8; i++) marqueeItems.push(phrases[i % Math.max(1, phrases.length)] || "");
+
+    return {
+      strip: d.content.strip.map((s, i) => ({ text: s.text, dot: i === 0 ? "oklch(0.40 0.105 262)" : "oklch(0.75 0.006 250)" })),
+      query: this.state.query,
+      setQuery: (e) => this.setState({ query: e.target.value, suggestOpen: true }),
+      openSuggest: () => this.setState({ suggestOpen: true }),
+      onSearchKey: (e) => {
+        if (e.key === "Enter") window.location.href = "Search.dc.html?q=" + encodeURIComponent(this.state.query);
+        if (e.key === "Escape") this.setState({ suggestOpen: false });
+      },
+      suggestOpen: this.state.suggestOpen && q.length > 0,
+      noSuggestions: q.length > 0 && matches.length === 0,
+      suggestions: matches.map((p) => ({
+        cat: p.cat, name: p.name, dose: p.dose,
+        price: db.money(db.effectivePrice(p)),
+        href: "Product-Detail.dc.html?p=" + p.cat,
+      })),
+
+      langOpen: this.state.langOpen,
+      langLabel: lang.code,
+      toggleLang: () => this.setState((s) => ({ langOpen: !s.langOpen })),
+      languages: langs.map((l, i) => ({ name: l.name, code: l.code, select: () => this.setState({ lang: i, langOpen: false }) })),
+
+      cartCount: db.cart.count(),
+      cartBg: this.state.cartOpen ? "oklch(0.40 0.105 262)" : "oklch(0.19 0.008 250)",
+      cartOpen: this.state.cartOpen,
+      toggleCart: () => this.setState((s) => ({ cartOpen: !s.cartOpen })),
+      closeCart: () => this.setState({ cartOpen: false }),
+      cartEmpty: lines.length === 0,
+      miniLines: lines.map((l) => ({
+        name: l.product.name,
+        href: "Product-Detail.dc.html?p=" + l.cat,
+        meta: l.product.dose + (l.product.lot ? ", lot " + l.product.lot : ""),
+        qty: l.qty,
+        total: db.money(l.lineTotal),
+        inc: () => db.cart.setQty(l.cat, l.qty + 1),
+        dec: () => (l.qty <= 1 ? db.cart.remove(l.cat) : db.cart.setQty(l.cat, l.qty - 1)),
+        remove: () => db.cart.remove(l.cat),
+      })),
+      miniSubtotal: db.money(pr.subtotal - pr.orderOff),
+      hasTierHint: Boolean(pr.nextTier),
+      tierHint: pr.nextTier ? "Add " + pr.nextTier.need + " more compound" + (pr.nextTier.need > 1 ? "s" : "") + " for −" + pr.nextTier.value + "%" : "",
+
+      wishCount: (db.cartState.wishlist || []).length,
+      hasWishlist: (db.cartState.wishlist || []).length > 0,
+
+      menu: d.content.nav.map((item) => ({
+        label: item.label, href: item.href,
+        color: item.label === active ? "oklch(0.40 0.105 262)" : "oklch(0.35 0.008 250)",
+        line: item.label === active ? "oklch(0.40 0.105 262)" : "transparent",
+      })),
+      marqueeItems,
+      accountHref: db.currentUser() ? "Account.dc.html" : "Sign-In.dc.html",
+      accountTitle: db.currentUser() ? "Your account" : "Sign in",
+      loopText: phrases.join("   ◆   ") || "Find your best deal",
+      loopSpeed: this.props.loopSpeed ?? 90,
+      loopWeight: 500,
+      loopUpper: true,
+      loopRibbon: false,
+      loopPause: true,
+    };
+  }
+}
+</script>
+</body>
+</html>

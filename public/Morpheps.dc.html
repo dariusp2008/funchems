@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="./store-data.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: oklch(0.972 0.003 240); }
+  * { box-sizing: border-box; }
+  a { color: oklch(0.19 0.008 250); text-decoration: none; }
+  a:hover { color: oklch(0.40 0.105 262); }
+  input { font-family: inherit; }
+  @keyframes marquee-left { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', Helvetica, sans-serif; color: oklch(0.19 0.008 250); background: oklch(0.972 0.003 240); min-height: 100vh; -webkit-font-smoothing: antialiased;">
+
+  <dc-import name="StoreChrome" active="Home" hint-size="100%,222px"></dc-import>
+
+  <section style="max-width: 1400px; margin: 0 auto; padding: 28px clamp(16px, 3.5vw, 40px) 0;">
+    <div style="position: relative; width: 100%; aspect-ratio: 2.35 / 1; min-height: 460px; overflow: hidden; background: oklch(0.93 0.004 250); border: 1px solid oklch(0.9 0.004 250); border-radius: 2px;">
+
+      <sc-for list="{{ slides }}" as="slide" hint-placeholder-count="3">
+        <div style="position: absolute; inset: 0; opacity: {{ slide.opacity }}; transition: opacity 700ms cubic-bezier(0.4,0,0.2,1); pointer-events: {{ slide.pointer }};">
+          <div style="position: absolute; inset: 0; background-color: oklch(0.93 0.004 250); background-image: {{ slide.image }}; background-size: cover; background-position: center;"></div>
+          <div style="position: absolute; inset: 0; background: linear-gradient(100deg, oklch(0.985 0.002 240 / 0.96) 0%, oklch(0.985 0.002 240 / 0.86) 34%, oklch(0.985 0.002 240 / 0) 66%);"></div>
+          
+          <div style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: clamp(12px, 1.6vw, 22px); padding: clamp(20px, 3vw, 40px) clamp(32px, 5.4vw, 76px) clamp(72px, 7vw, 92px); max-width: 64%;">
+            <span style="display: flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: 0; font-weight: 500; color: oklch(0.40 0.105 262);">
+              {{ slide.eyebrow }}
+            </span>
+            <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: clamp(30px, 3.4vw, 46px); line-height: 1; letter-spacing: -0.02em; font-weight: 600; text-wrap: balance;">{{ slide.title }}</h1>
+            <p style="margin: 0; max-width: 46ch; font-size: clamp(13px, 1.1vw, 15px); line-height: 1.6; color: oklch(0.44 0.008 250); text-wrap: pretty;">{{ slide.body }}</p>
+            <div style="display: flex; align-items: center; gap: 12px; margin-top: 4px; flex-wrap: wrap;">
+              <a href="{{ slide.ctaHref }}" style="display: flex; align-items: center; height: 44px; padding: 0 26px; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">{{ slide.cta }}</a>
+              <a href="{{ slide.cta2Href }}" style="display: flex; align-items: center; height: 44px; padding: 0 22px; border-radius: 2px; border: 1px solid oklch(0.82 0.006 250); font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.3 0.008 250);" style-hover="border-color: oklch(0.19 0.008 250); background: oklch(0.985 0.002 240);">{{ slide.cta2 }}</a>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+
+      <div style="position: absolute; right: 28px; bottom: 24px; display: flex; gap: 6px; z-index: 5;">
+        <button onClick="{{ prevSlide }}" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; background: oklch(0.985 0.002 240 / 0.86); cursor: pointer; color: oklch(0.28 0.008 250);" style-hover="background: oklch(0.19 0.008 250); border-color: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14.5 5 8 12l6.5 7"></path></svg>
+        </button>
+        <button onClick="{{ nextSlide }}" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; background: oklch(0.985 0.002 240 / 0.86); cursor: pointer; color: oklch(0.28 0.008 250);" style-hover="background: oklch(0.19 0.008 250); border-color: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9.5 5 16 12l-6.5 7"></path></svg>
+        </button>
+      </div>
+
+      <div style="position: absolute; left: clamp(32px, 5.4vw, 76px); bottom: 28px; display: flex; align-items: center; gap: 8px; z-index: 5;">
+        <sc-for list="{{ dots }}" as="dot" hint-placeholder-count="3">
+          <button onClick="{{ dot.go }}" style="width: {{ dot.width }}; height: 3px; border: 0; padding: 0; background: {{ dot.bg }}; cursor: pointer; transition: width 400ms, background 400ms;"></button>
+        </sc-for>
+        <span style="margin-left: 12px; font-size: 12px; color: oklch(0.5 0.008 250);">{{ counter }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="max-width: 1400px; margin: 0 auto; padding: 24px clamp(16px, 3.5vw, 40px) 0;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 0; border-top: 1px solid oklch(0.88 0.006 250);">
+      <sc-for list="{{ trustBar }}" as="t" hint-placeholder-count="4">
+        <div style="display: flex; flex-direction: column; gap: 5px; padding: 18px 26px 18px 0; border-top: 1px solid oklch(0.94 0.004 250); margin-top: -1px;">
+          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">{{ t.label }}</span>
+          <span style="font-size: 13.5px; line-height: 1.45; color: oklch(0.32 0.008 250);">{{ t.value }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="max-width: 1400px; margin: 0 auto; padding: 52px clamp(16px, 3.5vw, 40px) 0;">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 26px; border-bottom: 1px solid oklch(0.9 0.004 250); margin-bottom: 32px; flex-wrap: wrap;">
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">Curated selection</span>
+        <h2 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 27px; line-height: 1.12; letter-spacing: -0.015em; font-weight: 600;">Featured this week</h2>
+      </div>
+      <a href="Shop.dc.html" style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.4 0.008 250); padding-bottom: 4px;" style-hover="color: oklch(0.40 0.105 262);">View full catalogue
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+      </a>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px;">
+      <sc-for list="{{ featured }}" as="p" hint-placeholder-count="4">
+        <dc-import name="ProductCard" cat="{{ p.cat }}" hint-size="100%,404px"></dc-import>
+      </sc-for>
+    </div>
+  </section>
+
+  <sc-if value="{{ voteLive }}" hint-placeholder-val="{{ false }}">
+  <section style="max-width: 1400px; margin: 0 auto; padding: 52px clamp(16px, 3.5vw, 40px) 0;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); width: 100%; min-height: 470px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250); border-radius: 2px; overflow: hidden;">
+      <div style="display: flex; flex-direction: column; justify-content: center; gap: clamp(14px, 1.7vw, 22px); padding: clamp(28px, 3.6vw, 56px);">
+        <span style="display: flex; align-items: center; gap: 10px; font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">
+          {{ voteEyebrow }}
+        </span>
+        <h2 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: clamp(26px, 2.6vw, 36px); line-height: 1.02; letter-spacing: -0.02em; font-weight: 600; text-wrap: balance;">{{ voteTitle }}</h2>
+        <p style="margin: 0; max-width: 48ch; font-size: clamp(13px, 1.05vw, 15px); line-height: 1.65; color: oklch(0.44 0.008 250); text-wrap: pretty;">{{ voteBody }}</p>
+
+        <div style="display: flex; flex-direction: column; gap: 9px; max-width: 440px; margin-top: 2px;">
+          <sc-for list="{{ voteOptions }}" as="v" hint-placeholder-count="4">
+            <button onClick="{{ v.vote }}" style="display: flex; flex-direction: column; gap: 7px; padding: 10px 12px; border: 1px solid {{ v.border }}; border-radius: 2px; background: {{ v.bg }}; cursor: {{ v.cursor }}; font-family: inherit; text-align: left;" style-hover="border-color: oklch(0.40 0.105 262);">
+              <span style="display: flex; align-items: baseline; justify-content: space-between; gap: 14px; width: 100%;">
+                <span style="font-size: 13.5px; color: oklch(0.24 0.008 250);">{{ v.name }}</span>
+                <span style="font-size: 12.5px; color: {{ v.pctColor }};">{{ v.pct }}</span>
+              </span>
+              <span style="height: 4px; width: 100%; background: oklch(0.92 0.004 250); display: block; position: relative; overflow: hidden;">
+                <span style="position: absolute; top: 0; bottom: 0; left: 0; width: {{ v.width }}; background: {{ v.barColor }}; display: block;"></span>
+              </span>
+            </button>
+          </sc-for>
+          <span style="font-size: 12.5px; color: oklch(0.56 0.008 250);">{{ voteNote }}</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px; margin-top: 6px; flex-wrap: wrap;">
+          <a href="Promotions.dc.html" style="display: flex; align-items: center; height: 44px; padding: 0 26px; border-radius: 2px; background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240); font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240);">{{ voteCta }}</a>
+          <a href="Promotions.dc.html" style="display: flex; align-items: center; height: 44px; padding: 0 22px; border-radius: 2px; border: 1px solid oklch(0.82 0.006 250); font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.3 0.008 250);" style-hover="border-color: oklch(0.19 0.008 250); background: oklch(0.972 0.003 240);">{{ voteCta2 }}</a>
+        </div>
+      </div>
+      <div style="position: relative; border-left: 1px solid oklch(0.9 0.004 250); min-height: 320px; background-color: oklch(0.95 0.004 250); background-image: {{ voteImage }}; background-size: cover; background-position: center;"></div>
+    </div>
+  </section>
+  </sc-if>
+
+  <section style="max-width: 1400px; margin: 0 auto; padding: 52px clamp(16px, 3.5vw, 40px) 0;">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 26px; border-bottom: 1px solid oklch(0.9 0.004 250); margin-bottom: 32px; flex-wrap: wrap;">
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">In stock, ships today</span>
+        <h2 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 27px; line-height: 1.12; letter-spacing: -0.015em; font-weight: 600;">Moving fastest right now</h2>
+      </div>
+      <a href="Pricelist.dc.html" style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.4 0.008 250); padding-bottom: 4px;" style-hover="color: oklch(0.40 0.105 262);">See the pricelist
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+      </a>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(212px, 1fr)); gap: 16px;">
+      <sc-for list="{{ lineup }}" as="p" hint-placeholder-count="5">
+        <dc-import name="ProductCard" cat="{{ p.cat }}" hint-size="100%,404px"></dc-import>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="max-width: 1400px; margin: 0 auto; padding: 52px clamp(16px, 3.5vw, 40px) 0;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; width: 100%;">
+
+      <div style="display: flex; flex-direction: column; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250); border-radius: 2px; overflow: hidden;">
+        <div style="position: relative; flex: 1; min-height: 220px; background-color: oklch(0.95 0.004 250); background-image: {{ resultsImage }}; background-size: cover; background-position: center;"></div>
+        <div style="display: flex; flex-direction: column; gap: 12px; padding: 26px 28px 28px;">
+          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">Customer results</span>
+          <h3 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 24px; line-height: 1.15; letter-spacing: -0.015em; font-weight: 600;">{{ resultsTitle }}</h3>
+          <p style="margin: 0; font-size: 13.5px; line-height: 1.6; color: oklch(0.44 0.008 250); text-wrap: pretty;">{{ resultsBody }}</p>
+          <a href="Reviews.dc.html" style="display: flex; align-items: center; gap: 8px; margin-top: 4px; font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="color: oklch(0.40 0.105 262);">{{ resultsCta }}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+          </a>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 24px; padding: clamp(26px, 2.6vw, 40px); background: oklch(0.19 0.008 250); border-radius: 2px; color: oklch(0.972 0.003 240);">
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.76 0.07 262);">Join the community</span>
+          <h3 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: clamp(24px, 2.3vw, 32px); line-height: 1.03; letter-spacing: -0.02em; font-weight: 600; text-wrap: balance;">{{ communityTitle }}</h3>
+          <p style="margin: 0; max-width: 42ch; font-size: 13.5px; line-height: 1.65; color: oklch(0.78 0.006 250); text-wrap: pretty;">{{ communityBody }}</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; gap: 8px;">
+            <input type="email" value="{{ email }}" onChange="{{ setEmail }}" placeholder="youremail@email.com" style="flex: 1; min-width: 0; height: 44px; padding: 0 14px; border: 1px solid oklch(0.36 0.008 250); border-radius: 2px; background: oklch(0.24 0.008 250); color: oklch(0.972 0.003 240); font-size: 13.5px; outline: none;" style-focus="border-color: oklch(0.76 0.07 262); background: oklch(0.27 0.008 250);" />
+            <button onClick="{{ subscribe }}" style="height: 44px; padding: 0 22px; border: 0; border-radius: 2px; background: oklch(0.972 0.003 240); color: oklch(0.19 0.008 250); font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0; cursor: pointer; white-space: nowrap;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">{{ subLabel }}</button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 20px; font-size: 12.5px; color: oklch(0.66 0.006 250); flex-wrap: wrap;">
+            <span>{{ communityNote }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="max-width: 1400px; margin: 0 auto; padding: 52px clamp(16px, 3.5vw, 40px) 68px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); width: 100%; min-height: 520px; border-top: 1px solid oklch(0.88 0.006 250); border-bottom: 1px solid oklch(0.88 0.006 250);">
+      <div style="position: relative; min-height: 320px; margin-right: clamp(28px, 3.6vw, 56px); background-color: oklch(0.95 0.004 250); background-image: {{ communityImage }}; background-size: cover; background-position: center;"></div>
+      <div style="display: flex; flex-direction: column; justify-content: center; gap: clamp(16px, 1.8vw, 24px); padding: clamp(28px, 3.6vw, 56px) 0;">
+        <span style="display: flex; align-items: center; gap: 10px; font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">
+          Every discount, in order
+        </span>
+        <h2 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: clamp(26px, 2.6vw, 36px); line-height: 1.02; letter-spacing: -0.02em; font-weight: 600; text-wrap: balance;">{{ discountsTitle }}</h2>
+        <p style="margin: 0; max-width: 50ch; font-size: clamp(13px, 1.05vw, 15px); line-height: 1.65; color: oklch(0.44 0.008 250); text-wrap: pretty;">{{ discountsBody }}</p>
+        <div style="display: flex; flex-direction: column; gap: 0; margin-top: 4px; border-top: 1px solid oklch(0.9 0.004 250);">
+          <sc-for list="{{ discountLines }}" as="l" hint-placeholder-count="4">
+            <div style="display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px; padding: clamp(10px, 1.3vw, 15px) 0; border-bottom: 1px solid oklch(0.9 0.004 250); align-items: baseline;">
+              <span style="font-size: 13.5px; line-height: 1.55; color: oklch(0.3 0.008 250);">{{ l.text }}</span>
+              <span style="font-size: 13px; font-weight: 500; color: oklch(0.40 0.105 262); white-space: nowrap;">{{ l.value }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <a href="Promotions.dc.html" style="display: flex; align-items: center; align-self: flex-start; height: 44px; padding: 0 26px; margin-top: 6px; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">{{ discountsCta }}</a>
+      </div>
+    </div>
+  </section>
+
+  <dc-import name="SiteFooter" hint-size="100%,540px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { slide: 0, voted: null, email: "", subscribed: false };
+
+  componentDidMount() {
+    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Morpheps) bind();
+    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+    try { this.setState({ voted: window.localStorage.getItem("morpheps-vote") }); } catch (e) {}
+    this.startTimer();
+  }
+  componentWillUnmount() {
+    if (this.unsub) this.unsub();
+    if (this.poll) clearInterval(this.poll);
+    if (this.timer) clearInterval(this.timer);
+  }
+  startTimer() {
+    if (this.timer) clearInterval(this.timer);
+    this.timer = setInterval(() => {
+      const n = ((window.Morpheps && window.Morpheps.data.content.hero.filter((h) => h.live).length) || 1);
+      this.setState((s) => ({ slide: (s.slide + 1) % n }));
+    }, 6500);
+  }
+  goTo(i) { this.startTimer(); this.setState({ slide: i }); }
+
+  renderVals() {
+    const db = window.Morpheps;
+    const blockImage = (id) => {
+      const b = db && db.data.content.blocks.find((x) => x.id === id);
+      const src = b && (b.images || [])[0];
+      return src ? "url(" + src + ")" : "none";
+    };
+    if (!db) return { slides: [], dots: [], featured: [], lineup: [], voteLive: false, voteOptions: [], discountLines: [], voteImage: "none", resultsImage: "none", communityImage: "none", trustBar: [] };
+    const d = db.data;
+    const hero = d.content.hero.filter((h) => h.live);
+    const n = Math.max(1, hero.length);
+    const cur = this.state.slide % n;
+    const vote = d.votes;
+    const total = (vote.options || []).reduce((t, v) => t + Number(v.count), 0);
+    const leader = (vote.options || []).slice().sort((a, b) => b.count - a.count)[0];
+    const blocks = {};
+    d.content.blocks.forEach((b) => { blocks[b.id] = b; });
+    const b1 = blocks.b1 || {}, b2 = blocks.b2 || {}, b3 = blocks.b3 || {}, b4 = blocks.b4 || {};
+    const cryptoOff = Number(d.settings.cryptoDiscount) || 0;
+    const tiers = d.discounts.filter((x) => x.live && x.auto && Number(x.minDistinct) > 0).sort((a, b) => a.minDistinct - b.minDistinct);
+    const liveReviews = d.reviews.filter((r) => r.live);
+    const labCount = d.labReports.filter((r) => r.live).length;
+
+    const closeDate = vote.closesOn ? new Date(vote.closesOn + "T09:00:00") : null;
+    const msLeft = closeDate ? closeDate - new Date() : 0;
+    const daysLeft = Math.max(0, Math.ceil(msLeft / 86400000));
+    const voteLive = Boolean(vote.open && closeDate && msLeft > 0);
+
+    return {
+      slides: hero.map((s, i) => ({
+        eyebrow: s.eyebrow, title: s.title, body: s.body,
+        cta: s.cta, ctaHref: s.ctaHref || "Shop.dc.html",
+        cta2: s.cta2, cta2Href: s.cta2Href || "#",
+        image: (s.images || [])[0] ? "url(" + s.images[0] + ")" : "none",
+        opacity: i === cur ? 1 : 0,
+        pointer: i === cur ? "auto" : "none",
+      })),
+      dots: hero.map((_, i) => ({
+        go: () => this.goTo(i),
+        width: i === cur ? "34px" : "14px",
+        bg: i === cur ? "oklch(0.40 0.105 262)" : "oklch(0.78 0.006 250)",
+      })),
+      counter: String(cur + 1).padStart(2, "0") + " / " + String(n).padStart(2, "0"),
+      nextSlide: () => this.goTo((cur + 1) % n),
+      prevSlide: () => this.goTo((cur - 1 + n) % n),
+
+      voteLive,
+      voteImage: blockImage("b1"),
+      resultsImage: blockImage("b3"),
+      communityImage: blockImage("b4"),
+
+      trustBar: [
+        { label: "Per-lot assays", value: labCount ? labCount + " reports published in full" : "Every lot published in full" },
+        { label: "Dispatch", value: "Same day before " + d.settings.dispatchCutoff },
+        { label: "Crypto", value: cryptoOff + "% off, applied automatically" },
+        { label: "Free shipping", value: "Over " + db.money(d.settings.freeShippingOver) },
+      ],
+
+      featured: d.content.featured.filter(Boolean).map((cat) => ({ cat })),
+      lineup: d.content.lineup.filter(Boolean).map((cat) => ({ cat })),
+
+      voteEyebrow: vote.open ? "Community vote closes in " + daysLeft + (daysLeft === 1 ? " day" : " days") : "Vote closed, the winner is live",
+      voteTitle: b1.title || "You decide what goes half price",
+      voteBody: b1.body || "",
+      voteCta: b1.cta || "Get 50% off",
+      voteCta2: b1.cta2 || "Vote now",
+      voteOptions: (vote.options || []).map((v) => {
+        const p = db.product(v.cat);
+        const share = Math.round((v.count / (total || 1)) * 100);
+        const mine = this.state.voted === v.cat;
+        return {
+          name: (p && p.name) || v.cat,
+          pct: share + "%" + (mine ? ", your vote" : ""),
+          pctColor: mine ? "oklch(0.40 0.105 262)" : "oklch(0.55 0.008 250)",
+          width: share + "%",
+          barColor: mine || v === leader ? "oklch(0.40 0.105 262)" : "oklch(0.78 0.04 262)",
+          border: mine ? "oklch(0.80 0.05 262)" : "oklch(0.9 0.004 250)",
+          bg: mine ? "oklch(0.975 0.012 262)" : "oklch(0.985 0.002 240)",
+          cursor: vote.open && !this.state.voted ? "pointer" : "default",
+          vote: () => {
+            if (!vote.open || this.state.voted) return;
+            db.edit((x) => { const o = x.votes.options.find((y) => y.cat === v.cat); if (o) o.count += 1; });
+            try { window.localStorage.setItem("morpheps-vote", v.cat); } catch (e) {}
+            this.setState({ voted: v.cat });
+          },
+        };
+      }),
+      voteNote: total.toLocaleString() + " votes cast, "
+        + (!vote.open ? "closed" : this.state.voted ? "your vote is counted" : "one vote per visitor"),
+
+      resultsTitle: b3.title || "Logged, photographed, published",
+      resultsBody: b3.body || "",
+      resultsCta: (b3.cta || "Browse results") + (liveReviews.length ? ", " + liveReviews.length + " published" : ""),
+
+      communityTitle: b4.title || "Restocks, lab reports and the weekly vote",
+      communityBody: b4.body || "",
+      communityNote: this.state.subscribed ? "You are subscribed, Telegram & Discord" : (b4.note || ""),
+      email: this.state.email,
+      setEmail: (e) => this.setState({ email: e.target.value }),
+      subscribe: () => { if (this.state.email.includes("@")) this.setState({ subscribed: true }); },
+      subLabel: this.state.subscribed ? "Done" : (b4.cta || "Subscribe"),
+
+      discountsTitle: b2.title || "How to get discounts",
+      discountsBody: b2.body || "",
+      discountsCta: b2.cta || "See all promotions",
+      discountLines: [
+        { n: "01", text: "Pay in crypto and the discount comes off the order total automatically.", value: "−" + cryptoOff + "%" },
+      ].concat(tiers.slice(0, 2).map((t, i) => ({
+        n: String(i + 2).padStart(2, "0"),
+        text: "Order " + t.minDistinct + " or more different compounds, the tier applies to the whole order.",
+        value: "−" + t.value + "%",
+      }))).concat([
+        { n: String(Math.min(4, tiers.length + 2)).padStart(2, "0"), text: "Submit a verified result and receive store credit on your next order.", value: "credit" },
+      ]),
+    };
+  }
+}
+</script>
+</body>
+</html>
