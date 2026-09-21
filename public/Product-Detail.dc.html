@@ -240,7 +240,7 @@
   <dc-import name="SiteFooter" hint-size="100%,420px"></dc-import>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;cat&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;TR5&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;cat&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;MK25&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
   state = { qty: 1, tab: 0, thumb: 0, added: 0, notify: "", notifyEmail: "" };
 
@@ -263,7 +263,7 @@ class Component extends DCLogic {
     const db = window.Morpheps;
     if (!db) return { specs: [], tabs: [], related: [] };
     const param = new URLSearchParams(window.location.search).get("p");
-    const p = db.product(param || (this.props.cat ?? "TR5")) || db.products({ liveOnly: true })[0];
+    const p = db.product(param || (this.props.cat ?? "MK25")) || db.products({ liveOnly: true })[0];
     if (!p) return { name: "Product not found", specs: [], tabs: [], related: [] };
 
     const unit = db.effectivePrice(p);

@@ -51,7 +51,7 @@
     <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
       <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 88px 20px; border: 1px dashed oklch(0.87 0.006 250);">
         <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 30px; color: oklch(0.4 0.008 250);">Nothing matches “{{ query }}”</span>
-        <span style="font-size: 13.5px; color: oklch(0.55 0.008 250);">Try a catalogue number like TR5, or browse everything.</span>
+        <span style="font-size: 13.5px; color: oklch(0.55 0.008 250);">Try a catalogue number like MK25, or browse everything.</span>
         <a href="Shop.dc.html" style="display: flex; align-items: center; height: 44px; padding: 0 24px; margin-top: 6px; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">All compounds</a>
       </div>
     </sc-if>
@@ -100,9 +100,9 @@ class Component extends DCLogic {
       hasResults: results.length > 0,
       isEmpty: results.length === 0,
       results: results.map((p) => ({ cat: p.cat })),
-      popular: ["TR5", "BP5", "Blend", "10 mg", "Accessories"].map((label) => ({
+      popular: ["Somatropin", "MK-677", "Ipamorelin", "10 mg", "Testosterone"].map((label) => ({
         label,
-        pick: () => this.setState({ query: label === "Accessories" ? "water" : label }),
+        pick: () => this.setState({ query: label }),
       })),
     };
   }
