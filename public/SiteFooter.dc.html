@@ -61,6 +61,19 @@
 </footer>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
+const STR = {
+  en: {
+    subscribe: "Subscribe",
+    subscribed: "Subscribed",
+    subscribedNote: "You are on the list. Restocks, new assays and the offsale shortlist, once a week.",
+  },
+  nl: {
+    subscribe: "Aanmelden",
+    subscribed: "Aangemeld",
+    subscribedNote: "U staat op de lijst. Nieuwe voorraad, nieuwe analyses en de afprijslijst, eens per week.",
+  },
+};
+
 class Component extends DCLogic {
   state = { email: "", subscribed: false };
 
@@ -78,11 +91,12 @@ class Component extends DCLogic {
     const db = window.Funchems;
     const f = db ? db.footer() : {};
     const name = (db ? db.data.settings.storeName : "Funchems").split(" ");
+    const L = (k) => (db ? db.t(STR, k) : STR.en[k]);
     return {
       brandOne: name.join(" ") || "Funchems",
       blurb: f.blurb || "",
       legal: f.legal || "",
-      legalLinks: db ? (db.data.content.legalLinks || []) : [],
+      legalLinks: db ? (db.data.content.legalLinks || []).map((lk) => ({ label: db.tr("legalLinks", lk.id, "label", lk.label), href: lk.href })) : [],
       payments: (f.payments || "ETH, USDT").split(",").map((s) => s.trim()).filter(Boolean),
       columns: db ? db.footerColumns() : [],
       subTitle: f.newsletterTitle || "",
@@ -90,10 +104,8 @@ class Component extends DCLogic {
       email: this.state.email,
       setEmail: (e) => this.setState({ email: e.target.value }),
       subscribe: () => { if (this.state.email.includes("@")) this.setState({ subscribed: true }); },
-      subLabel: this.state.subscribed ? "Subscribed" : "Subscribe",
-      subNote: this.state.subscribed
-        ? "You are on the list. Restocks, new assays and the offsale shortlist, once a week."
-        : (f.newsletterNote || ""),
+      subLabel: this.state.subscribed ? L("subscribed") : L("subscribe"),
+      subNote: this.state.subscribed ? L("subscribedNote") : (f.newsletterNote || ""),
     };
   }
 }

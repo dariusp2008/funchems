@@ -229,6 +229,138 @@
           { id: "g2", name: "Nederlands", code: "NL" },
         ],
       },
+      lang: "en",
+      i18nNL: {
+        nav: {
+          n1: { label: "Home" },
+          n2: { label: "Shop" },
+          n5: { label: "Aanbiedingen" },
+          n6: { label: "Helpcentrum" },
+        },
+        footerLinks: {
+          fl1: { label: "Alle verbindingen" },
+          fl4: { label: "Aanbiedingen" },
+          fl8: { label: "Helpcentrum" },
+          fl10: { label: "Mijn account" },
+          fl12: { label: "Inloggen" },
+          fl11: { label: "Catalogus doorzoeken" },
+        },
+        legalLinks: {
+          ll1: { label: "Voorwaarden" },
+          ll2: { label: "Privacy" },
+          ll3: { label: "Verzending" },
+        },
+        hero: {
+          h1: {
+            eyebrow: "Nieuwe partij beschikbaar",
+            title: "Elke partij wordt getest voor verzending",
+            body: "Elk catalogusnummer draagt een partijnummer en een onafhankelijke analyse die u kunt inzien voordat u de doos opent.",
+            cta: "Bekijk de catalogus",
+          },
+          h3: {
+            eyebrow: "Koelketen",
+            title: "Koelketen, neutrale verpakking",
+            body: "Geïsoleerde verpakking met een temperatuurlogboek van ons magazijn tot aan uw deur. Betalen met kaart, overschrijving of crypto bij het afrekenen.",
+            cta: "Hoe verzending werkt",
+          },
+        },
+        blocks: {
+          b1: {
+            title: "U bepaalt wat halve prijs wordt",
+            body: "Elke cyclus gaat één verbinding naar de halve prijs. Stem op de shortlist hieronder; de winnaar is maandag voor iedereen live.",
+            cta: "Krijg 50% korting",
+            cta2: "Stem nu",
+          },
+          b2: {
+            title: "Hoe u korting krijgt",
+            body: "Drie kortingen, en ze zijn stapelbaar. Geen van alle heeft een code nodig, de prijs bij het afrekenen bevat al alles waarvoor u in aanmerking komt.",
+            cta: "Bekijk alle aanbiedingen",
+            note: "01 crypto −8%, 02 hoeveelheidskorting, 03 accounttegoed",
+          },
+          b4: {
+            title: "Nieuwe voorraad, labrapporten, de wekelijkse stemming",
+            body: "Eén bericht per week: nieuwe analyses zodra ze binnenkomen, de shortlist voordat die opent, en ledenprijzen op mixen.",
+            cta: "Aanmelden",
+            note: "Telegram & Discord",
+          },
+        },
+        promos: {
+          pr1: {
+            title: "Halve prijs op de verbinding waarop u stemt",
+            body: "Elke cyclus gaat één verbinding naar 50% voor iedereen, en de community bepaalt welke. Open de cyclus vanuit het beheer om de shortlist live te zetten.",
+            cta: "Krijg 50% korting",
+          },
+          pr2: {
+            title: "8% korting bij betalen met crypto",
+            body: "Automatisch toegepast bij het afrekenen met ETH en USDT, op elke chain die wij accepteren. Stapelbaar met alles anders op deze pagina.",
+            cta: "Betaalmethoden",
+          },
+          pr3: {
+            title: "Gratis starterbenodigdheden bij uw eerste bestelling",
+            body: "Benodigdheden toegevoegd aan elke bestelling boven $120. Geen code nodig.",
+            cta: "Begin met shoppen",
+          },
+        },
+        faqs: {
+          f2: { q: "Welke betaalmethoden worden geaccepteerd?", a: "ETH en USDT, op Ethereum, Arbitrum, Base, Optimism of Polygon. Elke bestelling krijgt automatisch 8% korting op het totaal." },
+          f4: { q: "Hoe lang duurt de levering?", a: "Verzending is dezelfde dag voor 14:00 CET. Twee tot vier dagen binnen de EU, vier tot zeven dagen wereldwijd." },
+          f5: { q: "Is de verpakking discreet?", a: "Ja. Bestellingen gaan in een neutrale doos zonder merk en zonder aanduiding van de inhoud." },
+          f6: { q: "Kan ik mijn bestelling volgen?", a: "De verzendbevestiging bevat een trackinglink, en het bestelnummer werkt ook vanuit de accountpagina." },
+          f7: { q: "Is er korting voor betalen met crypto?", a: "Ja, 8% korting op het totaal, automatisch toegepast bij het afrekenen met ETH en USDT. Geen code nodig." },
+          f8: { q: "Zijn prijzen inclusief belasting?", a: "Prijzen worden weergegeven in USD en zijn exclusief invoerrechten of lokale belasting, die voor rekening van de koper zijn." },
+          f9: { q: "Kan ik mijn bestelling wijzigen na het plaatsen?", a: "Neem direct contact op met support met uw bestelnummer. We kunnen meestal hoeveelheden aanpassen voordat de partij het magazijn verlaat." },
+          f10: { q: "Wat als er iets beschadigd aankomt?", a: "Mail support met uw bestelnummer en een foto. Een vervanging of terugbetaling wordt binnen één werkdag verstuurd." },
+          f11: { q: "Hoe annuleer ik een bestelling?", a: "Stuur support binnen een uur na plaatsing een bericht en we annuleren voordat de bestelling wordt klaargemaakt." },
+        },
+        categories: {
+          "cat-compound": { label: "Losse verbindingen", blurb: "Eén verbinding per injectieflacon, gevriesdroogd." },
+          "cat-blend": { label: "Mixen", blurb: "Twee verbindingen voorgemengd in één injectieflacon." },
+          "cat-accessory": { label: "Accessoires", blurb: "Water, spuiten en benodigdheden." },
+        },
+        doseUnits: {
+          du1: { label: "Injecteerbaar, mg per mL" },
+          du2: { label: "Orale tablet" },
+          du3: { label: "Injecteerbare verbinding" },
+          du4: { label: "Injecteerbare verbinding, kleine dosis" },
+          du5: { label: "Verbinding, kleine dosis" },
+          du6: { label: "Internationale eenheden per mL" },
+          du7: { label: "Internationale eenheden per injectieflacon" },
+          du8: { label: "Uitwendige verbinding" },
+          du9: { label: "Capsule" },
+        },
+        footer: {
+          blurb: "Research chemicals met onafhankelijke analyses per partij. Koel verzonden, discreet verpakt, geprijsd zonder couponspelletjes.",
+          newsletterTitle: "Nieuwe voorraad en labrapporten, wekelijks",
+          newsletterNote: "Eén bericht per week: nieuwe voorraad, nieuwe labrapporten, en de afprijslijst voordat die opent.",
+          legal: "© 2026 Funchems. Alle rechten voorbehouden.",
+          payments: "ETH, USDT",
+        },
+        strip: {
+          s1: { text: "Discrete verzending wereldwijd" },
+          s2: { text: "Crypto betalingen geaccepteerd" },
+        },
+        marquee: {
+          m1: { text: "Vind uw beste deal" },
+          m2: { text: "Bekijk alle beschikbare aanbiedingen" },
+        },
+        qtyTiers: {
+          qt1: { label: "1 tot 4 sets" },
+          qt2: { label: "5 tot 9 sets" },
+          qt3: { label: "10+ sets" },
+        },
+        tierNote: "Hoeveelheidskorting op verschillende verbindingen wordt gestapeld op deze regelprijzen.",
+        discounts: {
+          "d-crypto": { label: "Cryptobetaling" },
+          "d-tier3": { label: "Hoeveelheidskorting, 3 verbindingen" },
+          "d-tier5": { label: "Hoeveelheidskorting, 5 verbindingen" },
+          "d-ship": { label: "Gratis koelverzending boven $250" },
+          "d-vote": { label: "Winnaar van de stemming, halve prijs" },
+          "d-first": { label: "Eerste bestelling, 10% korting" },
+          "d-lab": { label: "Instelling, 20% korting" },
+          "d-blend": { label: "Mixen −25%" },
+          "d-cons": { label: "Gratis benodigdheden boven $120" },
+        },
+      },
     };
   }
 
@@ -293,6 +425,31 @@
     reset() {
       this.data = seed();
       this.save();
+    },
+
+    /* ---- Language --------------------------------------------------------
+     * Two-language prototype: English is the single source of truth stored
+     * directly on content.* (and edited as such from the admin). Dutch lives
+     * in a parallel i18nNL lookup keyed by [section][id][field], so admin
+     * edits never need to touch two copies of the same array.
+     * tr() is for content.* items; t() is for a page's own local {en,nl}
+     * dictionary of static strings that aren't part of content.*.
+     * ------------------------------------------------------------------- */
+    lang() { return this.data.lang || "en"; },
+    setLang(code) {
+      this.data.lang = code === "nl" ? "nl" : "en";
+      this.save();
+    },
+    tr(section, id, field, fallback) {
+      if (this.lang() !== "nl") return fallback;
+      const sec = (this.data.i18nNL || {})[section] || {};
+      const row = sec[id] || (section === "footer" ? sec : null);
+      const val = row ? row[field] : undefined;
+      return val !== undefined && val !== "" ? val : fallback;
+    },
+    t(dict, key) {
+      const row = dict[this.lang()] || dict.en || {};
+      return row[key] !== undefined ? row[key] : key;
     },
 
     /* ---- Supabase bridge ------------------------------------------------ */
@@ -529,18 +686,27 @@
 
     /* ---- Footer ---------------------------------------------------------- */
     footer() {
-      return this.data.content.footer || {};
+      const f = this.data.content.footer || {};
+      return {
+        ...f,
+        blurb: this.tr("footer", null, "blurb", f.blurb),
+        newsletterTitle: this.tr("footer", null, "newsletterTitle", f.newsletterTitle),
+        newsletterNote: this.tr("footer", null, "newsletterNote", f.newsletterNote),
+        legal: this.tr("footer", null, "legal", f.legal),
+        payments: this.tr("footer", null, "payments", f.payments),
+      };
     },
     footerColumns() {
+      const colNames = { en: { Shop: "Shop", Support: "Support", More: "More" }, nl: { Shop: "Shop", Support: "Ondersteuning", More: "Overig" } };
       const rows = (this.data.content.footerLinks || []).filter((r) => r.label);
       const order = [];
       const byCol = {};
       rows.forEach((r) => {
         const col = r.column || "More";
         if (!byCol[col]) { byCol[col] = []; order.push(col); }
-        byCol[col].push({ label: r.label, href: r.href || "#" });
+        byCol[col].push({ label: this.tr("footerLinks", r.id, "label", r.label), href: r.href || "#" });
       });
-      return order.map((title) => ({ title, items: byCol[title] }));
+      return order.map((col) => ({ title: this.t(colNames, col) || col, items: byCol[col] }));
     },
 
     product(cat) {
@@ -613,9 +779,10 @@
       return Math.round((1 - eff / p.list) * 100);
     },
     stockLabel(p) {
-      if (p.stock <= 0) return { label: "Out of stock", tone: "out" };
-      if (p.stock <= (p.lowStockAt || 10)) return { label: "Low stock, " + p.stock + " left", tone: "low" };
-      return { label: "In stock, " + p.stock, tone: "ok" };
+      const nl = this.lang() === "nl";
+      if (p.stock <= 0) return { label: nl ? "Niet op voorraad" : "Out of stock", tone: "out" };
+      if (p.stock <= (p.lowStockAt || 10)) return { label: (nl ? "Beperkte voorraad, nog " : "Low stock, ") + p.stock + (nl ? "" : " left"), tone: "low" };
+      return { label: (nl ? "Op voorraad, " : "In stock, ") + p.stock, tone: "ok" };
     },
 
     /* ---- Cart ----------------------------------------------------------- */
