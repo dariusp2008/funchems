@@ -42,7 +42,9 @@
             <p style="margin: 0; max-width: 46ch; font-size: clamp(13px, 1.1vw, 15px); line-height: 1.6; color: oklch(0.44 0.008 250); text-wrap: pretty;">{{ slide.body }}</p>
             <div style="display: flex; align-items: center; gap: 12px; margin-top: 4px; flex-wrap: wrap;">
               <a href="{{ slide.ctaHref }}" style="display: flex; align-items: center; height: 44px; padding: 0 26px; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">{{ slide.cta }}</a>
-              <a href="{{ slide.cta2Href }}" style="display: flex; align-items: center; height: 44px; padding: 0 22px; border-radius: 2px; border: 1px solid oklch(0.82 0.006 250); font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.3 0.008 250);" style-hover="border-color: oklch(0.19 0.008 250); background: oklch(0.985 0.002 240);">{{ slide.cta2 }}</a>
+              <sc-if value="{{ slide.hasCta2 }}" hint-placeholder-val="{{ false }}">
+                <a href="{{ slide.cta2Href }}" style="display: flex; align-items: center; height: 44px; padding: 0 22px; border-radius: 2px; border: 1px solid oklch(0.82 0.006 250); font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.3 0.008 250);" style-hover="border-color: oklch(0.19 0.008 250); background: oklch(0.985 0.002 240);">{{ slide.cta2 }}</a>
+              </sc-if>
             </div>
           </div>
         </div>
@@ -149,18 +151,6 @@
   <section style="max-width: 1400px; margin: 0 auto; padding: 52px clamp(16px, 3.5vw, 40px) 0;">
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; width: 100%;">
 
-      <div style="display: flex; flex-direction: column; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250); border-radius: 2px; overflow: hidden;">
-        <div style="position: relative; flex: 1; min-height: 220px; background-color: oklch(0.95 0.004 250); background-image: {{ resultsImage }}; background-size: cover; background-position: center;"></div>
-        <div style="display: flex; flex-direction: column; gap: 12px; padding: 26px 28px 28px;">
-          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">Customer results</span>
-          <h3 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 24px; line-height: 1.15; letter-spacing: -0.015em; font-weight: 600;">{{ resultsTitle }}</h3>
-          <p style="margin: 0; font-size: 13.5px; line-height: 1.6; color: oklch(0.44 0.008 250); text-wrap: pretty;">{{ resultsBody }}</p>
-          <a href="Reviews.dc.html" style="display: flex; align-items: center; gap: 8px; margin-top: 4px; font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="color: oklch(0.40 0.105 262);">{{ resultsCta }}
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
-          </a>
-        </div>
-      </div>
-
       <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 24px; padding: clamp(26px, 2.6vw, 40px); background: oklch(0.19 0.008 250); border-radius: 2px; color: oklch(0.972 0.003 240);">
         <div style="display: flex; flex-direction: column; gap: 14px;">
           <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.76 0.07 262);">Join the community</span>
@@ -237,7 +227,7 @@ class Component extends DCLogic {
       const src = b && (b.images || [])[0];
       return src ? "url(" + src + ")" : "none";
     };
-    if (!db) return { slides: [], dots: [], featured: [], lineup: [], voteLive: false, voteOptions: [], discountLines: [], voteImage: "none", resultsImage: "none", communityImage: "none", trustBar: [] };
+    if (!db) return { slides: [], dots: [], featured: [], lineup: [], voteLive: false, voteOptions: [], discountLines: [], voteImage: "none", communityImage: "none", trustBar: [] };
     const d = db.data;
     const hero = d.content.hero.filter((h) => h.live);
     const n = Math.max(1, hero.length);
@@ -247,10 +237,9 @@ class Component extends DCLogic {
     const leader = (vote.options || []).slice().sort((a, b) => b.count - a.count)[0];
     const blocks = {};
     d.content.blocks.forEach((b) => { blocks[b.id] = b; });
-    const b1 = blocks.b1 || {}, b2 = blocks.b2 || {}, b3 = blocks.b3 || {}, b4 = blocks.b4 || {};
+    const b1 = blocks.b1 || {}, b2 = blocks.b2 || {}, b4 = blocks.b4 || {};
     const cryptoOff = Number(d.settings.cryptoDiscount) || 0;
     const tiers = d.discounts.filter((x) => x.live && x.auto && Number(x.minDistinct) > 0).sort((a, b) => a.minDistinct - b.minDistinct);
-    const liveReviews = d.reviews.filter((r) => r.live);
     const labCount = d.labReports.filter((r) => r.live).length;
 
     const closeDate = vote.closesOn ? new Date(vote.closesOn + "T09:00:00") : null;
@@ -262,7 +251,7 @@ class Component extends DCLogic {
       slides: hero.map((s, i) => ({
         eyebrow: s.eyebrow, title: s.title, body: s.body,
         cta: s.cta, ctaHref: s.ctaHref || "Shop.dc.html",
-        cta2: s.cta2, cta2Href: s.cta2Href || "#",
+        cta2: s.cta2, cta2Href: s.cta2Href || "#", hasCta2: Boolean(s.cta2),
         image: (s.images || [])[0] ? "url(" + s.images[0] + ")" : "none",
         opacity: i === cur ? 1 : 0,
         pointer: i === cur ? "auto" : "none",
@@ -278,7 +267,6 @@ class Component extends DCLogic {
 
       voteLive,
       voteImage: blockImage("b1"),
-      resultsImage: blockImage("b3"),
       communityImage: blockImage("b4"),
 
       trustBar: [
@@ -319,10 +307,6 @@ class Component extends DCLogic {
       }),
       voteNote: total.toLocaleString() + " votes cast, "
         + (!vote.open ? "closed" : this.state.voted ? "your vote is counted" : "one vote per visitor"),
-
-      resultsTitle: b3.title || "Logged, photographed, published",
-      resultsBody: b3.body || "",
-      resultsCta: (b3.cta || "Browse results") + (liveReviews.length ? ", " + liveReviews.length + " published" : ""),
 
       communityTitle: b4.title || "Restocks, lab reports and the weekly vote",
       communityBody: b4.body || "",

@@ -60,13 +60,6 @@
       </div>
 
       <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-        <div style="display: flex; align-items: center; gap: 6px;">
-          <sc-for list="{{ stars }}" as="s" hint-placeholder-count="5">
-            <span style="width: 9px; height: 9px; background: {{ s.color }}; display: block; transform: rotate(45deg);"></span>
-          </sc-for>
-        </div>
-        <span style="font-size: 13px; color: oklch(0.5 0.008 250);">{{ reviewLine }}</span>
-        <span style="width: 4px; height: 4px; background: oklch(0.8 0.006 250); display: block; transform: rotate(45deg);"></span>
         <span style="font-size: 12.5px; color: {{ stockColor }};">{{ stockLabel }}</span>
       </div>
 
@@ -151,77 +144,21 @@
   </section>
 
   <section style="max-width: 1400px; margin: 0 auto; padding: 64px clamp(16px, 3.5vw, 40px) 0;">
-    <div style="display: flex; align-items: stretch; gap: 0; border-bottom: 1px solid oklch(0.9 0.004 250);">
-      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
-        <button onClick="{{ t.pick }}" style="padding: 0 22px; height: 52px; border: 0; border-bottom: 2px solid {{ t.line }}; margin-bottom: -1px; background: transparent; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0; color: {{ t.color }};" style-hover="color: oklch(0.40 0.105 262);">{{ t.label }}</button>
-      </sc-for>
-    </div>
-
-    <div style="padding: 34px 0 0;">
-      <sc-if value="{{ tabIsAbout }}" hint-placeholder-val="{{ true }}">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 56px; align-items: start;">
-          <div style="display: flex; flex-direction: column; gap: 18px;">
-            <h2 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 28px; line-height: 1.1; font-weight: 600;">About this compound</h2>
-            <p style="margin: 0; max-width: 62ch; font-size: 14.5px; line-height: 1.7; color: oklch(0.38 0.008 250); text-wrap: pretty;">{{ body }}</p>
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 0; padding: 4px 0;">
-            <sc-for list="{{ handling }}" as="h" hint-placeholder-count="4">
-              <div style="display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 18px; padding: 13px 0; border-bottom: 1px solid oklch(0.92 0.004 250);">
-                <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.56 0.008 250);">{{ h.label }}</span>
-                <span style="font-size: 13.5px; line-height: 1.55; color: oklch(0.3 0.008 250);">{{ h.value }}</span>
-              </div>
-            </sc-for>
-          </div>
-        </div>
-      </sc-if>
-
-      <sc-if value="{{ tabIsLab }}" hint-placeholder-val="{{ false }}">
+    <div style="padding: 0 0 34px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 56px; align-items: start;">
         <div style="display: flex; flex-direction: column; gap: 18px;">
-          <sc-if value="{{ hasReports }}" hint-placeholder-val="{{ true }}">
-            <div style="border: 1px solid oklch(0.9 0.004 250); background: oklch(0.985 0.002 240); overflow-x: auto;">
-              <div style="display: grid; grid-template-columns: 110px minmax(140px, 1fr) 130px 110px 120px; gap: 16px; min-width: 620px; padding: 13px 20px; background: oklch(0.972 0.003 240); border-bottom: 1px solid oklch(0.9 0.004 250); font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.5 0.008 250);">
-                <span>Lot</span><span>Method</span><span>Purity</span><span>Reported</span><span>Report</span>
-              </div>
-              <sc-for list="{{ reports }}" as="r" hint-placeholder-count="2">
-                <div style="display: grid; grid-template-columns: 110px minmax(140px, 1fr) 130px 110px 120px; gap: 16px; min-width: 620px; align-items: center; padding: 13px 20px; border-bottom: 1px solid oklch(0.95 0.004 250); font-size: 13.5px;">
-                  <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px;">{{ r.lot }}</span>
-                  <span>{{ r.method }}</span>
-                  <span style="font-weight: 500;">{{ r.purity }}</span>
-                  <span style="font-size: 12.5px; color: oklch(0.5 0.008 250);">{{ r.date }}</span>
-                  <a href="Lab-Tests.dc.html" style="font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">Open pdf</a>
-                </div>
-              </sc-for>
-            </div>
-          </sc-if>
-          <sc-if value="{{ noReports }}" hint-placeholder-val="{{ false }}">
-            <span style="font-size: 13.5px; color: oklch(0.5 0.008 250);">No published assay for this compound yet. Lot reports appear here within 48 hours of a batch release.</span>
-          </sc-if>
-          
+          <h2 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 28px; line-height: 1.1; font-weight: 600;">About this compound</h2>
+          <p style="margin: 0; max-width: 62ch; font-size: 14.5px; line-height: 1.7; color: oklch(0.38 0.008 250); text-wrap: pretty;">{{ body }}</p>
         </div>
-      </sc-if>
-
-      <sc-if value="{{ tabIsReviews }}" hint-placeholder-val="{{ false }}">
-        <div style="display: flex; flex-direction: column; gap: 16px;">
-          <sc-for list="{{ productReviews }}" as="r" hint-placeholder-count="2">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 28px; padding: 20px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
-              <div style="display: flex; flex-direction: column; gap: 7px;">
-                <span style="font-size: 14px; font-weight: 500;">{{ r.author }}</span>
-                <span style="font-size: 12.5px; color: oklch(0.55 0.008 250);">{{ r.meta }}</span>
-                <div style="display: flex; gap: 5px; margin-top: 2px;">
-                  <sc-for list="{{ r.stars }}" as="s" hint-placeholder-count="5">
-                    <span style="width: 8px; height: 8px; background: {{ s.color }}; display: block; transform: rotate(45deg);"></span>
-                  </sc-for>
-                </div>
-              </div>
-              <p style="margin: 0; font-size: 14px; line-height: 1.65; color: oklch(0.35 0.008 250); text-wrap: pretty;">{{ r.body }}</p>
+        <div style="display: flex; flex-direction: column; gap: 0; padding: 4px 0;">
+          <sc-for list="{{ handling }}" as="h" hint-placeholder-count="4">
+            <div style="display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 18px; padding: 13px 0; border-bottom: 1px solid oklch(0.92 0.004 250);">
+              <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.56 0.008 250);">{{ h.label }}</span>
+              <span style="font-size: 13.5px; line-height: 1.55; color: oklch(0.3 0.008 250);">{{ h.value }}</span>
             </div>
           </sc-for>
-          <sc-if value="{{ noReviews }}" hint-placeholder-val="{{ false }}">
-            <span style="font-size: 13.5px; color: oklch(0.5 0.008 250);">No published reviews for this compound yet.</span>
-          </sc-if>
-          <a href="Reviews.dc.html" style="align-self: flex-start; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">All customer results</a>
         </div>
-      </sc-if>
+      </div>
     </div>
   </section>
 
@@ -242,7 +179,7 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;cat&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;MK25&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
-  state = { qty: 1, tab: 0, thumb: 0, added: 0, notify: "", notifyEmail: "" };
+  state = { qty: 1, thumb: 0, added: 0, notify: "", notifyEmail: "" };
 
   componentDidMount() {
     const bind = () => { this.unsub = window.Funchems.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
@@ -255,27 +192,19 @@ class Component extends DCLogic {
     if (this.t) clearTimeout(this.t);
   }
 
-  starRow(n) {
-    return [0, 1, 2, 3, 4].map((i) => ({ color: i < n ? "oklch(0.40 0.105 262)" : "oklch(0.86 0.006 250)" }));
-  }
-
   renderVals() {
     const db = window.Funchems;
-    if (!db) return { specs: [], tabs: [], related: [] };
+    if (!db) return { specs: [], related: [] };
     const param = new URLSearchParams(window.location.search).get("p");
     const p = db.product(param || (this.props.cat ?? "MK25")) || db.products({ liveOnly: true })[0];
-    if (!p) return { name: "Product not found", specs: [], tabs: [], related: [] };
+    if (!p) return { name: "Product not found", specs: [], related: [] };
 
     const unit = db.effectivePrice(p);
     const off = db.discountPct(p);
     const state = db.stockLabel(p);
     const out = p.stock <= 0;
-    const reports = db.data.labReports.filter((r) => r.live && r.productCat === p.cat);
-    const reviews = db.data.reviews.filter((r) => r.live && r.productCat === p.cat);
-    const avg = reviews.length ? Math.round(reviews.reduce((t, r) => t + Number(r.stars), 0) / reviews.length) : 5;
     const pr = db.pricing();
     const related = db.products({ liveOnly: true }).filter((x) => x.cat !== p.cat && x.category === p.category).slice(0, 4);
-    const tabs = ["About", "Lab report", "Reviews"];
     const wished = db.cart.wished(p.cat);
     const cryptoOff = Number(db.data.settings.cryptoDiscount) || 0;
 
@@ -292,8 +221,6 @@ class Component extends DCLogic {
         border: i === this.state.thumb ? "oklch(0.40 0.105 262)" : "oklch(0.9 0.004 250)",
       })),
 
-      stars: this.starRow(avg),
-      reviewLine: reviews.length ? reviews.length + (reviews.length === 1 ? " published review" : " published reviews") : "No reviews yet",
       stockLabel: state.label,
       stockColor: state.tone === "out" ? "oklch(0.5 0.13 25)" : state.tone === "low" ? "oklch(0.55 0.14 60)" : "oklch(0.45 0.11 145)",
 
@@ -369,15 +296,6 @@ class Component extends DCLogic {
         "The assay for your exact lot travels with the parcel.",
       ],
 
-      tabs: tabs.map((label, i) => ({
-        label,
-        pick: () => this.setState({ tab: i }),
-        color: i === this.state.tab ? "oklch(0.19 0.008 250)" : "oklch(0.5 0.008 250)",
-        line: i === this.state.tab ? "oklch(0.40 0.105 262)" : "transparent",
-      })),
-      tabIsAbout: this.state.tab === 0,
-      tabIsLab: this.state.tab === 1,
-      tabIsReviews: this.state.tab === 2,
 
       body: p.body || "Lyophilised powder, sealed under nitrogen.",
       handling: [
@@ -386,18 +304,6 @@ class Component extends DCLogic {
         { label: "After opening", value: "2 to 8 °C, use within the window stated on the assay." },
         { label: "Shipping", value: "Insulated sleeve with a frozen gel pack, logged cold chain." },
       ],
-
-      hasReports: reports.length > 0,
-      noReports: reports.length === 0,
-      reports: reports.map((r) => ({ lot: r.lot, method: r.method, purity: r.purity, date: r.reportedOn })),
-
-      productReviews: reviews.map((r) => ({
-        author: r.author || "Verified customer",
-        meta: "lot " + (r.lot || "") + ", " + r.date,
-        stars: this.starRow(Number(r.stars)),
-        body: r.body,
-      })),
-      noReviews: reviews.length === 0,
 
       related: related.map((x) => ({ cat: x.cat })),
     };
