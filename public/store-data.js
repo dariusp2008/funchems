@@ -180,9 +180,7 @@
         ],
         bundles: [],
         faqs: [
-          { id: "f1", q: "How is the order packed?", a: "Vials go into an insulated sleeve with a frozen gel pack, inside a plain outer box with no branding and no laboratory markings.", live: true },
           { id: "f2", q: "Which payment methods are accepted?", a: "ETH and USDT, on Ethereum, Arbitrum, Base, Optimism or Polygon. Every order takes 8% off the total automatically.", live: true },
-          { id: "f3", q: "How should the vials be stored?", a: "Lyophilised vials keep at −20 °C, protected from light. Once reconstituted, refrigerate and use within the stated window.", live: true },
           { id: "f4", q: "How long does delivery take?", a: "Dispatch is same day before 14:00 CET. Two to four days inside the EU, four to seven days worldwide.", live: true },
         ],
         footer: {
