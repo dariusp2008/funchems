@@ -226,10 +226,7 @@
         ],
         languages: [
           { id: "g1", name: "English", code: "EN" },
-          { id: "g2", name: "Français", code: "FR" },
-          { id: "g3", name: "Deutsch", code: "DE" },
-          { id: "g4", name: "Español", code: "ES" },
-          { id: "g5", name: "Italiano", code: "IT" },
+          { id: "g2", name: "Nederlands", code: "NL" },
         ],
       },
     };
