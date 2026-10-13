@@ -889,17 +889,18 @@
 
       const applyRule = (d) => {
         const base = scopeBase(d);
+        const label = this.tr("discounts", d.id, "label", d.label);
         if (d.kind === "percent") {
           const amt = Math.round(base * (Number(d.value) / 100) * 100) / 100;
           orderOff += amt;
-          applied.push({ id: d.id, label: d.label, value: amt, kind: "percent" });
+          applied.push({ id: d.id, label, value: amt, kind: "percent" });
         } else if (d.kind === "fixed") {
           const amt = Math.min(Number(d.value), base, subtotal - orderOff);
           orderOff += amt;
-          applied.push({ id: d.id, label: d.label, value: amt, kind: "fixed" });
+          applied.push({ id: d.id, label, value: amt, kind: "fixed" });
         } else if (d.kind === "shipping") {
           freeShip = true;
-          applied.push({ id: d.id, label: d.label, value: shipping, kind: "shipping" });
+          applied.push({ id: d.id, label, value: shipping, kind: "shipping" });
         }
       };
 
@@ -936,7 +937,7 @@
             .filter((d) => d.live && d.auto && Number(d.minDistinct) > distinct)
             .sort((a, b) => a.minDistinct - b.minDistinct)[0];
           if (!upcoming) return null;
-          return { need: upcoming.minDistinct - distinct, value: upcoming.value, label: upcoming.label };
+          return { need: upcoming.minDistinct - distinct, value: upcoming.value, label: db.tr("discounts", upcoming.id, "label", upcoming.label) };
         })(),
       };
     },
