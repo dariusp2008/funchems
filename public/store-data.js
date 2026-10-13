@@ -83,6 +83,15 @@
  * ---------------------------------------------------------------------------
  */
 (function () {
+  // Every .dc.html component on a page carries its own <script src="./store-data.js">
+  // tag, so this file's setup code runs once per imported component, not once per
+  // page. Without this guard each run replaces window.Funchems with a brand-new
+  // object and an empty listener set, so a change made through one component (e.g.
+  // the language dropdown) never reaches components that subscribed earlier —
+  // only a full page reload re-syncs everyone from localStorage. First run wins;
+  // every later run of this same script on the same page is a no-op.
+  if (window.Funchems) return;
+
   const KEY = "funchems-store-v9";
   const CART_KEY = "funchems-cart-v2";
 
