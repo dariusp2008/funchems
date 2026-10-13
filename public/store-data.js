@@ -92,124 +92,7 @@
   const today = () => new Date().toISOString().slice(0, 10);
 
   function seed() {
-    // "5 mg / vial" -> { doseValue: "5", doseUnit: "mg/vial" }. Anything that is not a
-    // single magnitude plus one unit keeps its original string instead.
-    const splitDose = (dose) => {
-      const m = String(dose).match(/^\s*([\d.,]+)\s*(mg|mcg|IU|ml|mL|g)\s*\/\s*(vial|mL|ml|tablet|capsule|g)\s*$/);
-      if (!m) return { doseValue: "", doseUnit: "" };
-      const unit = m[2].toLowerCase() === "ml" ? "mL" : m[2];
-      const per = m[3].toLowerCase() === "ml" ? "mL" : m[3];
-      return { doseValue: m[1], doseUnit: unit + "/" + per };
-    };
-
-    // One lot per product: sequential batch numbers, so no two compounds share a lot.
-    let lotSeq = 0;
-    const lotFor = () => {
-      const n = lotSeq++;
-      const month = 1 + (n % 8);
-      const day = 1 + Math.floor(n / 8);
-      return "26-" + String(month).padStart(2, "0") + String(day).padStart(2, "0");
-    };
-
-    const NO_IMAGE = new Set(["TC1", "RB5", "UM10", "SR5", "MV25", "BL1", "ST1"]);
-    const JPG = new Set(["BM7", "BS804", "DN1", "OP1"]);
-    const imageFor = (cat) => NO_IMAGE.has(cat) ? [] : ["/assets/products/" + cat + (JPG.has(cat) ? ".jpg" : ".png")];
-
-    const P = (cat, name, dose, price, list, stock, purity, lot, category, live) => ({
-      id: cat.toLowerCase(), cat, name, dose, category, price, list: price, stock: 40,
-      ...splitDose(dose),
-      lowStockAt: 10, purity, lot: lotFor(), live: live !== false, images: imageFor(cat), sort: 0,
-      body: "Supplied as a kit of 10 vials. Lyophilised powder, sealed under nitrogen. Reconstitute with bacteriostatic water and store at 2 to 8 °C once opened.",
-    });
-    const products = [
-        P("SM10", "Somatropin", "10 IU / vial", 109, 109, 40, "99.0%", "", "compound"),
-        P("SM30", "Somatropin", "30 IU / vial", 299, 299, 25, "99.0%", "", "compound"),
-        P("MC1", "Mecasermin", "1 mg / vial", 149, 149, 30, "98.0%", "", "compound"),
-        P("MC5", "Mecasermin", "5 mg / vial", 549, 549, 12, "98.0%", "", "compound"),
-        P("IG01", "IGF-1 LR3", "0.1 mg / vial", 94, 94, 42, "99.1%", "", "compound"),
-        P("IG1", "IGF-1 LR3", "1 mg / vial", 429, 429, 20, "98.9%", "", "compound"),
-        P("MK25", "MK-677", "25 mg / vial", 79, 79, 60, "99.0%", "", "compound"),
-        P("MK50", "MK-677", "50 mg / vial", 129, 129, 45, "99.0%", "", "compound"),
-        P("IB25", "Ibutamoren", "25 mg / vial", 79, 79, 60, "99.0%", "", "compound"),
-        P("IB50", "Ibutamoren", "50 mg / vial", 129, 129, 45, "99.0%", "", "compound"),
-        P("DC2", "CJC-1295", "2 mg / vial", 169, 169, 40, "99.0%", "", "compound"),
-        P("DC10", "CJC-1295", "10 mg / vial", 574, 574, 15, "99.0%", "", "compound"),
-        P("CN2", "CJC-1295 no-DAC", "2 mg / vial", 89, 89, 40, "99.0%", "", "compound"),
-        P("CN5", "CJC-1295 no-DAC", "5 mg / vial", 154, 154, 28, "99.0%", "", "compound"),
-        P("PR2", "Ipamorelin", "2 mg / vial", 69, 69, 40, "99.3%", "", "compound"),
-        P("PR10", "Ipamorelin", "10 mg / vial", 144, 144, 25, "99.4%", "", "compound"),
-        P("RL5", "Sermorelin", "5 mg / vial", 154, 154, 40, "99.0%", "", "compound"),
-        P("RL15", "Sermorelin", "15 mg / vial", 419, 419, 15, "98.9%", "", "compound"),
-        P("TMR5", "Tesamorelin", "5 mg / vial", 119, 119, 40, "99.0%", "", "compound"),
-        P("TMR10", "Tesamorelin", "10 mg / vial", 219, 219, 25, "99.0%", "", "compound"),
-        P("G25", "GHRP-2", "5 mg / vial", 69, 69, 40, "99.0%", "", "compound"),
-        P("G210", "GHRP-2", "10 mg / vial", 119, 119, 25, "99.0%", "", "compound"),
-        P("G65", "GHRP-6", "5 mg / vial", 64, 64, 40, "99.0%", "", "compound"),
-        P("G610", "GHRP-6", "10 mg / vial", 109, 109, 25, "99.0%", "", "compound"),
-        P("HX2", "Hexarelin", "2 mg / vial", 69, 69, 40, "99.0%", "", "compound"),
-        P("HX5", "Hexarelin", "5 mg / vial", 124, 124, 25, "99.0%", "", "compound"),
-        P("FL1", "Follistatin-344", "1 mg / vial", 139, 139, 20, "99.0%", "", "compound"),
-        P("FL2", "Follistatin-344", "2 mg / vial", 259, 259, 10, "99.0%", "", "compound"),
-        P("VS05", "Vosoritide", "0.5 mg / vial", 189, 189, 20, "99.89%", "", "compound"),
-        P("VS1", "Vosoritide", "1 mg / vial", 349, 349, 10, "99.89%", "", "compound"),
-        P("BM05", "BMN-111", "0.5 mg / vial", 189, 189, 20, "99.89%", "", "compound"),
-        P("BM1", "BMN-111", "1 mg / vial", 349, 349, 10, "99.89%", "", "compound"),
-        P("TC1", "TransCon CNP", "1 mg / vial", 149, 149, 12, "", "", "compound"),
-        P("CN1", "CNP", "1 mg / vial", 99, 99, 20, "98.0%", "", "compound"),
-        P("TY25", "TYRA-300", "25 mg / vial", 299, 299, 10, "", "", "compound"),
-        P("ER25", "Erdafitinib", "25 mg / vial", 99, 99, 30, "99.0%", "", "compound"),
-        P("ER50", "Erdafitinib", "50 mg / vial", 169, 169, 18, "99.0%", "", "compound"),
-        P("IN25", "Infigratinib", "25 mg / vial", 129, 129, 30, "99.0%", "", "compound"),
-        P("IN50", "Infigratinib", "50 mg / vial", 199, 199, 18, "99.0%", "", "compound"),
-        P("TQ25", "Truseltiq", "25 mg / vial", 129, 129, 20, "99.0%", "", "compound"),
-        P("KY10", "KY19382", "10 mg / vial", 149, 149, 10, "", "", "compound"),
-        P("RB5", "RBM-007", "5 mg / vial", 299, 299, 8, "", "", "compound"),
-        P("UM10", "Umedaptanib pegol", "10 mg / vial", 299, 299, 8, "", "", "compound"),
-        P("SR5", "SAR442501", "5 mg / vial", 149, 149, 8, "", "", "compound"),
-        P("ME25", "Meclizine", "25 mg / vial", 24, 24, 60, "99.0%", "", "compound"),
-        P("SG10", "SAG21k", "10 mg / vial", 149, 149, 10, "", "", "compound"),
-        P("AB05", "Abaloparatide", "0.5 mg / vial", 189, 189, 20, "98.0%", "", "compound"),
-        P("AB2", "Abaloparatide", "2 mg / vial", 549, 549, 10, "98.0%", "", "compound"),
-        P("TP75", "Teriparatide", "0.75 mg / vial", 99, 99, 30, "98.0%", "", "compound"),
-        P("TP3", "Teriparatide", "3 mg / vial", 349, 349, 12, "98.0%", "", "compound"),
-        P("P134", "PTH 1-34", "1 mg / vial", 129, 129, 20, "98.0%", "", "compound"),
-        P("P184", "PTH 1-84", "1 mg / vial", 299, 299, 8, "98.0%", "", "compound"),
-        P("PTR1", "PTHrP", "1 mg / vial", 219, 219, 15, "98.0%", "", "compound"),
-        P("OD25", "Odanacatib", "25 mg / vial", 129, 129, 25, "99.0%", "", "compound"),
-        P("M082", "MK-0822", "25 mg / vial", 129, 129, 25, "99.0%", "", "compound"),
-        P("BA25", "Balicatib", "25 mg / vial", 129, 129, 10, "", "", "compound"),
-        P("ON25", "ONO-5334", "5 mg / vial", 199, 199, 6, "", "", "compound"),
-        P("RE25", "Relacatib", "25 mg / vial", 129, 129, 6, "", "", "compound"),
-        P("MV25", "MIV-711", "25 mg / vial", 129, 129, 18, "", "", "compound"),
-        P("L235", "L-235", "25 mg / vial", 149, 149, 4, "", "", "compound"),
-        P("L873", "L-873724", "25 mg / vial", 149, 149, 4, "", "", "compound"),
-        P("RM1", "Romosozumab", "1 mg / vial", 69, 69, 10, "", "", "compound"),
-        P("BL1", "Blosozumab", "1 mg / vial", 99, 99, 6, "", "", "compound"),
-        P("ST1", "Setrusumab", "1 mg / vial", 99, 99, 6, "", "", "compound"),
-        P("BS804", "BPS-804", "1 mg / vial", 99, 99, 6, "", "", "compound"),
-        P("DN1", "Denosumab", "1 mg / vial", 69, 69, 20, "98.0%", "", "compound"),
-        P("AL50", "Alendronate", "50 mg / vial", 34, 34, 60, "99.0%", "", "compound"),
-        P("RS50", "Risedronate", "50 mg / vial", 34, 34, 60, "99.0%", "", "compound"),
-        P("ZA10", "Zoledronic acid", "10 mg / vial", 79, 79, 30, "99.0%", "", "compound"),
-        P("IBA50", "Ibandronate", "50 mg / vial", 39, 39, 45, "99.0%", "", "compound"),
-        P("PM50", "Pamidronate", "50 mg / vial", 39, 39, 45, "99.0%", "", "compound"),
-        P("ETD50", "Etidronate", "50 mg / vial", 34, 34, 45, "99.0%", "", "compound"),
-        P("TL50", "Tiludronate", "50 mg / vial", 34, 34, 45, "99.0%", "", "compound"),
-        P("CL50", "Clodronate", "50 mg / vial", 34, 34, 45, "99.0%", "", "compound"),
-        P("LP25", "LP533401", "25 mg / vial", 149, 149, 12, "98.0%", "", "compound"),
-        P("BM2", "rhBMP-2", "1 mg / vial", 149, 149, 8, "98.0%", "", "compound"),
-        P("BM7", "BMP-7", "1 mg / vial", 149, 149, 8, "98.0%", "", "compound"),
-        P("OP1", "OP-1", "1 mg / vial", 149, 149, 8, "98.0%", "", "compound"),
-        P("AN30", "Anastrozole", "30 mg / vial", 44, 44, 60, "99.0%", "", "compound"),
-        P("LZ30", "Letrozole", "30 mg / vial", 44, 44, 60, "99.0%", "", "compound"),
-        P("EX30", "Exemestane", "30 mg / vial", 44, 44, 60, "99.0%", "", "compound"),
-        P("HCG5", "HCG", "5000 IU / vial", 99, 99, 30, "99.0%", "", "compound"),
-        P("TS10", "Testosterone", "10 mL / vial", 89, 89, 30, "99.0%", "", "compound"),
-        P("DH100", "DHEA", "100 mg / vial", 29, 29, 60, "98.0%", "", "compound"),
-        P("LV100", "Levothyroxine", "100 mcg / vial", 24, 24, 60, "99.0%", "", "compound"),
-        P("C60A", "C60", "100 mg / vial", 69, 69, 30, "99.95%", "", "compound"),
-        P("C60B", "C60", "500 mL / vial", 249, 249, 10, "99.95%", "", "compound"),
-    ];
+    const products = [];
     const forCat = (c) => products.find((x) => x.cat === c) || {};
 
     return {
@@ -253,8 +136,8 @@
           greeting: "Support is on Telegram, usually replying within a few minutes during CET business hours.",
           pollSeconds: 5,
         },
-        supabaseUrl: "https://nbpbnblpbeuuphqeehkd.supabase.co",
-        supabaseAnonKey: "sb_publishable_UjIynmQJ9iea0S49P2kvCg_P5eXp3lD",
+        supabaseUrl: "https://zdqzkzeczmjgjnnmljev.supabase.co",
+        supabaseAnonKey: "sb_publishable_rYXuGq26SJuMng1VpvAOxw_rfhIu5FF",
       },
       content: {
         qtyTiers: [
@@ -266,16 +149,16 @@
         doseUnits: [
           { id: "du1", unit: "mg/mL", label: "Injectable, mg per mL", example: "250 mg/mL", live: true },
           { id: "du2", unit: "mg/tablet", label: "Oral tablet", example: "10 mg/tablet", live: true },
-          { id: "du3", unit: "mg/vial", label: "Injectable peptide", example: "5 mg/vial", live: true },
-          { id: "du4", unit: "mcg/vial", label: "Injectable peptide, small dose", example: "500 mcg/vial", live: true },
-          { id: "du5", unit: "mcg", label: "Small-dose peptide", example: "500 mcg", live: true },
-          { id: "du6", unit: "IU/mL", label: "Insulin-like", example: "100 IU/mL", live: true },
-          { id: "du7", unit: "IU/vial", label: "hCG and growth hormone", example: "5,000 IU/vial", live: true },
+          { id: "du3", unit: "mg/vial", label: "Injectable compound", example: "5 mg/vial", live: true },
+          { id: "du4", unit: "mcg/vial", label: "Injectable compound, small dose", example: "500 mcg/vial", live: true },
+          { id: "du5", unit: "mcg", label: "Small-dose compound", example: "500 mcg", live: true },
+          { id: "du6", unit: "IU/mL", label: "International units per mL", example: "100 IU/mL", live: true },
+          { id: "du7", unit: "IU/vial", label: "International units per vial", example: "5,000 IU/vial", live: true },
           { id: "du8", unit: "mg/g", label: "Topical compound", example: "5 mg/g", live: true },
           { id: "du9", unit: "mg/capsule", label: "Capsule", example: "20 mg/capsule", live: true },
         ],
         categories: [
-          { id: "cat-compound", slug: "compound", label: "Single compounds", blurb: "One peptide per vial, lyophilised.", live: true },
+          { id: "cat-compound", slug: "compound", label: "Single compounds", blurb: "One compound per vial, lyophilised.", live: true },
           { id: "cat-blend", slug: "blend", label: "Blends", blurb: "Two compounds pre-mixed in one vial.", live: true },
           { id: "cat-accessory", slug: "accessory", label: "Accessories", blurb: "Water, syringes and consumables.", live: true },
         ],
@@ -305,7 +188,7 @@
           { id: "f4", q: "How long does delivery take?", a: "Dispatch is same day before 14:00 CET. Two to four days inside the EU, four to seven days worldwide.", live: true },
         ],
         footer: {
-          blurb: "Peptide compounds with per-lot third-party assays. Shipped cold, packed discreet, priced without coupon games.",
+          blurb: "Research chemicals with per-lot third-party assays. Shipped cold, packed discreet, priced without coupon games.",
           newsletterTitle: "Restocks and lab reports, weekly",
           newsletterNote: "One message a week: restocks, new lab reports, and the offsale shortlist before it opens.",
           legal: "\u00a9 2026 Funchems. All rights reserved.",

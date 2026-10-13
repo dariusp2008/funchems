@@ -100,7 +100,7 @@ class Component extends DCLogic {
       hasResults: results.length > 0,
       isEmpty: results.length === 0,
       results: results.map((p) => ({ cat: p.cat })),
-      popular: ["Somatropin", "MK-677", "Ipamorelin", "10 mg", "Testosterone"].map((label) => ({
+      popular: ["Catalogue no.", "10 mg", "99% purity", "Lab tested"].map((label) => ({
         label,
         pick: () => this.setState({ query: label }),
       })),
