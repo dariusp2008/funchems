@@ -280,9 +280,9 @@ class Component extends DCLogic {
   };
 
   componentDidMount() {
-    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
-    if (window.Morpheps) bind();
-    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+    const bind = () => { this.unsub = window.Funchems.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Funchems) bind();
+    else this.poll = setInterval(() => { if (window.Funchems) { clearInterval(this.poll); bind(); } }, 60);
   }
   componentWillUnmount() {
     if (this.unsub) this.unsub();
@@ -291,7 +291,7 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const db = window.Morpheps;
+    const db = window.Funchems;
     if (!db) return { tabs: [], orders: [], stats: [], signedIn: false, signedOut: false };
     const me = db.currentUser();
     if (!me) return { tabs: [], orders: [], stats: [], signedIn: false, signedOut: true, topUpAmounts: [], topUps: [] };
@@ -366,7 +366,7 @@ class Component extends DCLogic {
         if (!this.state.confirmDelete) { this.setState({ confirmDelete: true }); return; }
         const res = await db.auth.deleteAccount();
         if (!res.ok) { this.setState({ securityNote: res.error, securityOk: false, confirmDelete: false }); return; }
-        window.location.href = "Morpheps.dc.html";
+        window.location.href = "Funchems.dc.html";
       },
 
       noOrders: orders.length === 0,

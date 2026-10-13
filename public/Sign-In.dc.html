@@ -82,9 +82,9 @@ class Component extends DCLogic {
   state = { mode: 0, email: "", password: "", name: "", country: "", note: "", ok: false };
 
   componentDidMount() {
-    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
-    if (window.Morpheps) bind();
-    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+    const bind = () => { this.unsub = window.Funchems.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Funchems) bind();
+    else this.poll = setInterval(() => { if (window.Funchems) { clearInterval(this.poll); bind(); } }, 60);
   }
   componentWillUnmount() {
     if (this.unsub) this.unsub();
@@ -92,7 +92,7 @@ class Component extends DCLogic {
   }
 
   async go() {
-    const db = window.Morpheps;
+    const db = window.Funchems;
     const m = this.state.mode;
     let res;
     if (m === 0) res = await db.auth.signIn(this.state.email, this.state.password);

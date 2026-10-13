@@ -1,11 +1,11 @@
-/* Morpheps store data layer.
+/* Funchems store data layer.
  *
  * One source of truth for the storefront and the admin dashboard.
  * Reads/writes Supabase when a client is configured, otherwise falls back to
  * localStorage so every page still works offline in the prototype.
  *
  * Usage from a DC logic class:
- *   const db = window.Morpheps;
+ *   const db = window.Funchems;
  *   db.subscribe(() => this.forceUpdate());
  *   db.products()            -> product rows
  *   db.cart.lines()          -> cart lines joined to products
@@ -83,8 +83,8 @@
  * ---------------------------------------------------------------------------
  */
 (function () {
-  const KEY = "morpheps-store-v9";
-  const CART_KEY = "morpheps-cart-v2";
+  const KEY = "funchems-store-v9";
+  const CART_KEY = "funchems-cart-v2";
 
   const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toFixed(2);
   const pct = (n) => (n > 0 ? "−" : "") + Math.round(Math.abs(n)) + "%";
@@ -234,7 +234,7 @@
         options: [],
       },
       settings: {
-        storeName: "Morpheps",
+        storeName: "Funchems",
         currency: "USD",
         shippingFlat: 18,
         freeShippingOver: 250,
@@ -249,7 +249,7 @@
           enabled: true,
           botToken: "",
           chatId: "",
-          adminHandle: "@morpheps_support",
+          adminHandle: "@funchems_support",
           greeting: "Support is on Telegram, usually replying within a few minutes during CET business hours.",
           pollSeconds: 5,
         },
@@ -308,7 +308,7 @@
           blurb: "Peptide compounds with per-lot third-party assays. Shipped cold, packed discreet, priced without coupon games.",
           newsletterTitle: "Restocks and lab reports, weekly",
           newsletterNote: "One message a week: restocks, new lab reports, and the offsale shortlist before it opens.",
-          legal: "\u00a9 2026 Morpheps. All rights reserved.",
+          legal: "\u00a9 2026 Funchems. All rights reserved.",
           payments: "ETH, USDT",
         },
         footerLinks: [
@@ -330,7 +330,7 @@
           { id: "ll3", label: "Shipping", href: "#" },
         ],
         nav: [
-          { id: "n1", label: "Home", href: "Morpheps.dc.html" },
+          { id: "n1", label: "Home", href: "Funchems.dc.html" },
           { id: "n2", label: "Shop", href: "Shop.dc.html" },
           { id: "n3", label: "Pricelist", href: "Pricelist.dc.html" },
           { id: "n4", label: "Bundles", href: "Bundles.dc.html" },
@@ -547,7 +547,7 @@
     },
     auth: {
       async signIn(email, password) {
-        const db = window.Morpheps;
+        const db = window.Funchems;
         const c = db.connect();
         if (c) {
           const { error } = await c.auth.signInWithPassword({ email: String(email).trim(), password });
@@ -561,7 +561,7 @@
         return { ok: true };
       },
       async signUp(fields) {
-        const db = window.Morpheps;
+        const db = window.Funchems;
         const email = String(fields.email || "").trim();
         if (!email.includes("@")) return { ok: false, error: "Enter a valid email address." };
         if (String(fields.password || "").length < 8) return { ok: false, error: "Use at least eight characters for the password." };
@@ -593,14 +593,14 @@
         return { ok: true };
       },
       async signOut() {
-        const db = window.Morpheps;
+        const db = window.Funchems;
         const c = db.connect();
         if (c) await c.auth.signOut();
         localStorage.removeItem(db.KEY + ":session");
         db.notify();
       },
       async resetPassword(email) {
-        const db = window.Morpheps;
+        const db = window.Funchems;
         const c = db.connect();
         if (c) {
           const { error } = await c.auth.resetPasswordForEmail(String(email).trim(), {
@@ -614,7 +614,7 @@
           : { ok: false, error: "No account uses that email address." };
       },
       async changePassword(next) {
-        const db = window.Morpheps;
+        const db = window.Funchems;
         if (String(next || "").length < 8) return { ok: false, error: "Use at least eight characters." };
         const c = db.connect();
         if (c) {
@@ -630,7 +630,7 @@
         return { ok: true, note: "Password updated." };
       },
       async deleteAccount() {
-        const db = window.Morpheps;
+        const db = window.Funchems;
         const me = db.currentUser();
         if (!me) return { ok: false, error: "Sign in first." };
         const c = db.connect();
@@ -907,7 +907,7 @@
       const pr = this.pricing();
       const id = "MP-" + (24119 + this.data.orders.length);
       const order = {
-        id, email: info.email || "guest@morpheps.store", status: "Awaiting",
+        id, email: info.email || "guest@funchems.store", status: "Awaiting",
         payMethod: info.payMethod || "ETH",
         chain: info.chain || "Ethereum",
         subtotal: pr.subtotal, discount: pr.orderOff, shipping: pr.shipping, total: pr.total,
@@ -965,7 +965,7 @@
     },
   };
 
-  window.Morpheps = db;
+  window.Funchems = db;
   window.Aptera = db;
 
   // Each .dc.html page is a fresh full page load, not a SPA — connect() must

@@ -65,9 +65,9 @@ class Component extends DCLogic {
   state = { email: "", subscribed: false };
 
   componentDidMount() {
-    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
-    if (window.Morpheps) bind();
-    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+    const bind = () => { this.unsub = window.Funchems.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Funchems) bind();
+    else this.poll = setInterval(() => { if (window.Funchems) { clearInterval(this.poll); bind(); } }, 60);
   }
   componentWillUnmount() {
     if (this.unsub) this.unsub();
@@ -75,11 +75,11 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const db = window.Morpheps;
+    const db = window.Funchems;
     const f = db ? db.footer() : {};
-    const name = (db ? db.data.settings.storeName : "Morpheps").split(" ");
+    const name = (db ? db.data.settings.storeName : "Funchems").split(" ");
     return {
-      brandOne: name.join(" ") || "Morpheps",
+      brandOne: name.join(" ") || "Funchems",
       blurb: f.blurb || "",
       legal: f.legal || "",
       legalLinks: db ? (db.data.content.legalLinks || []) : [],

@@ -210,10 +210,10 @@ class Component extends DCLogic {
   state = { slide: 0, voted: null, email: "", subscribed: false };
 
   componentDidMount() {
-    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
-    if (window.Morpheps) bind();
-    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
-    try { this.setState({ voted: window.localStorage.getItem("morpheps-vote") }); } catch (e) {}
+    const bind = () => { this.unsub = window.Funchems.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Funchems) bind();
+    else this.poll = setInterval(() => { if (window.Funchems) { clearInterval(this.poll); bind(); } }, 60);
+    try { this.setState({ voted: window.localStorage.getItem("funchems-vote") }); } catch (e) {}
     this.startTimer();
   }
   componentWillUnmount() {
@@ -224,14 +224,14 @@ class Component extends DCLogic {
   startTimer() {
     if (this.timer) clearInterval(this.timer);
     this.timer = setInterval(() => {
-      const n = ((window.Morpheps && window.Morpheps.data.content.hero.filter((h) => h.live).length) || 1);
+      const n = ((window.Funchems && window.Funchems.data.content.hero.filter((h) => h.live).length) || 1);
       this.setState((s) => ({ slide: (s.slide + 1) % n }));
     }, 6500);
   }
   goTo(i) { this.startTimer(); this.setState({ slide: i }); }
 
   renderVals() {
-    const db = window.Morpheps;
+    const db = window.Funchems;
     const blockImage = (id) => {
       const b = db && db.data.content.blocks.find((x) => x.id === id);
       const src = b && (b.images || [])[0];
@@ -312,7 +312,7 @@ class Component extends DCLogic {
           vote: () => {
             if (!vote.open || this.state.voted) return;
             db.edit((x) => { const o = x.votes.options.find((y) => y.cat === v.cat); if (o) o.count += 1; });
-            try { window.localStorage.setItem("morpheps-vote", v.cat); } catch (e) {}
+            try { window.localStorage.setItem("funchems-vote", v.cat); } catch (e) {}
             this.setState({ voted: v.cat });
           },
         };

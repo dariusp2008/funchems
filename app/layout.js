@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Morpheps",
+  title: "Funchems",
 };
 
 export default function RootLayout({ children }) {

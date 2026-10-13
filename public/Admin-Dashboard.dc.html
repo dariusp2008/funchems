@@ -27,7 +27,7 @@
   <aside style="display: flex; flex-direction: column; gap: 20px; padding: 24px 0; background: oklch(0.19 0.008 250); color: oklch(0.85 0.006 250); position: sticky; top: 0; height: 100vh; overflow-y: auto;">
     <div style="display: flex; align-items: baseline; gap: 9px; padding: 0 22px;">
       <span style="width: 9px; height: 9px; background: oklch(0.40 0.105 262); display: block;"></span>
-      <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 22px; color: oklch(0.972 0.003 240);">Morpheps</span>
+      <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 22px; color: oklch(0.972 0.003 240);">Funchems</span>
       <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.6 0.006 250);">/admindb</span>
     </div>
 
@@ -51,7 +51,7 @@
         <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.72 0.006 250);">{{ dbLabel }}</span>
       </div>
       <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; line-height: 1.6; color: oklch(0.55 0.006 250);">{{ dbDetail }}</span>
-      <a href="Morpheps.dc.html" style="margin-top: 4px; font-size: 12px; color: oklch(0.75 0.006 250);" style-hover="color: oklch(0.76 0.07 262);">Back to store</a>
+      <a href="Funchems.dc.html" style="margin-top: 4px; font-size: 12px; color: oklch(0.75 0.006 250);" style-hover="color: oklch(0.76 0.07 262);">Back to store</a>
     </div>
   </aside>
 
@@ -641,7 +641,7 @@ class Component extends DCLogic {
     sandbox: { lines: [{ cat: "MK25", qty: 2 }, { cat: "PR2", qty: 1 }, { cat: "AN30", qty: 1 }], pay: "crypto", code: "" },
   };
 
-  get db() { return window.Morpheps; }
+  get db() { return window.Funchems; }
 
   componentDidMount() {
     this.unsub = this.db.subscribe(() => this.forceUpdate());
@@ -664,7 +664,7 @@ class Component extends DCLogic {
       headers: { Authorization: "Bearer " + token },
     });
     const body = await res.json();
-    if (!body.isAdmin) { window.location.href = "Morpheps.dc.html"; return; }
+    if (!body.isAdmin) { window.location.href = "Funchems.dc.html"; return; }
   }
 
   edit(fn) {
@@ -1539,7 +1539,7 @@ class Component extends DCLogic {
       },
       copyLabel: this.state.copied ? "Schema copied" : "Copy SQL schema",
       copySchema: () => {
-        const sql = "-- Morpheps schema: see the comment block at the top of store-data.js\n-- products, discounts, orders, customers, lab_reports, reviews, votes, content";
+        const sql = "-- Funchems schema: see the comment block at the top of store-data.js\n-- products, discounts, orders, customers, lab_reports, reviews, votes, content";
         try { navigator.clipboard.writeText(sql); } catch (e) {}
         this.setState({ copied: true });
         setTimeout(() => this.setState({ copied: false }), 2200);

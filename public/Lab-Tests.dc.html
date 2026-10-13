@@ -113,9 +113,9 @@ class Component extends DCLogic {
   state = { filter: 0, query: "" };
 
   componentDidMount() {
-    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
-    if (window.Morpheps) bind();
-    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+    const bind = () => { this.unsub = window.Funchems.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Funchems) bind();
+    else this.poll = setInterval(() => { if (window.Funchems) { clearInterval(this.poll); bind(); } }, 60);
   }
   componentWillUnmount() {
     if (this.unsub) this.unsub();
@@ -123,7 +123,7 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const db = window.Morpheps;
+    const db = window.Funchems;
     if (!db) return { reports: [], filters: [], headers: [], stats: [], guide: [] };
     const all = db.data.labReports.filter((r) => r.live);
     const q = this.state.query.trim().toLowerCase();

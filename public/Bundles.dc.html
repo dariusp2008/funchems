@@ -116,9 +116,9 @@ class Component extends DCLogic {
   state = { picks: ["", "", "", "", ""], added: null, addedBuild: false };
 
   componentDidMount() {
-    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
-    if (window.Morpheps) bind();
-    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+    const bind = () => { this.unsub = window.Funchems.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Funchems) bind();
+    else this.poll = setInterval(() => { if (window.Funchems) { clearInterval(this.poll); bind(); } }, 60);
   }
   componentWillUnmount() {
     if (this.unsub) this.unsub();
@@ -130,7 +130,7 @@ class Component extends DCLogic {
      catalogue numbers where they appear so prices stay honest. */
   parseContents(str) {
     return String(str || "").split(",").map((s) => s.trim()).filter(Boolean).map((part) => {
-      const db = window.Morpheps;
+      const db = window.Funchems;
       const token = (part.match(/^[A-Za-z0-9-]+/) || [""])[0];
       const p = token ? db.product(token.toUpperCase()) : null;
       const rest = p ? part.slice(token.length).trim() : "";
@@ -139,7 +139,7 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const db = window.Morpheps;
+    const db = window.Funchems;
     if (!db) return { bundles: [], slots: [], options: [], buildRows: [], panelImage: "none" };
     const sets = db.data.content.bundles.filter((b) => b.live);
     const options = db.products({ liveOnly: true }).filter((p) => p.category !== "accessory");

@@ -98,9 +98,9 @@ class Component extends DCLogic {
   state = { tab: 0, query: "", added: null };
 
   componentDidMount() {
-    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
-    if (window.Morpheps) bind();
-    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+    const bind = () => { this.unsub = window.Funchems.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Funchems) bind();
+    else this.poll = setInterval(() => { if (window.Funchems) { clearInterval(this.poll); bind(); } }, 60);
   }
   componentWillUnmount() {
     if (this.unsub) this.unsub();
@@ -109,7 +109,7 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const db = window.Morpheps;
+    const db = window.Funchems;
     if (!db) return { rows: [], tabs: [], headers: [], tiers: [], gridCols: "108px minmax(190px, 1fr) 118px 108px 108px 108px 100px 132px" };
     const all = db.products({ liveOnly: true });
     const catList = db.categories({ liveOnly: true });

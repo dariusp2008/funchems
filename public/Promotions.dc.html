@@ -137,10 +137,10 @@ class Component extends DCLogic {
   state = { voted: null };
 
   componentDidMount() {
-    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
-    if (window.Morpheps) bind();
-    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
-    try { this.setState({ voted: window.localStorage.getItem("morpheps-vote") }); } catch (e) {}
+    const bind = () => { this.unsub = window.Funchems.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Funchems) bind();
+    else this.poll = setInterval(() => { if (window.Funchems) { clearInterval(this.poll); bind(); } }, 60);
+    try { this.setState({ voted: window.localStorage.getItem("funchems-vote") }); } catch (e) {}
     this.tick = setInterval(() => this.forceUpdate(), 30000);
   }
   componentWillUnmount() {
@@ -150,7 +150,7 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const db = window.Morpheps;
+    const db = window.Funchems;
     if (!db) return { deals: [], stacked: [], rules: [], clock: [], voteLive: false, voteOptions: [], heroImage: "none" };
     const d = db.data;
     const vote = d.votes;
@@ -204,7 +204,7 @@ class Component extends DCLogic {
           vote: () => {
             if (!vote.open || this.state.voted) return;
             db.edit((x) => { const o = x.votes.options.find((y) => y.cat === v.cat); if (o) o.count += 1; });
-            try { window.localStorage.setItem("morpheps-vote", v.cat); } catch (e) {}
+            try { window.localStorage.setItem("funchems-vote", v.cat); } catch (e) {}
             this.setState({ voted: v.cat });
           },
         };

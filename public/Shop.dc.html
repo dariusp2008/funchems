@@ -27,7 +27,7 @@
   <dc-import name="StoreChrome" active="Shop" hint-size="100%,222px"></dc-import>
 
   <div style="max-width: 1400px; margin: 0 auto; padding: 26px clamp(16px, 3.5vw, 40px) 0; display: flex; align-items: center; gap: 10px; font-size: 13px; color: oklch(0.58 0.006 250);">
-    <a href="Morpheps.dc.html" style="color: oklch(0.58 0.006 250);">Home</a><span>/</span><span style="color: oklch(0.3 0.008 250);">Shop</span>
+    <a href="Funchems.dc.html" style="color: oklch(0.58 0.006 250);">Home</a><span>/</span><span style="color: oklch(0.3 0.008 250);">Shop</span>
   </div>
 
   <section style="max-width: 1400px; margin: 0 auto; padding: 18px clamp(16px, 3.5vw, 40px) 0;">
@@ -129,16 +129,16 @@ class Component extends DCLogic {
   state = { cats: {}, doses: {}, query: "", sort: "popular", min: 0, max: null, inStock: false, page: 0 };
 
   ceiling() {
-    const db = window.Morpheps;
+    const db = window.Funchems;
     if (!db) return 1000;
     const prices = db.products({ liveOnly: true }).map((p) => db.effectivePrice(p));
     return Math.ceil(Math.max.apply(null, prices) / 50) * 50;
   }
 
   componentDidMount() {
-    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
-    if (window.Morpheps) bind();
-    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+    const bind = () => { this.unsub = window.Funchems.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Funchems) bind();
+    else this.poll = setInterval(() => { if (window.Funchems) { clearInterval(this.poll); bind(); } }, 60);
     const q = new URLSearchParams(window.location.search).get("q");
     if (q) this.setState({ query: q });
   }
@@ -158,7 +158,7 @@ class Component extends DCLogic {
     const s = this.state;
     const cats = Object.keys(s.cats).filter((k) => s.cats[k]);
     const doses = Object.keys(s.doses).filter((k) => s.doses[k]);
-    const unit = window.Morpheps.effectivePrice(p);
+    const unit = window.Funchems.effectivePrice(p);
     if (cats.length && !cats.includes(p.category)) return false;
     if (doses.length && !doses.includes(this.doseKey(p))) return false;
     if (s.query.trim() && !(p.name + " " + p.cat + " " + p.dose).toLowerCase().includes(s.query.trim().toLowerCase())) return false;
@@ -169,7 +169,7 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const db = window.Morpheps;
+    const db = window.Funchems;
     if (!db) return { filters: [], pageItems: [], pages: [] };
     const all = db.products({ liveOnly: true });
     // Cards are per compound, not per strength: a family shows if any of its sizes match.
@@ -224,7 +224,7 @@ class Component extends DCLogic {
       clearAll: () => this.setState({ cats: {}, doses: {}, query: "", min: 0, max: null, inStock: false, page: 0 }),
 
       filters: [
-        { title: "Category", items: window.Morpheps.categories({ liveOnly: true }).map((c) => chip("cats", c.slug, c.label, catCounts[c.slug] || 0)) },
+        { title: "Category", items: window.Funchems.categories({ liveOnly: true }).map((c) => chip("cats", c.slug, c.label, catCounts[c.slug] || 0)) },
         { title: "Dosage", items: Object.keys(doseCounts).sort((a, b) => (parseFloat(a) || 1e9) - (parseFloat(b) || 1e9)).map((k) => chip("doses", k, k, doseCounts[k])) },
       ],
 

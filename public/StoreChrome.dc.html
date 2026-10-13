@@ -19,8 +19,8 @@
   <header style="background: oklch(0.985 0.002 240); border-bottom: 1px solid oklch(0.9 0.004 250);">
     <div style="max-width: 1400px; margin: 0 auto; padding: 14px clamp(16px, 3.5vw, 40px); min-height: 84px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px;">
 
-      <a href="Morpheps.dc.html" style="display: flex; align-items: baseline;">
-        <span style="font-family: Synthra, Archivo, Helvetica, sans-serif; font-size: 30px; line-height: 1; letter-spacing: 0.01em;">Morpheps</span>
+      <a href="Funchems.dc.html" style="display: flex; align-items: baseline;">
+        <span style="font-family: Synthra, Archivo, Helvetica, sans-serif; font-size: 30px; line-height: 1; letter-spacing: 0.01em;">Funchems</span>
       </a>
 
       <div style="position: relative; flex: 1 1 240px; max-width: 520px; min-width: 0; margin: 0 auto;">
@@ -165,9 +165,9 @@ class Component extends DCLogic {
   state = { langOpen: false, lang: 0, cartOpen: false, query: "", suggestOpen: false };
 
   componentDidMount() {
-    const bind = () => { this.unsub = window.Morpheps.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
-    if (window.Morpheps) bind();
-    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+    const bind = () => { this.unsub = window.Funchems.subscribe(() => this.forceUpdate()); this.forceUpdate(); };
+    if (window.Funchems) bind();
+    else this.poll = setInterval(() => { if (window.Funchems) { clearInterval(this.poll); bind(); } }, 60);
   }
   componentWillUnmount() {
     if (this.unsub) this.unsub();
@@ -175,7 +175,7 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const db = window.Morpheps;
+    const db = window.Funchems;
     const active = this.props.active ?? "Home";
     const isHome = active === "Home";
     if (!db) {

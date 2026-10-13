@@ -201,13 +201,13 @@ class Component extends DCLogic {
 
   componentDidMount() {
     const bind = () => {
-      this.unsub = window.Morpheps.subscribe(() => this.forceUpdate());
+      this.unsub = window.Funchems.subscribe(() => this.forceUpdate());
       this.forceUpdate();
       this.refreshChat();
       this.chatTimer = setInterval(() => this.refreshChat(), 5000);
     };
-    if (window.Morpheps) bind();
-    else this.poll = setInterval(() => { if (window.Morpheps) { clearInterval(this.poll); bind(); } }, 60);
+    if (window.Funchems) bind();
+    else this.poll = setInterval(() => { if (window.Funchems) { clearInterval(this.poll); bind(); } }, 60);
   }
   componentWillUnmount() {
     if (this.unsub) this.unsub();
@@ -224,7 +224,7 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const db = window.Morpheps;
+    const db = window.Funchems;
     if (!db) return { faqs: [], topics: [], channels: [], contactFields: [], chatLog: [] };
     const all = db.data.content.faqs.filter((f) => f.live);
     const q = this.state.query.trim().toLowerCase();
@@ -330,7 +330,7 @@ class Component extends DCLogic {
       sendNoteColor: this.state.error ? "oklch(0.5 0.13 27)" : this.state.sent ? "oklch(0.45 0.11 145)" : "oklch(0.55 0.008 250)",
 
       channels: [
-        { label: "Email", value: "support@morpheps.com", note: "Replies within four hours, seven days a week." },
+        { label: "Email", value: "support@funchems.com", note: "Replies within four hours, seven days a week." },
         { label: "Live chat", value: "See the chat panel above", note: "Fastest for order status and restock questions." },
         { label: "Order issues", value: "Quote your order number", note: "Found in the dispatch email and in your account." },
       ],
