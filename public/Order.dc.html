@@ -30,8 +30,8 @@
     <section style="max-width: 1400px; margin: 0 auto; padding: 30px clamp(16px, 3.5vw, 40px) 0;">
       <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; padding-bottom: 18px; border-bottom: 1px solid oklch(0.9 0.004 250); flex-wrap: wrap;">
         <div style="display: flex; flex-direction: column; gap: 8px;">
-          <span style="font-size: 12.5px; color: oklch(0.5 0.008 250);">Placed {{ placedOn }}, {{ lineCount }}</span>
-          <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 33px; line-height: 1.06; letter-spacing: -0.02em; font-weight: 600;">Order {{ orderId }}</h1>
+          <span style="font-size: 12.5px; color: oklch(0.5 0.008 250);">{{ placedLine }}</span>
+          <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 33px; line-height: 1.06; letter-spacing: -0.02em; font-weight: 600;">{{ orderHeading }}</h1>
         </div>
         <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
           <span style="display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border: 1px solid {{ statusBorder }}; background: {{ statusBg }}; color: {{ statusColor }}; font-size: 13px; font-weight: 500;">
@@ -48,7 +48,7 @@
 
         <div style="display: flex; flex-direction: column; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
           <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 16px 22px; border-bottom: 1px solid oklch(0.93 0.004 250);">
-            <span style="font-size: 14px; font-weight: 600;">Progress</span>
+            <span style="font-size: 14px; font-weight: 600;">{{ progressLabel }}</span>
             <span style="font-size: 12.5px; color: oklch(0.52 0.008 250);">{{ etaLine }}</span>
           </div>
           <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
@@ -63,11 +63,11 @@
           </sc-for>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0;">
             <div style="display: flex; flex-direction: column; gap: 5px; padding: 16px 22px; border-right: 1px solid oklch(0.955 0.004 250);">
-              <span style="font-size: 12.5px; color: oklch(0.55 0.008 250);">Carrier reference</span>
+              <span style="font-size: 12.5px; color: oklch(0.55 0.008 250);">{{ carrierRefLabel }}</span>
               <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: {{ trackingColor }};">{{ tracking }}</span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 5px; padding: 16px 22px;">
-              <span style="font-size: 12.5px; color: oklch(0.55 0.008 250);">Ships to</span>
+              <span style="font-size: 12.5px; color: oklch(0.55 0.008 250);">{{ shipsToLabel }}</span>
               <span style="font-size: 13px;">{{ country }}, {{ email }}</span>
             </div>
           </div>
@@ -75,7 +75,7 @@
 
         <div style="display: flex; flex-direction: column; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
           <div style="display: grid; grid-template-columns: 78px minmax(0, 1fr) 64px 88px; gap: 12px; padding: 12px 22px; border-bottom: 1px solid oklch(0.93 0.004 250); font-size: 12.5px; color: oklch(0.52 0.008 250);">
-            <span>Cat. no.</span><span>Item</span><span style="text-align: right;">Qty</span><span style="text-align: right;">Line</span>
+            <span>{{ colCat }}</span><span>{{ colItem }}</span><span style="text-align: right;">{{ colQty }}</span><span style="text-align: right;">{{ colLine }}</span>
           </div>
           <sc-for list="{{ lines }}" as="l" hint-placeholder-count="3">
             <div style="display: grid; grid-template-columns: 78px minmax(0, 1fr) 64px 88px; gap: 12px; padding: 13px 22px; border-bottom: 1px solid oklch(0.955 0.004 250); align-items: baseline;">
@@ -90,7 +90,7 @@
           </sc-for>
           <sc-if value="{{ hasNote }}" hint-placeholder-val="{{ false }}">
             <div style="display: flex; flex-direction: column; gap: 5px; padding: 16px 22px;">
-              <span style="font-size: 12.5px; color: oklch(0.55 0.008 250);">Note on file</span>
+              <span style="font-size: 12.5px; color: oklch(0.55 0.008 250);">{{ noteOnFileLabel }}</span>
               <span style="font-size: 13px; line-height: 1.55;">{{ note }}</span>
             </div>
           </sc-if>
@@ -99,7 +99,7 @@
 
       <div style="display: flex; flex-direction: column; gap: 20px; min-width: 0;">
         <div style="display: flex; flex-direction: column; padding: 22px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
-          <span style="font-size: 14px; font-weight: 600; padding-bottom: 12px;">Payment</span>
+          <span style="font-size: 14px; font-weight: 600; padding-bottom: 12px;">{{ paymentLabel }}</span>
           <sc-for list="{{ summary }}" as="s" hint-placeholder-count="4">
             <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 9px 0; border-top: 1px solid oklch(0.95 0.004 250);">
               <span style="font-size: 13px; color: {{ s.color }};">{{ s.label }}</span>
@@ -107,25 +107,25 @@
             </div>
           </sc-for>
           <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 16px 0 4px; border-top: 1px solid oklch(0.88 0.004 250);">
-            <span style="font-size: 14.5px; font-weight: 500;">Paid by {{ payMethod }}</span>
+            <span style="font-size: 14.5px; font-weight: 500;">{{ paidByLine }}</span>
             <span style="font-size: 24px; font-weight: 500; letter-spacing: -0.02em;">{{ total }}</span>
           </div>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 12px; padding: 22px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
-          <span style="font-size: 14px; font-weight: 600;">Something wrong with this order?</span>
-          <p style="margin: 0; font-size: 13px; line-height: 1.6; color: oklch(0.45 0.008 250); text-wrap: pretty;">Damaged seals, a temperature excursion or a missing vial are replaced free within fourteen days of delivery. Quote the order number and the lot printed on the vial.</p>
+          <span style="font-size: 14px; font-weight: 600;">{{ wrongHeading }}</span>
+          <p style="margin: 0; font-size: 13px; line-height: 1.6; color: oklch(0.45 0.008 250); text-wrap: pretty;">{{ wrongBody }}</p>
           <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <a href="Help-Center.dc.html" style="display: flex; align-items: center; height: 40px; padding: 0 18px; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">Contact support</a>
+            <a href="Help-Center.dc.html" style="display: flex; align-items: center; height: 40px; padding: 0 18px; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">{{ contactSupportLabel }}</a>
             
           </div>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 10px; padding: 22px; border: 1px solid oklch(0.9 0.004 250);">
-          <span style="font-size: 14px; font-weight: 600;">Look up another order</span>
+          <span style="font-size: 14px; font-weight: 600;">{{ lookupHeadingFound }}</span>
           <div style="display: flex; gap: 8px; flex-wrap: wrap;">
             <input type="text" value="{{ lookup }}" onChange="{{ setLookup }}" onKeyDown="{{ lookupKey }}" placeholder="MP-24118" style="flex: 1; min-width: 140px; height: 42px; padding: 0 12px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 13.5px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);" />
-            <button onClick="{{ doLookup }}" style="height: 42px; padding: 0 18px; border: 1px solid oklch(0.19 0.008 250); border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262); border-color: oklch(0.40 0.105 262);">Find it</button>
+            <button onClick="{{ doLookup }}" style="height: 42px; padding: 0 18px; border: 1px solid oklch(0.19 0.008 250); border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262); border-color: oklch(0.40 0.105 262);">{{ findItLabel }}</button>
           </div>
           <span style="font-size: 12.5px; color: oklch(0.55 0.008 250);">{{ lookupHint }}</span>
         </div>
@@ -135,11 +135,11 @@
 
   <sc-if value="{{ notFound }}" hint-placeholder-val="{{ false }}">
     <section style="max-width: 620px; margin: 0 auto; padding: 80px clamp(16px, 3.5vw, 40px) 110px; display: flex; flex-direction: column; gap: 16px;">
-      <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 30px; line-height: 1.08; letter-spacing: -0.02em; font-weight: 600;">Find an order</h1>
+      <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 30px; line-height: 1.08; letter-spacing: -0.02em; font-weight: 600;">{{ lookupHeadingNotFound }}</h1>
       <p style="margin: 0; font-size: 14px; line-height: 1.65; color: oklch(0.45 0.008 250);">{{ lookupHint }}</p>
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <input type="text" value="{{ lookup }}" onChange="{{ setLookup }}" onKeyDown="{{ lookupKey }}" placeholder="Order number, e.g. MP-24118" style="flex: 1; min-width: 200px; height: 46px; padding: 0 14px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 14px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);" />
-        <button onClick="{{ doLookup }}" style="height: 46px; padding: 0 22px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262);">Find it</button>
+        <input type="text" value="{{ lookup }}" onChange="{{ setLookup }}" onKeyDown="{{ lookupKey }}" placeholder="{{ lookupInputPlaceholder }}" style="flex: 1; min-width: 200px; height: 46px; padding: 0 14px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 14px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);" />
+        <button onClick="{{ doLookup }}" style="height: 46px; padding: 0 22px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262);">{{ findItLabel }}</button>
       </div>
       <sc-if value="{{ hasRecent }}" hint-placeholder-val="{{ false }}">
       <div style="display: flex; flex-direction: column; gap: 0; margin-top: 10px; border-top: 1px solid oklch(0.9 0.004 250);">
@@ -159,6 +159,99 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1400,&quot;height&quot;:900}}">
+const STR = {
+  en: {
+    placedOn: (placedOn, lineCount) => "Placed " + placedOn + ", " + lineCount,
+    line: " line",
+    lines: " lines",
+    orderHeading: (id) => "Order " + id,
+    progressLabel: "Progress",
+    carrierRefLabel: "Carrier reference",
+    shipsToLabel: "Ships to",
+    colCat: "Cat. no.",
+    colItem: "Item",
+    colQty: "Qty",
+    colLine: "Line",
+    noteOnFileLabel: "Note on file",
+    paymentLabel: "Payment",
+    paidByLine: (payMethod) => "Paid by " + payMethod,
+    itemsLabel: "Items",
+    discountsLabel: "Discounts applied",
+    shippingLabel: "Cold chain shipping",
+    freeLabel: "free",
+    wrongHeading: "Something wrong with this order?",
+    wrongBody: "Damaged seals, a temperature excursion or a missing vial are replaced free within fourteen days of delivery. Quote the order number and the lot printed on the vial.",
+    contactSupportLabel: "Contact support",
+    lookupHeadingFound: "Look up another order",
+    lookupHeadingNotFound: "Find an order",
+    lookupInputPlaceholder: "Order number, e.g. MP-24118",
+    findItLabel: "Find it",
+    lookupHintMissed: (missed) => "No order matches " + missed + ". Check the number in your confirmation email.",
+    lookupHintDefault: "The number is in your confirmation email, in the form MP-24118.",
+    reorderLabel: "Reorder these items",
+    addedLabel: "Added to cart",
+    statusAwaiting: "Awaiting",
+    statusPaid: "Paid",
+    statusPacked: "Packed",
+    statusShipped: "Shipped",
+    statusRefunded: "Refunded",
+    noteAwaiting: (confirmed) => "Order received. Payment " + (confirmed ? "confirmed" : "not yet confirmed") + ".",
+    notePaid: "Funds cleared and the lot was reserved from stock.",
+    notePacked: "Vials packed with a frozen gel pack in an unmarked outer box.",
+    noteShippedTracking: "Handed to the carrier, reference below.",
+    noteShippedWaiting: "Waiting for the next carrier collection at 16:00 CET.",
+    etaRefunded: "Refund issued to the original method",
+    etaTransit: "In transit, 2 to 4 days inside the EU",
+    etaDispatch: (cutoff) => "Dispatch same day before " + cutoff,
+    trackingAssigned: "Assigned at hand-off",
+  },
+  nl: {
+    placedOn: (placedOn, lineCount) => "Geplaatst op " + placedOn + ", " + lineCount,
+    line: " regel",
+    lines: " regels",
+    orderHeading: (id) => "Bestelling " + id,
+    progressLabel: "Voortgang",
+    carrierRefLabel: "Vervoerdersreferentie",
+    shipsToLabel: "Verzending naar",
+    colCat: "Catalogusnr.",
+    colItem: "Artikel",
+    colQty: "Aantal",
+    colLine: "Regel",
+    noteOnFileLabel: "Notitie bij bestelling",
+    paymentLabel: "Betaling",
+    paidByLine: (payMethod) => "Betaald met " + payMethod,
+    itemsLabel: "Artikelen",
+    discountsLabel: "Toegepaste kortingen",
+    shippingLabel: "Koelketenverzending",
+    freeLabel: "gratis",
+    wrongHeading: "Iets mis met deze bestelling?",
+    wrongBody: "Beschadigde verzegelingen, een temperatuurafwijking of een ontbrekende injectieflacon worden binnen veertien dagen na levering gratis vervangen. Vermeld het bestelnummer en het partijnummer op de injectieflacon.",
+    contactSupportLabel: "Contact met support",
+    lookupHeadingFound: "Een andere bestelling opzoeken",
+    lookupHeadingNotFound: "Bestelling zoeken",
+    lookupInputPlaceholder: "Bestelnummer, bijv. MP-24118",
+    findItLabel: "Zoeken",
+    lookupHintMissed: (missed) => "Geen bestelling gevonden bij " + missed + ". Controleer het nummer in uw bevestigingsmail.",
+    lookupHintDefault: "Het nummer staat in uw bevestigingsmail, in de vorm MP-24118.",
+    reorderLabel: "Deze artikelen opnieuw bestellen",
+    addedLabel: "Toegevoegd aan winkelwagen",
+    statusAwaiting: "In afwachting",
+    statusPaid: "Betaald",
+    statusPacked: "Verpakt",
+    statusShipped: "Verzonden",
+    statusRefunded: "Terugbetaald",
+    noteAwaiting: (confirmed) => "Bestelling ontvangen. Betaling " + (confirmed ? "bevestigd" : "nog niet bevestigd") + ".",
+    notePaid: "Betaling verwerkt en de partij is uit voorraad gereserveerd.",
+    notePacked: "Injectieflacons verpakt met een bevroren koelelement in een neutrale buitendoos.",
+    noteShippedTracking: "Overgedragen aan de vervoerder, referentie hieronder.",
+    noteShippedWaiting: "In afwachting van de volgende ophaling door de vervoerder om 16:00 CET.",
+    etaRefunded: "Terugbetaling verwerkt via de oorspronkelijke methode",
+    etaTransit: "Onderweg, 2 tot 4 dagen binnen de EU",
+    etaDispatch: (cutoff) => "Vandaag verzonden voor " + cutoff,
+    trackingAssigned: "Wordt toegewezen bij overdracht",
+  },
+};
+
 class Component extends DCLogic {
   state = { id: "", lookup: "", added: false, missed: "" };
 
@@ -183,6 +276,7 @@ class Component extends DCLogic {
   renderVals() {
     const db = window.Funchems;
     if (!db) return { steps: [], lines: [], summary: [], recent: [] };
+    const L = (k) => db.t(STR, k);
     const o = this.find(db);
     const me = db.currentUser();
     const lookupFns = {
@@ -191,8 +285,12 @@ class Component extends DCLogic {
       doLookup: () => this.setState({ id: this.state.lookup.trim().toUpperCase(), lookup: "", missed: "" }),
       lookupKey: (e) => { if (e.key === "Enter") this.setState({ id: this.state.lookup.trim().toUpperCase(), lookup: "" }); },
       lookupHint: this.state.missed
-        ? "No order matches " + this.state.missed + ". Check the number in your confirmation email."
-        : "The number is in your confirmation email, in the form MP-24118.",
+        ? L("lookupHintMissed")(this.state.missed)
+        : L("lookupHintDefault"),
+      lookupHeadingFound: L("lookupHeadingFound"),
+      lookupHeadingNotFound: L("lookupHeadingNotFound"),
+      lookupInputPlaceholder: L("lookupInputPlaceholder"),
+      findItLabel: L("findItLabel"),
     };
 
     if (!o) {
@@ -208,6 +306,7 @@ class Component extends DCLogic {
     }
 
     const order = ["Awaiting", "Paid", "Packed", "Shipped"];
+    const statusLabels = { Awaiting: L("statusAwaiting"), Paid: L("statusPaid"), Packed: L("statusPacked"), Shipped: L("statusShipped") };
     const reached = order.indexOf(o.status);
     const refunded = o.status === "Refunded";
     const day = (offset) => {
@@ -216,10 +315,10 @@ class Component extends DCLogic {
       return d.toISOString().slice(5, 10).replace("-", "/");
     };
     const notes = [
-      "Order received. Payment " + (reached >= 1 ? "confirmed" : "not yet confirmed") + ".",
-      "Funds cleared and the lot was reserved from stock.",
-      "Vials packed with a frozen gel pack in an unmarked outer box.",
-      o.tracking ? "Handed to the carrier, reference below." : "Waiting for the next carrier collection at 16:00 CET.",
+      L("noteAwaiting")(reached >= 1),
+      L("notePaid"),
+      L("notePacked"),
+      o.tracking ? L("noteShippedTracking") : L("noteShippedWaiting"),
     ];
     const tone = {
       Awaiting: "oklch(0.5 0.12 60)", Paid: "oklch(0.42 0.10 145)",
@@ -227,25 +326,40 @@ class Component extends DCLogic {
     }[o.status] || "oklch(0.3 0.008 250)";
 
     const summary = [
-      { label: "Items", value: db.money(o.subtotal), color: "oklch(0.4 0.008 250)" },
-      { label: "Discounts applied", value: o.discount ? "−" + db.money(o.discount) : "", color: o.discount ? "oklch(0.40 0.105 262)" : "oklch(0.55 0.008 250)" },
-      { label: "Cold chain shipping", value: o.shipping ? db.money(o.shipping) : "free", color: "oklch(0.4 0.008 250)" },
+      { label: L("itemsLabel"), value: db.money(o.subtotal), color: "oklch(0.4 0.008 250)" },
+      { label: L("discountsLabel"), value: o.discount ? "−" + db.money(o.discount) : "", color: o.discount ? "oklch(0.40 0.105 262)" : "oklch(0.55 0.008 250)" },
+      { label: L("shippingLabel"), value: o.shipping ? db.money(o.shipping) : L("freeLabel"), color: "oklch(0.4 0.008 250)" },
     ];
+
+    const lineCountNum = (o.lines || []).length;
+    const lineCount = lineCountNum + (lineCountNum === 1 ? L("line") : L("lines"));
 
     return {
       ...lookupFns,
       found: true, notFound: false,
       orderId: o.id,
-      placedOn: new Date(o.createdAt + "T09:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }),
-      lineCount: (o.lines || []).length + ((o.lines || []).length === 1 ? " line" : " lines"),
-      status: refunded ? "Refunded" : o.status,
+      orderHeading: L("orderHeading")(o.id),
+      placedOn: new Date(o.createdAt + "T09:00:00").toLocaleDateString(db.lang() === "nl" ? "nl-NL" : "en-GB", { day: "numeric", month: "long", year: "numeric" }),
+      lineCount,
+      placedLine: L("placedOn")(new Date(o.createdAt + "T09:00:00").toLocaleDateString(db.lang() === "nl" ? "nl-NL" : "en-GB", { day: "numeric", month: "long", year: "numeric" }), lineCount),
+      status: refunded ? L("statusRefunded") : statusLabels[o.status] || o.status,
       statusColor: tone,
       statusBg: "oklch(0.985 0.002 240)",
       statusBorder: "oklch(0.88 0.004 250)",
-      etaLine: refunded ? "Refund issued to the original method" : reached >= 3 ? "In transit, 2 to 4 days inside the EU" : "Dispatch same day before " + db.data.settings.dispatchCutoff,
+      progressLabel: L("progressLabel"),
+      carrierRefLabel: L("carrierRefLabel"),
+      shipsToLabel: L("shipsToLabel"),
+      colCat: L("colCat"), colItem: L("colItem"), colQty: L("colQty"), colLine: L("colLine"),
+      noteOnFileLabel: L("noteOnFileLabel"),
+      paymentLabel: L("paymentLabel"),
+      paidByLine: L("paidByLine")(o.payMethod),
+      wrongHeading: L("wrongHeading"),
+      wrongBody: L("wrongBody"),
+      contactSupportLabel: L("contactSupportLabel"),
+      etaLine: refunded ? L("etaRefunded") : reached >= 3 ? L("etaTransit") : L("etaDispatch")(db.data.settings.dispatchCutoff),
 
       steps: order.map((label, i) => ({
-        label,
+        label: statusLabels[label] || label,
         note: notes[i],
         when: i <= reached ? day(i === 0 ? 0 : i === 1 ? 0 : 1) : "",
         dot: i <= reached ? tone : "transparent",
@@ -253,7 +367,7 @@ class Component extends DCLogic {
         color: i <= reached ? "oklch(0.22 0.008 250)" : "oklch(0.6 0.006 250)",
       })),
 
-      tracking: o.tracking || "Assigned at hand-off",
+      tracking: o.tracking || L("trackingAssigned"),
       trackingColor: o.tracking ? "oklch(0.22 0.008 250)" : "oklch(0.58 0.008 250)",
       country: o.country,
       email: o.email,
@@ -276,7 +390,7 @@ class Component extends DCLogic {
       total: db.money(db.orderTotalOf(o)),
       payMethod: o.payMethod,
 
-      reorderLabel: this.state.added ? "Added to cart" : "Reorder these items",
+      reorderLabel: this.state.added ? L("addedLabel") : L("reorderLabel"),
       reorder: () => {
         (o.lines || []).forEach((l) => db.cart.add(l.cat, l.qty));
         this.setState({ added: true });

@@ -78,6 +78,95 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1400,&quot;height&quot;:900}}">
+const STR = {
+  en: {
+    modeLabels: ["Sign in", "Create account", "Reset password"],
+    title: ["Sign in", "Create an account", "Reset your password"],
+    blurb: [
+      "Your order history, saved compounds and stored payment methods live behind this.",
+      "One account covers ordering, lab report access and the weekly offsale vote.",
+      "Enter the address on the account and we will send a reset link.",
+    ],
+    emailLabel: "Email",
+    emailPlaceholder: "youremail@email.com",
+    passwordLabel: "Password",
+    nameLabel: "Name or institution",
+    namePlaceholder: "M. Reinholt",
+    countryLabel: "Country",
+    countryPlaceholder: "Norway",
+    countryHint: "Used to price cold chain shipping.",
+    signUpEmailHint: "Order updates and lab reports go here.",
+    passwordHint: "Eight characters or more.",
+    resetEmailHint: "We send a reset link that expires in an hour.",
+    submitLabel: ["Sign in", "Create account", "Send reset link"],
+    altLabel: ["Forgotten your password?", "Back to sign in"],
+    done: "Done.",
+    perks: [
+      { title: "Order history and reorder", body: "Every order keeps its lot numbers, so a repeat order is one click." },
+      { title: "Saved wallets", body: "Save the wallet address you pay from and reuse it at checkout." },
+      { title: "Lab report access", body: "New assays for compounds you have bought arrive by email." },
+      { title: "The weekly vote", body: "Account holders pick the compound that drops to half price." },
+    ],
+    errors: {
+      "No account uses that email address.": "No account uses that email address.",
+      "That password does not match our records.": "That password does not match our records.",
+      "Enter a valid email address.": "Enter a valid email address.",
+      "Use at least eight characters for the password.": "Use at least eight characters for the password.",
+      "That email already has an account. Sign in instead.": "That email already has an account. Sign in instead.",
+      "Invalid login credentials": "That email and password combination does not match our records.",
+    },
+    notes: {
+      "Check your email to confirm your account.": "Check your email to confirm your account.",
+      "It expires in one hour.": "It expires in one hour.",
+      "if an account exists.": "if an account exists.",
+      "Reset link sent to ": "Reset link sent to ",
+    },
+  },
+  nl: {
+    modeLabels: ["Inloggen", "Account aanmaken", "Wachtwoord resetten"],
+    title: ["Inloggen", "Een account aanmaken", "Uw wachtwoord resetten"],
+    blurb: [
+      "Uw bestelgeschiedenis, opgeslagen verbindingen en betaalmethoden vindt u hierachter.",
+      "Met één account bestelt u, krijgt u toegang tot labrapporten en stemt u mee over de wekelijkse afprijsactie.",
+      "Vul het adres van uw account in en wij sturen u een resetlink.",
+    ],
+    emailLabel: "E-mail",
+    emailPlaceholder: "uwemail@email.com",
+    passwordLabel: "Wachtwoord",
+    nameLabel: "Naam of instelling",
+    namePlaceholder: "M. Reinholt",
+    countryLabel: "Land",
+    countryPlaceholder: "Noorwegen",
+    countryHint: "Wordt gebruikt om de koelketenverzending te berekenen.",
+    signUpEmailHint: "Bestelupdates en labrapporten komen hier binnen.",
+    passwordHint: "Acht tekens of meer.",
+    resetEmailHint: "Wij sturen een resetlink die na een uur verloopt.",
+    submitLabel: ["Inloggen", "Account aanmaken", "Resetlink versturen"],
+    altLabel: ["Wachtwoord vergeten?", "Terug naar inloggen"],
+    done: "Gereed.",
+    perks: [
+      { title: "Bestelgeschiedenis en opnieuw bestellen", body: "Elke bestelling bewaart de lotnummers, zodat een herbestelling één klik is." },
+      { title: "Opgeslagen wallets", body: "Sla het walletadres op waarmee u betaalt en gebruik het opnieuw bij het afrekenen." },
+      { title: "Toegang tot labrapporten", body: "Nieuwe analyses voor verbindingen die u heeft gekocht, ontvangt u per e-mail." },
+      { title: "De wekelijkse stemming", body: "Accounthouders bepalen welke verbinding naar de halve prijs gaat." },
+    ],
+    errors: {
+      "No account uses that email address.": "Er is geen account met dit e-mailadres.",
+      "That password does not match our records.": "Dit wachtwoord komt niet overeen met onze gegevens.",
+      "Enter a valid email address.": "Vul een geldig e-mailadres in.",
+      "Use at least eight characters for the password.": "Gebruik minstens acht tekens voor het wachtwoord.",
+      "That email already has an account. Sign in instead.": "Dit e-mailadres heeft al een account. Log in plaats daarvan in.",
+      "Invalid login credentials": "Deze combinatie van e-mailadres en wachtwoord komt niet overeen met onze gegevens.",
+    },
+    notes: {
+      "Check your email to confirm your account.": "Controleer uw e-mail om uw account te bevestigen.",
+      "It expires in one hour.": "Deze verloopt na een uur.",
+      "if an account exists.": "als er een account bestaat.",
+      "Reset link sent to ": "Resetlink verzonden naar ",
+    },
+  },
+};
+
 class Component extends DCLogic {
   state = { mode: 0, email: "", password: "", name: "", country: "", note: "", ok: false };
 
@@ -91,6 +180,24 @@ class Component extends DCLogic {
     if (this.poll) clearInterval(this.poll);
   }
 
+  translateMessage(raw, isError) {
+    const db = window.Funchems;
+    if (!raw) return raw;
+    const dict = isError ? db.t(STR, "errors") : db.t(STR, "notes");
+    if (dict[raw]) return dict[raw];
+    if (!isError) {
+      const prefix = "Reset link sent to ";
+      if (raw.indexOf(prefix) === 0) {
+        const rest = raw.slice(prefix.length);
+        const translatedRest = rest
+          .replace("if an account exists.", dict["if an account exists."])
+          .replace("It expires in one hour.", dict["It expires in one hour."]);
+        return dict["Reset link sent to "] + translatedRest;
+      }
+    }
+    return raw;
+  }
+
   async go() {
     const db = window.Funchems;
     const m = this.state.mode;
@@ -100,10 +207,15 @@ class Component extends DCLogic {
     else res = await db.auth.resetPassword(this.state.email);
 
     if (res.ok && m === 0) { window.location.href = "Account.dc.html"; return; }
-    this.setState({ note: res.ok ? (res.note || "Done.") : res.error, ok: Boolean(res.ok) });
+    const note = res.ok
+      ? this.translateMessage(res.note, false) || db.t(STR, "done")
+      : this.translateMessage(res.error, true);
+    this.setState({ note, ok: Boolean(res.ok) });
   }
 
   renderVals() {
+    const db = window.Funchems;
+    const L = (k) => db.t(STR, k);
     const m = this.state.mode;
     const f = (key, label, type, placeholder, hint, autocomplete) => ({
       label, type, placeholder, hint: hint || "", autocomplete: autocomplete || "on",
@@ -112,44 +224,35 @@ class Component extends DCLogic {
     });
 
     const fields = m === 0
-      ? [f("email", "Email", "email", "youremail@email.com", "", "email"), f("password", "Password", "password", "", "", "current-password")]
+      ? [f("email", L("emailLabel"), "email", L("emailPlaceholder"), "", "email"), f("password", L("passwordLabel"), "password", "", "", "current-password")]
       : m === 1
         ? [
-          f("name", "Name or institution", "text", "M. Reinholt", "", "name"),
-          f("email", "Email", "email", "youremail@email.com", "Order updates and lab reports go here.", "email"),
-          f("country", "Country", "text", "Norway", "Used to price cold chain shipping.", "country-name"),
-          f("password", "Password", "password", "", "Eight characters or more.", "new-password"),
+          f("name", L("nameLabel"), "text", L("namePlaceholder"), "", "name"),
+          f("email", L("emailLabel"), "email", L("emailPlaceholder"), L("signUpEmailHint"), "email"),
+          f("country", L("countryLabel"), "text", L("countryPlaceholder"), L("countryHint"), "country-name"),
+          f("password", L("passwordLabel"), "password", "", L("passwordHint"), "new-password"),
         ]
-        : [f("email", "Email", "email", "youremail@email.com", "We send a reset link that expires in an hour.", "email")];
+        : [f("email", L("emailLabel"), "email", L("emailPlaceholder"), L("resetEmailHint"), "email")];
 
     return {
-      modes: ["Sign in", "Create account", "Reset password"].map((label, i) => ({
+      modes: L("modeLabels").map((label, i) => ({
         label,
         pick: () => this.setState({ mode: i, note: "" }),
         bg: i === m ? "oklch(0.985 0.002 240)" : "transparent",
         color: i === m ? "oklch(0.19 0.008 250)" : "oklch(0.52 0.008 250)",
       })),
-      title: m === 0 ? "Sign in" : m === 1 ? "Create an account" : "Reset your password",
-      blurb: m === 0
-        ? "Your order history, saved compounds and stored payment methods live behind this."
-        : m === 1
-          ? "One account covers ordering, lab report access and the weekly offsale vote."
-          : "Enter the address on the account and we will send a reset link.",
+      title: L("title")[m],
+      blurb: L("blurb")[m],
       fields,
       submit: () => this.go(),
       submitKey: (e) => { if (e.key === "Enter") this.go(); },
-      submitLabel: m === 0 ? "Sign in" : m === 1 ? "Create account" : "Send reset link",
-      altLabel: m === 0 ? "Forgotten your password?" : "Back to sign in",
+      submitLabel: L("submitLabel")[m],
+      altLabel: m === 0 ? L("altLabel")[0] : L("altLabel")[1],
       toggleReset: () => this.setState({ mode: m === 0 ? 2 : 0, note: "" }),
       hasNote: Boolean(this.state.note),
       note: this.state.note,
       noteColor: this.state.ok ? "oklch(0.42 0.10 145)" : "oklch(0.5 0.13 27)",
-      perks: [
-        { n: "01", title: "Order history and reorder", body: "Every order keeps its lot numbers, so a repeat order is one click." },
-        { n: "02", title: "Saved wallets", body: "Save the wallet address you pay from and reuse it at checkout." },
-        { n: "03", title: "Lab report access", body: "New assays for compounds you have bought arrive by email." },
-        { n: "04", title: "The weekly vote", body: "Account holders pick the compound that drops to half price." },
-      ],
+      perks: L("perks"),
     };
   }
 }

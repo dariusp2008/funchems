@@ -82,10 +82,10 @@
   <section style="max-width: 1400px; margin: 0 auto; padding: 52px clamp(16px, 3.5vw, 40px) 0;">
     <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 26px; border-bottom: 1px solid oklch(0.9 0.004 250); margin-bottom: 32px; flex-wrap: wrap;">
       <div style="display: flex; flex-direction: column; gap: 10px;">
-        <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">Curated selection</span>
-        <h2 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 27px; line-height: 1.12; letter-spacing: -0.015em; font-weight: 600;">Featured this week</h2>
+        <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">{{ curatedSelection }}</span>
+        <h2 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 27px; line-height: 1.12; letter-spacing: -0.015em; font-weight: 600;">{{ featuredThisWeek }}</h2>
       </div>
-      <a href="Shop.dc.html" style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.4 0.008 250); padding-bottom: 4px;" style-hover="color: oklch(0.40 0.105 262);">View full catalogue
+      <a href="Shop.dc.html" style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.4 0.008 250); padding-bottom: 4px;" style-hover="color: oklch(0.40 0.105 262);">{{ viewFullCatalogue }}
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
       </a>
     </div>
@@ -134,10 +134,10 @@
   <section style="max-width: 1400px; margin: 0 auto; padding: 52px clamp(16px, 3.5vw, 40px) 0;">
     <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 26px; border-bottom: 1px solid oklch(0.9 0.004 250); margin-bottom: 32px; flex-wrap: wrap;">
       <div style="display: flex; flex-direction: column; gap: 10px;">
-        <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">In stock, ships today</span>
-        <h2 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 27px; line-height: 1.12; letter-spacing: -0.015em; font-weight: 600;">Moving fastest right now</h2>
+        <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">{{ inStockShipsToday }}</span>
+        <h2 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 27px; line-height: 1.12; letter-spacing: -0.015em; font-weight: 600;">{{ movingFastest }}</h2>
       </div>
-      <a href="Shop.dc.html" style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.4 0.008 250); padding-bottom: 4px;" style-hover="color: oklch(0.40 0.105 262);">See all compounds
+      <a href="Shop.dc.html" style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.4 0.008 250); padding-bottom: 4px;" style-hover="color: oklch(0.40 0.105 262);">{{ seeAllCompounds }}
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
       </a>
     </div>
@@ -153,13 +153,13 @@
 
       <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 24px; padding: clamp(26px, 2.6vw, 40px); background: oklch(0.19 0.008 250); border-radius: 2px; color: oklch(0.972 0.003 240);">
         <div style="display: flex; flex-direction: column; gap: 14px;">
-          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.76 0.07 262);">Join the community</span>
+          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.76 0.07 262);">{{ joinCommunity }}</span>
           <h3 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: clamp(24px, 2.3vw, 32px); line-height: 1.03; letter-spacing: -0.02em; font-weight: 600; text-wrap: balance;">{{ communityTitle }}</h3>
           <p style="margin: 0; max-width: 42ch; font-size: 13.5px; line-height: 1.65; color: oklch(0.78 0.006 250); text-wrap: pretty;">{{ communityBody }}</p>
         </div>
         <div style="display: flex; flex-direction: column; gap: 14px;">
           <div style="display: flex; gap: 8px;">
-            <input type="email" value="{{ email }}" onChange="{{ setEmail }}" placeholder="youremail@email.com" style="flex: 1; min-width: 0; height: 44px; padding: 0 14px; border: 1px solid oklch(0.36 0.008 250); border-radius: 2px; background: oklch(0.24 0.008 250); color: oklch(0.972 0.003 240); font-size: 13.5px; outline: none;" style-focus="border-color: oklch(0.76 0.07 262); background: oklch(0.27 0.008 250);" />
+            <input type="email" value="{{ email }}" onChange="{{ setEmail }}" placeholder="{{ emailPlaceholder }}" style="flex: 1; min-width: 0; height: 44px; padding: 0 14px; border: 1px solid oklch(0.36 0.008 250); border-radius: 2px; background: oklch(0.24 0.008 250); color: oklch(0.972 0.003 240); font-size: 13.5px; outline: none;" style-focus="border-color: oklch(0.76 0.07 262); background: oklch(0.27 0.008 250);" />
             <button onClick="{{ subscribe }}" style="height: 44px; padding: 0 22px; border: 0; border-radius: 2px; background: oklch(0.972 0.003 240); color: oklch(0.19 0.008 250); font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0; cursor: pointer; white-space: nowrap;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">{{ subLabel }}</button>
           </div>
           <div style="display: flex; align-items: center; gap: 20px; font-size: 12.5px; color: oklch(0.66 0.006 250); flex-wrap: wrap;">
@@ -175,7 +175,7 @@
       <div style="position: relative; min-height: 320px; margin-right: clamp(28px, 3.6vw, 56px); background-color: oklch(0.95 0.004 250); background-image: {{ communityImage }}; background-size: cover; background-position: center;"></div>
       <div style="display: flex; flex-direction: column; justify-content: center; gap: clamp(16px, 1.8vw, 24px); padding: clamp(28px, 3.6vw, 56px) 0;">
         <span style="display: flex; align-items: center; gap: 10px; font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">
-          Every discount, in order
+          {{ everyDiscountInOrder }}
         </span>
         <h2 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: clamp(26px, 2.6vw, 36px); line-height: 1.02; letter-spacing: -0.02em; font-weight: 600; text-wrap: balance;">{{ discountsTitle }}</h2>
         <p style="margin: 0; max-width: 50ch; font-size: clamp(13px, 1.05vw, 15px); line-height: 1.65; color: oklch(0.44 0.008 250); text-wrap: pretty;">{{ discountsBody }}</p>
@@ -196,6 +196,73 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
+const STR = {
+  en: {
+    labReportsLabel: "Per-lot assays",
+    labReportsValue: (labCount) => (labCount ? labCount + " reports published in full" : "Every lot published in full"),
+    dispatchLabel: "Dispatch",
+    dispatchValue: (cutoff) => "Same day before " + cutoff,
+    cryptoLabel: "Crypto",
+    cryptoValue: (off) => off + "% off, applied automatically",
+    freeShipLabel: "Free shipping",
+    freeShipValue: (amount) => "Over " + amount,
+    curatedSelection: "Curated selection",
+    featuredThisWeek: "Featured this week",
+    viewFullCatalogue: "View full catalogue",
+    inStockShipsToday: "In stock, ships today",
+    movingFastest: "Moving fastest right now",
+    seeAllCompounds: "See all compounds",
+    joinCommunity: "Join the community",
+    everyDiscountInOrder: "Every discount, in order",
+    emailPlaceholder: "youremail@email.com",
+    voteClosesIn: (daysLeft) => "Community vote closes in " + daysLeft + (daysLeft === 1 ? " day" : " days"),
+    voteClosedWinnerLive: "Vote closed, the winner is live",
+    yourVoteSuffix: ", your vote",
+    votesCast: (total) => total.toLocaleString() + " votes cast, ",
+    voteStatusClosed: "closed",
+    voteStatusCounted: "your vote is counted",
+    voteStatusOpen: "one vote per visitor",
+    subscribedCommunityNote: "You are subscribed, Telegram & Discord",
+    subscribeDone: "Done",
+    cryptoDiscountText: "Pay in crypto and the discount comes off the order total automatically.",
+    tierDiscountText: (minDistinct) => "Order " + minDistinct + " or more different compounds, the tier applies to the whole order.",
+    verifiedResultText: "Submit a verified result and receive store credit on your next order.",
+    creditLabel: "credit",
+  },
+  nl: {
+    labReportsLabel: "Analyses per partij",
+    labReportsValue: (labCount) => (labCount ? labCount + " rapporten volledig gepubliceerd" : "Elke partij volledig gepubliceerd"),
+    dispatchLabel: "Verzending",
+    dispatchValue: (cutoff) => "Dezelfde dag voor " + cutoff,
+    cryptoLabel: "Crypto",
+    cryptoValue: (off) => off + "% korting, automatisch toegepast",
+    freeShipLabel: "Gratis verzending",
+    freeShipValue: (amount) => "Boven " + amount,
+    curatedSelection: "Geselecteerd aanbod",
+    featuredThisWeek: "Uitgelicht deze week",
+    viewFullCatalogue: "Bekijk de volledige catalogus",
+    inStockShipsToday: "Op voorraad, vandaag verzonden",
+    movingFastest: "Nu het snelst verkocht",
+    seeAllCompounds: "Alle verbindingen bekijken",
+    joinCommunity: "Word lid van de community",
+    everyDiscountInOrder: "Alle kortingen op een rij",
+    emailPlaceholder: "uwemail@email.com",
+    voteClosesIn: (daysLeft) => "Community-stemming sluit over " + daysLeft + (daysLeft === 1 ? " dag" : " dagen"),
+    voteClosedWinnerLive: "Stemming gesloten, de winnaar is live",
+    yourVoteSuffix: ", uw stem",
+    votesCast: (total) => total.toLocaleString() + " stemmen uitgebracht, ",
+    voteStatusClosed: "gesloten",
+    voteStatusCounted: "uw stem is geteld",
+    voteStatusOpen: "één stem per bezoeker",
+    subscribedCommunityNote: "U bent aangemeld, Telegram & Discord",
+    subscribeDone: "Klaar",
+    cryptoDiscountText: "Betaal met crypto en de korting wordt automatisch van het totaalbedrag afgetrokken.",
+    tierDiscountText: (minDistinct) => "Bestel " + minDistinct + " of meer verschillende verbindingen, de korting geldt voor de hele bestelling.",
+    verifiedResultText: "Dien een geverifieerd resultaat in en ontvang tegoed voor uw volgende bestelling.",
+    creditLabel: "tegoed",
+  },
+};
+
 class Component extends DCLogic {
   state = { slide: 0, voted: null, email: "", subscribed: false };
 
@@ -227,8 +294,17 @@ class Component extends DCLogic {
       const src = b && (b.images || [])[0];
       return src ? "url(" + src + ")" : "none";
     };
-    if (!db) return { slides: [], dots: [], featured: [], lineup: [], voteLive: false, voteOptions: [], discountLines: [], voteImage: "none", communityImage: "none", trustBar: [] };
+    if (!db) return {
+      slides: [], dots: [], featured: [], lineup: [], voteLive: false, voteOptions: [], discountLines: [],
+      voteImage: "none", communityImage: "none", trustBar: [],
+      curatedSelection: STR.en.curatedSelection, featuredThisWeek: STR.en.featuredThisWeek,
+      viewFullCatalogue: STR.en.viewFullCatalogue, inStockShipsToday: STR.en.inStockShipsToday,
+      movingFastest: STR.en.movingFastest, seeAllCompounds: STR.en.seeAllCompounds,
+      joinCommunity: STR.en.joinCommunity, everyDiscountInOrder: STR.en.everyDiscountInOrder,
+      emailPlaceholder: STR.en.emailPlaceholder,
+    };
     const d = db.data;
+    const L = (k) => db.t(STR, k);
     const hero = d.content.hero.filter((h) => h.live);
     const n = Math.max(1, hero.length);
     const cur = this.state.slide % n;
@@ -249,9 +325,11 @@ class Component extends DCLogic {
 
     return {
       slides: hero.map((s, i) => ({
-        eyebrow: s.eyebrow, title: s.title, body: s.body,
-        cta: s.cta, ctaHref: s.ctaHref || "Shop.dc.html",
-        cta2: s.cta2, cta2Href: s.cta2Href || "#", hasCta2: Boolean(s.cta2),
+        eyebrow: db.tr("hero", s.id, "eyebrow", s.eyebrow),
+        title: db.tr("hero", s.id, "title", s.title),
+        body: db.tr("hero", s.id, "body", s.body),
+        cta: db.tr("hero", s.id, "cta", s.cta), ctaHref: s.ctaHref || "Shop.dc.html",
+        cta2: db.tr("hero", s.id, "cta2", s.cta2), cta2Href: s.cta2Href || "#", hasCta2: Boolean(s.cta2),
         image: (s.images || [])[0] ? "url(" + s.images[0] + ")" : "none",
         opacity: i === cur ? 1 : 0,
         pointer: i === cur ? "auto" : "none",
@@ -270,27 +348,37 @@ class Component extends DCLogic {
       communityImage: blockImage("b4"),
 
       trustBar: [
-        { label: "Per-lot assays", value: labCount ? labCount + " reports published in full" : "Every lot published in full" },
-        { label: "Dispatch", value: "Same day before " + d.settings.dispatchCutoff },
-        { label: "Crypto", value: cryptoOff + "% off, applied automatically" },
-        { label: "Free shipping", value: "Over " + db.money(d.settings.freeShippingOver) },
+        { label: L("labReportsLabel"), value: L("labReportsValue")(labCount) },
+        { label: L("dispatchLabel"), value: L("dispatchValue")(d.settings.dispatchCutoff) },
+        { label: L("cryptoLabel"), value: L("cryptoValue")(cryptoOff) },
+        { label: L("freeShipLabel"), value: L("freeShipValue")(db.money(d.settings.freeShippingOver)) },
       ],
 
       featured: d.content.featured.filter(Boolean).map((cat) => ({ cat })),
       lineup: d.content.lineup.filter(Boolean).map((cat) => ({ cat })),
 
-      voteEyebrow: vote.open ? "Community vote closes in " + daysLeft + (daysLeft === 1 ? " day" : " days") : "Vote closed, the winner is live",
-      voteTitle: b1.title || "You decide what goes half price",
-      voteBody: b1.body || "",
-      voteCta: b1.cta || "Get 50% off",
-      voteCta2: b1.cta2 || "Vote now",
+      curatedSelection: L("curatedSelection"),
+      featuredThisWeek: L("featuredThisWeek"),
+      viewFullCatalogue: L("viewFullCatalogue"),
+      inStockShipsToday: L("inStockShipsToday"),
+      movingFastest: L("movingFastest"),
+      seeAllCompounds: L("seeAllCompounds"),
+      joinCommunity: L("joinCommunity"),
+      everyDiscountInOrder: L("everyDiscountInOrder"),
+      emailPlaceholder: L("emailPlaceholder"),
+
+      voteEyebrow: vote.open ? L("voteClosesIn")(daysLeft) : L("voteClosedWinnerLive"),
+      voteTitle: db.tr("blocks", "b1", "title", b1.title || "You decide what goes half price"),
+      voteBody: db.tr("blocks", "b1", "body", b1.body || ""),
+      voteCta: db.tr("blocks", "b1", "cta", b1.cta || "Get 50% off"),
+      voteCta2: db.tr("blocks", "b1", "cta2", b1.cta2 || "Vote now"),
       voteOptions: (vote.options || []).map((v) => {
         const p = db.product(v.cat);
         const share = Math.round((v.count / (total || 1)) * 100);
         const mine = this.state.voted === v.cat;
         return {
           name: (p && p.name) || v.cat,
-          pct: share + "%" + (mine ? ", your vote" : ""),
+          pct: share + "%" + (mine ? L("yourVoteSuffix") : ""),
           pctColor: mine ? "oklch(0.40 0.105 262)" : "oklch(0.55 0.008 250)",
           width: share + "%",
           barColor: mine || v === leader ? "oklch(0.40 0.105 262)" : "oklch(0.78 0.04 262)",
@@ -305,28 +393,28 @@ class Component extends DCLogic {
           },
         };
       }),
-      voteNote: total.toLocaleString() + " votes cast, "
-        + (!vote.open ? "closed" : this.state.voted ? "your vote is counted" : "one vote per visitor"),
+      voteNote: L("votesCast")(total)
+        + (!vote.open ? L("voteStatusClosed") : this.state.voted ? L("voteStatusCounted") : L("voteStatusOpen")),
 
-      communityTitle: b4.title || "Restocks, lab reports and the weekly vote",
-      communityBody: b4.body || "",
-      communityNote: this.state.subscribed ? "You are subscribed, Telegram & Discord" : (b4.note || ""),
+      communityTitle: db.tr("blocks", "b4", "title", b4.title || "Restocks, lab reports and the weekly vote"),
+      communityBody: db.tr("blocks", "b4", "body", b4.body || ""),
+      communityNote: this.state.subscribed ? L("subscribedCommunityNote") : db.tr("blocks", "b4", "note", b4.note || ""),
       email: this.state.email,
       setEmail: (e) => this.setState({ email: e.target.value }),
       subscribe: () => { if (this.state.email.includes("@")) this.setState({ subscribed: true }); },
-      subLabel: this.state.subscribed ? "Done" : (b4.cta || "Subscribe"),
+      subLabel: this.state.subscribed ? L("subscribeDone") : db.tr("blocks", "b4", "cta", b4.cta || "Subscribe"),
 
-      discountsTitle: b2.title || "How to get discounts",
-      discountsBody: b2.body || "",
-      discountsCta: b2.cta || "See all promotions",
+      discountsTitle: db.tr("blocks", "b2", "title", b2.title || "How to get discounts"),
+      discountsBody: db.tr("blocks", "b2", "body", b2.body || ""),
+      discountsCta: db.tr("blocks", "b2", "cta", b2.cta || "See all promotions"),
       discountLines: [
-        { n: "01", text: "Pay in crypto and the discount comes off the order total automatically.", value: "−" + cryptoOff + "%" },
+        { n: "01", text: L("cryptoDiscountText"), value: "−" + cryptoOff + "%" },
       ].concat(tiers.slice(0, 2).map((t, i) => ({
         n: String(i + 2).padStart(2, "0"),
-        text: "Order " + t.minDistinct + " or more different compounds, the tier applies to the whole order.",
+        text: L("tierDiscountText")(t.minDistinct),
         value: "−" + t.value + "%",
       }))).concat([
-        { n: String(Math.min(4, tiers.length + 2)).padStart(2, "0"), text: "Submit a verified result and receive store credit on your next order.", value: "credit" },
+        { n: String(Math.min(4, tiers.length + 2)).padStart(2, "0"), text: L("verifiedResultText"), value: L("creditLabel") },
       ]),
     };
   }

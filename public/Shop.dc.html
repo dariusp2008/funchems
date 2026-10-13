@@ -27,23 +27,23 @@
   <dc-import name="StoreChrome" active="n2" hint-size="100%,222px"></dc-import>
 
   <div style="max-width: 1400px; margin: 0 auto; padding: 26px clamp(16px, 3.5vw, 40px) 0; display: flex; align-items: center; gap: 10px; font-size: 13px; color: oklch(0.58 0.006 250);">
-    <a href="Funchems.dc.html" style="color: oklch(0.58 0.006 250);">Home</a><span>/</span><span style="color: oklch(0.3 0.008 250);">Shop</span>
+    <a href="Funchems.dc.html" style="color: oklch(0.58 0.006 250);">{{ homeLabel }}</a><span>/</span><span style="color: oklch(0.3 0.008 250);">{{ shopLabel }}</span>
   </div>
 
   <section style="max-width: 1400px; margin: 0 auto; padding: 18px clamp(16px, 3.5vw, 40px) 0;">
     <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 24px; border-bottom: 1px solid oklch(0.9 0.004 250); flex-wrap: wrap;">
       <div style="display: flex; flex-direction: column; gap: 12px;">
-        <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 34px; line-height: 1.05; letter-spacing: -0.02em; font-weight: 600;">All compounds</h1>
-        <span style="font-size: 13.5px; color: oklch(0.5 0.008 250);">{{ countLine }}. Prices are per kit of 10, tier discounts apply automatically at checkout.</span>
+        <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 34px; line-height: 1.05; letter-spacing: -0.02em; font-weight: 600;">{{ heading }}</h1>
+        <span style="font-size: 13.5px; color: oklch(0.5 0.008 250);">{{ countLine }}</span>
       </div>
       <div style="display: flex; align-items: center; gap: 10px;">
-        <span style="font-size: 13px; color: oklch(0.58 0.006 250);">Sort</span>
+        <span style="font-size: 13px; color: oklch(0.58 0.006 250);">{{ sortLabel }}</span>
         <select value="{{ sort }}" onChange="{{ setSort }}" style="height: 38px; padding: 0 12px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 13px; color: oklch(0.25 0.008 250); outline: none;">
-          <option value="popular">Most popular</option>
-          <option value="price-asc">Price, low to high</option>
-          <option value="price-desc">Price, high to low</option>
-          <option value="newest">Newest batch</option>
-          <option value="discount">Biggest discount</option>
+          <option value="popular">{{ sortPopular }}</option>
+          <option value="price-asc">{{ sortPriceAsc }}</option>
+          <option value="price-desc">{{ sortPriceDesc }}</option>
+          <option value="newest">{{ sortNewest }}</option>
+          <option value="discount">{{ sortDiscount }}</option>
         </select>
       </div>
     </div>
@@ -53,9 +53,9 @@
 
     <aside style="flex: 0 1 236px; min-width: min(100%, 200px); display: flex; flex-direction: column; gap: 26px; position: sticky; top: 24px;">
       <div style="display: flex; flex-direction: column; gap: 10px;">
-        <input type="text" value="{{ query }}" onChange="{{ setQuery }}" placeholder="Filter by name or cat. no." style="height: 38px; padding: 0 11px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 13px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);" />
+        <input type="text" value="{{ query }}" onChange="{{ setQuery }}" placeholder="{{ filterPlaceholder }}" style="height: 38px; padding: 0 11px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 13px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);" />
         <sc-if value="{{ hasActive }}" hint-placeholder-val="{{ false }}">
-          <button onClick="{{ clearAll }}" style="height: 32px; border: 1px solid oklch(0.86 0.03 25); border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 12.5px; color: oklch(0.5 0.13 25);" style-hover="background: oklch(0.40 0.105 262); border-color: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">Clear {{ activeCount }} filters</button>
+          <button onClick="{{ clearAll }}" style="height: 32px; border: 1px solid oklch(0.86 0.03 25); border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 12.5px; color: oklch(0.5 0.13 25);" style-hover="background: oklch(0.40 0.105 262); border-color: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">{{ clearFiltersLabel }}</button>
         </sc-if>
       </div>
 
@@ -77,7 +77,7 @@
       </sc-for>
 
       <div style="display: flex; flex-direction: column; gap: 14px;">
-        <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">Price</span>
+        <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">{{ priceLabel }}</span>
         <div style="display: flex; align-items: center; gap: 8px;">
           <input type="number" value="{{ min }}" onChange="{{ setMin }}" style="width: 100%; height: 36px; padding: 0 10px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 13px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);" />
           <span style="color: oklch(0.65 0.006 250);"></span>
@@ -86,7 +86,7 @@
         <button onClick="{{ toggleStock }}" style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0; border: 0; background: transparent; cursor: pointer; font-family: inherit; font-size: 13.5px; color: {{ stockColor }};" style-hover="color: oklch(0.40 0.105 262);">
           <span style="width: 14px; height: 14px; flex-shrink: 0; border: 1px solid {{ stockBorder }}; background: {{ stockBg }}; border-radius: 1px; display: flex; align-items: center; justify-content: center;">
             <span style="width: 6px; height: 6px; background: {{ stockDot }}; display: block;"></span>
-          </span>In stock only
+          </span>{{ inStockLabel }}
         </button>
       </div>
     </aside>
@@ -102,9 +102,9 @@
 
       <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
         <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 88px 20px; border: 1px dashed oklch(0.87 0.006 250);">
-          <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 30px; color: oklch(0.4 0.008 250);">No compounds match</span>
-          <span style="font-size: 13.5px; color: oklch(0.55 0.008 250);">Loosen a filter, or widen the price range.</span>
-          <button onClick="{{ clearAll }}" style="height: 42px; padding: 0 22px; margin-top: 6px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262);">Reset filters</button>
+          <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 30px; color: oklch(0.4 0.008 250);">{{ noMatchTitle }}</span>
+          <span style="font-size: 13.5px; color: oklch(0.55 0.008 250);">{{ noMatchNote }}</span>
+          <button onClick="{{ clearAll }}" style="height: 42px; padding: 0 22px; margin-top: 6px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262);">{{ resetFiltersLabel }}</button>
         </div>
       </sc-if>
 
@@ -125,6 +125,59 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
+const STR = {
+  en: {
+    homeLabel: "Home",
+    shopLabel: "Shop",
+    heading: "All compounds",
+    countLine: (compounds, lines) => compounds + " compounds, " + lines + " catalogue lines" + ". Prices are per kit of 10, tier discounts apply automatically at checkout.",
+    sortLabel: "Sort",
+    sortPopular: "Most popular",
+    sortPriceAsc: "Price, low to high",
+    sortPriceDesc: "Price, high to low",
+    sortNewest: "Newest batch",
+    sortDiscount: "Biggest discount",
+    filterPlaceholder: "Filter by name or cat. no.",
+    clearFiltersLabel: (n) => "Clear " + n + " filters",
+    categoryLabel: "Category",
+    dosageLabel: "Dosage",
+    priceLabel: "Price",
+    inStockLabel: "In stock only",
+    noMatchTitle: "No compounds match",
+    noMatchNote: "Loosen a filter, or widen the price range.",
+    resetFiltersLabel: "Reset filters",
+    showing: (from, to, total) => "Showing " + from + "–" + to + " of " + total,
+    nextLabel: "Next",
+    blendDose: "Blend dose",
+    otherDose: "Other",
+  },
+  nl: {
+    homeLabel: "Home",
+    shopLabel: "Shop",
+    heading: "Alle verbindingen",
+    countLine: (compounds, lines) => compounds + " verbindingen, " + lines + " catalogusregels" + ". Prijzen zijn per kit van 10, staffelkortingen worden automatisch bij het afrekenen toegepast.",
+    sortLabel: "Sorteren",
+    sortPopular: "Meest populair",
+    sortPriceAsc: "Prijs, laag naar hoog",
+    sortPriceDesc: "Prijs, hoog naar laag",
+    sortNewest: "Nieuwste batch",
+    sortDiscount: "Grootste korting",
+    filterPlaceholder: "Filter op naam of catalogusnr.",
+    clearFiltersLabel: (n) => n + " filters wissen",
+    categoryLabel: "Categorie",
+    dosageLabel: "Dosering",
+    priceLabel: "Prijs",
+    inStockLabel: "Alleen op voorraad",
+    noMatchTitle: "Geen verbindingen gevonden",
+    noMatchNote: "Verruim een filter of vergroot het prijsbereik.",
+    resetFiltersLabel: "Filters resetten",
+    showing: (from, to, total) => "Weergave " + from + "–" + to + " van " + total,
+    nextLabel: "Volgende",
+    blendDose: "Mixdosering",
+    otherDose: "Overig",
+  },
+};
+
 class Component extends DCLogic {
   state = { cats: {}, doses: {}, query: "", sort: "popular", min: 0, max: null, inStock: false, page: 0 };
 
@@ -154,6 +207,12 @@ class Component extends DCLogic {
     return v + " mg";
   }
 
+  doseLabel(key, L) {
+    if (key === "Blend dose") return L("blendDose");
+    if (key === "Other") return L("otherDose");
+    return key;
+  }
+
   matches(p) {
     const s = this.state;
     const cats = Object.keys(s.cats).filter((k) => s.cats[k]);
@@ -171,6 +230,7 @@ class Component extends DCLogic {
   renderVals() {
     const db = window.Funchems;
     if (!db) return { filters: [], pageItems: [], pages: [] };
+    const L = (k) => db.t(STR, k);
     const all = db.products({ liveOnly: true });
     // Cards are per compound, not per strength: a family shows if any of its sizes match.
     let list = db.families({ liveOnly: true }).filter((f) => f.variants.some((p) => this.matches(p)));
@@ -214,7 +274,17 @@ class Component extends DCLogic {
       + (Number(this.state.min) > 0 || (this.state.max !== null && Number(this.state.max) < cap) ? 1 : 0);
 
     return {
-      countLine: db.families({ liveOnly: true }).length + " compounds, " + all.length + " catalogue lines",
+      homeLabel: L("homeLabel"),
+      shopLabel: L("shopLabel"),
+      heading: L("heading"),
+      countLine: L("countLine")(db.families({ liveOnly: true }).length, all.length),
+      sortLabel: L("sortLabel"),
+      sortPopular: L("sortPopular"),
+      sortPriceAsc: L("sortPriceAsc"),
+      sortPriceDesc: L("sortPriceDesc"),
+      sortNewest: L("sortNewest"),
+      sortDiscount: L("sortDiscount"),
+      filterPlaceholder: L("filterPlaceholder"),
       sort: this.state.sort,
       setSort: (e) => this.setState({ sort: e.target.value, page: 0 }),
       query: this.state.query,
@@ -222,17 +292,20 @@ class Component extends DCLogic {
       hasActive: activeCount > 0,
       activeCount,
       clearAll: () => this.setState({ cats: {}, doses: {}, query: "", min: 0, max: null, inStock: false, page: 0 }),
+      clearFiltersLabel: L("clearFiltersLabel")(activeCount),
 
       filters: [
-        { title: "Category", items: window.Funchems.categories({ liveOnly: true }).map((c) => chip("cats", c.slug, c.label, catCounts[c.slug] || 0)) },
-        { title: "Dosage", items: Object.keys(doseCounts).sort((a, b) => (parseFloat(a) || 1e9) - (parseFloat(b) || 1e9)).map((k) => chip("doses", k, k, doseCounts[k])) },
+        { title: L("categoryLabel"), items: window.Funchems.categories({ liveOnly: true }).map((c) => chip("cats", c.slug, db.tr("categories", c.id, "label", c.label), catCounts[c.slug] || 0)) },
+        { title: L("dosageLabel"), items: Object.keys(doseCounts).sort((a, b) => (parseFloat(a) || 1e9) - (parseFloat(b) || 1e9)).map((k) => chip("doses", k, this.doseLabel(k, L), doseCounts[k])) },
       ],
 
+      priceLabel: L("priceLabel"),
       min: this.state.min,
       max: this.state.max === null ? cap : this.state.max,
       setMin: (e) => this.setState({ min: Number(e.target.value) || 0, page: 0 }),
       setMax: (e) => this.setState({ max: Number(e.target.value) || 0, page: 0 }),
       toggleStock: () => this.setState((s) => ({ inStock: !s.inStock, page: 0 })),
+      inStockLabel: L("inStockLabel"),
       stockColor: this.state.inStock ? "oklch(0.19 0.008 250)" : "oklch(0.42 0.008 250)",
       stockBorder: this.state.inStock ? "oklch(0.40 0.105 262)" : "oklch(0.82 0.006 250)",
       stockBg: this.state.inStock ? "oklch(0.40 0.105 262)" : "oklch(0.985 0.002 240)",
@@ -240,11 +313,14 @@ class Component extends DCLogic {
 
       hasResults: items.length > 0,
       isEmpty: items.length === 0,
+      noMatchTitle: L("noMatchTitle"),
+      noMatchNote: L("noMatchNote"),
+      resetFiltersLabel: L("resetFiltersLabel"),
       pageItems: items.map((f) => ({ cat: f.cat })),
-      showing: "Showing " + (list.length ? page * perPage + 1 : 0) + "–" + Math.min(list.length, (page + 1) * perPage) + " of " + list.length,
+      showing: L("showing")(list.length ? page * perPage + 1 : 0, Math.min(list.length, (page + 1) * perPage), list.length),
       hasPages: pageCount > 1,
       pages: Array.from({ length: pageCount }, (_, i) => i).concat([-1]).map((i) => ({
-        label: i === -1 ? "Next" : String(i + 1),
+        label: i === -1 ? L("nextLabel") : String(i + 1),
         go: () => this.setState({ page: i === -1 ? Math.min(pageCount - 1, page + 1) : i }),
         bg: i === page ? "oklch(0.19 0.008 250)" : "oklch(0.985 0.002 240)",
         color: i === page ? "oklch(0.985 0.002 240)" : "oklch(0.3 0.008 250)",

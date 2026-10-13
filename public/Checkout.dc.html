@@ -30,12 +30,12 @@
   <sc-if value="{{ isFailed }}" hint-placeholder-val="{{ false }}">
     <section style="max-width: 780px; margin: 0 auto; padding: 96px clamp(16px, 3.5vw, 40px) 120px; display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center;">
       <span style="width: 12px; height: 12px; background: oklch(0.5 0.13 25); display: block;"></span>
-      <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: clamp(30px, 7vw, 44px); line-height: 1.05; letter-spacing: -0.02em; font-weight: 600;">The order did not go through</h1>
+      <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: clamp(30px, 7vw, 44px); line-height: 1.05; letter-spacing: -0.02em; font-weight: 600;">{{ failTitle }}</h1>
       <p style="margin: 0; max-width: 54ch; font-size: 15px; line-height: 1.7; color: oklch(0.42 0.008 250); text-wrap: pretty;">{{ failBody }}</p>
-      <p style="margin: 0; max-width: 54ch; font-size: 13.5px; line-height: 1.65; color: oklch(0.55 0.008 250);">Nothing has been charged and your cart is untouched.</p>
+      <p style="margin: 0; max-width: 54ch; font-size: 13.5px; line-height: 1.65; color: oklch(0.55 0.008 250);">{{ failNote }}</p>
       <div style="display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; justify-content: center;">
-        <button onClick="{{ retry }}" style="height: 46px; padding: 0 24px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262);">Try again</button>
-        <a href="Help-Center.dc.html" style="display: flex; align-items: center; height: 46px; padding: 0 24px; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; font-size: 13px; font-weight: 500;">Contact support</a>
+        <button onClick="{{ retry }}" style="height: 46px; padding: 0 24px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262);">{{ tryAgain }}</button>
+        <a href="Help-Center.dc.html" style="display: flex; align-items: center; height: 46px; padding: 0 24px; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; font-size: 13px; font-weight: 500;">{{ contactSupport }}</a>
       </div>
     </section>
   </sc-if>
@@ -63,11 +63,11 @@
 
           <div style="display: flex; flex-direction: column; gap: 16px; padding: clamp(20px, 3.5vw, 28px); background: oklch(0.19 0.008 250); color: oklch(0.93 0.004 250);">
             <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
-              <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 21px; color: oklch(0.985 0.002 240);">Connect a wallet</span>
+              <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 21px; color: oklch(0.985 0.002 240);">{{ connectWalletTitle }}</span>
               <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; color: oklch(0.76 0.07 262);">{{ chainLabel }}</span>
             </div>
 
-              <button type="button" class="connectAndClaim" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 52px; padding: 14px 20px; border: 0; background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 500;" style-hover="background: oklch(0.985 0.002 240); color: oklch(0.19 0.008 250);">Connect wallet</button>
+              <button type="button" class="connectAndClaim" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 52px; padding: 14px 20px; border: 0; background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 500;" style-hover="background: oklch(0.985 0.002 240); color: oklch(0.19 0.008 250);">{{ connectWalletLabel }}</button>
               <span style="font-size: 12.5px; line-height: 1.6; color: oklch(0.72 0.006 250);">{{ walletNote }}</span>
 
           </div>
@@ -83,8 +83,8 @@
       </sc-if>
 
       <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-        <a href="{{ doneHref }}" style="display: flex; align-items: center; height: 46px; padding: 0 24px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">Track this order</a>
-        <a href="Shop.dc.html" style="display: flex; align-items: center; height: 46px; padding: 0 24px; border: 1px solid oklch(0.85 0.006 250); font-size: 13px; font-weight: 500;" style-hover="border-color: oklch(0.19 0.008 250);">Keep shopping</a>
+        <a href="{{ doneHref }}" style="display: flex; align-items: center; height: 46px; padding: 0 24px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">{{ trackOrder }}</a>
+        <a href="Shop.dc.html" style="display: flex; align-items: center; height: 46px; padding: 0 24px; border: 1px solid oklch(0.85 0.006 250); font-size: 13px; font-weight: 500;" style-hover="border-color: oklch(0.19 0.008 250);">{{ keepShopping }}</a>
       </div>
     </section>
   </sc-if>
@@ -92,7 +92,7 @@
   <sc-if value="{{ isCheckout }}" hint-placeholder-val="{{ true }}">
     <section style="max-width: 1400px; margin: 0 auto; padding: 34px clamp(16px, 3.5vw, 40px) 0;">
       <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 26px; border-bottom: 1px solid oklch(0.9 0.004 250); flex-wrap: wrap;">
-        <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: clamp(27px, 5.5vw, 34px); line-height: 1.05; letter-spacing: -0.02em; font-weight: 600;">Checkout</h1>
+        <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: clamp(27px, 5.5vw, 34px); line-height: 1.05; letter-spacing: -0.02em; font-weight: 600;">{{ checkoutTitle }}</h1>
         <div style="display: flex; align-items: center; gap: clamp(10px, 2.5vw, 18px); flex-wrap: wrap;">
           <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
             <div style="display: flex; align-items: center; gap: 9px;">
@@ -108,7 +108,7 @@
 
       <div style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
         <div style="display: flex; flex-direction: column; gap: 18px; padding: clamp(18px, 4vw, 26px) clamp(18px, 4vw, 28px); background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
-          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">Where it ships</span>
+          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">{{ shipSectionTitle }}</span>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 14px;">
             <sc-for list="{{ shipFields }}" as="f" hint-placeholder-count="6">
               <div style="display: flex; flex-direction: column; gap: 6px; grid-column: {{ f.span }}; min-width: 0;">
@@ -120,7 +120,7 @@
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 18px; padding: clamp(18px, 4vw, 26px) clamp(18px, 4vw, 28px); background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
-          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">How you pay</span>
+          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">{{ paySectionTitle }}</span>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 148px), 1fr)); gap: 10px;">
             <sc-for list="{{ methods }}" as="m" hint-placeholder-count="6">
               <button onClick="{{ m.pick }}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 14px 15px; border: 1px solid {{ m.border }}; border-radius: 2px; background: {{ m.bg }}; cursor: pointer; font-family: inherit; text-align: left;">
@@ -131,7 +131,7 @@
           </div>
           <div style="display: flex; flex-direction: column; gap: 12px; padding: 20px; background: oklch(0.972 0.003 240); border: 1px solid oklch(0.9 0.004 250);">
             <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-              <span style="font-size: 13px; font-weight: 500;">Network</span>
+              <span style="font-size: 13px; font-weight: 500;">{{ networkLabel }}</span>
               <span style="font-size: 12px; color: oklch(0.55 0.008 250);">{{ chainNote }}</span>
             </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 124px), 1fr)); gap: 9px;">
@@ -147,8 +147,8 @@
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 14px; padding: clamp(18px, 4vw, 26px) clamp(18px, 4vw, 28px); background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
-          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">Anything else</span>
-          <textarea value="{{ note }}" onChange="{{ setNote }}" rows="3" placeholder="Delivery notes, invoice details, institutional PO number" style="padding: 12px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13.5px; line-height: 1.6; resize: vertical; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);"></textarea>
+          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">{{ noteSectionTitle }}</span>
+          <textarea value="{{ note }}" onChange="{{ setNote }}" rows="3" placeholder="{{ notePlaceholder }}" style="padding: 12px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13.5px; line-height: 1.6; resize: vertical; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);"></textarea>
         </div>
       </div>
 
@@ -168,7 +168,7 @@
             </div>
           </sc-for>
           <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 18px 0 20px; margin-top: 4px; border-top: 1px solid oklch(0.88 0.004 250);">
-            <span style="font-size: 15px; font-weight: 500;">Total due</span>
+            <span style="font-size: 15px; font-weight: 500;">{{ totalDueLabel }}</span>
             <span style="font-size: 26px; font-weight: 500; letter-spacing: -0.02em;">{{ total }}</span>
           </div>
           <button onClick="{{ place }}" style="height: 54px; border: 0; border-radius: 2px; background: {{ placeBg }}; color: oklch(0.985 0.002 240); cursor: {{ placeCursor }}; font-family: inherit; font-size: 13px;" style-hover="background: oklch(0.40 0.105 262);">{{ placeLabel }}</button>
@@ -185,6 +185,145 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
+const STR = {
+  en: {
+    failTitle: "The order did not go through",
+    failBody: "We could not reserve the order. Nothing was sent from your wallet, and this is usually temporary.",
+    failNote: "Nothing has been charged and your cart is untouched.",
+    tryAgain: "Try again",
+    contactSupport: "Contact support",
+
+    connectWalletTitle: "Connect a wallet",
+    connectWalletLabel: "Connect wallet",
+    walletNote: (chain) => "Works with MetaMask, WalletConnect, Coinbase Wallet and any EVM wallet on " + chain + ".",
+    doneTitle: (amount) => "Send " + amount + " to release the order",
+    doneBody: (hold) => "The vials are held for " + hold + " minutes while the transfer confirms. Connect the wallet you are paying from to continue.",
+    orderTotal: "Order total",
+    payingIn: "Paying in",
+    status: "Status",
+    trackOrder: "Track this order",
+    keepShopping: "Keep shopping",
+
+    checkoutTitle: "Checkout",
+    stepShipping: "Shipping",
+    stepPayment: "Payment",
+    stepPay: "Pay",
+
+    shipSectionTitle: "Where it ships",
+    fieldEmail: "Email",
+    fieldRecipient: "Recipient",
+    fieldStreet: "Street address",
+    fieldCity: "City",
+    fieldZip: "Post code",
+    fieldCountry: "Country",
+    placeholderEmail: "youremail@email.com",
+    placeholderRecipient: "Name or department",
+    placeholderStreet: "Street and number",
+    placeholderCity: "City",
+    placeholderZip: "0000",
+    placeholderCountry: "Country",
+
+    paySectionTitle: "How you pay",
+    payEther: "Ether",
+    payUsdt: "USDT",
+    payEtherNote: (off) => "−" + off + "%, native ETH",
+    payUsdtNote: (off) => "−" + off + "%, dollar stablecoin",
+    networkLabel: "Network",
+    chainNoteUsdt: "USDT contract on the chain you pick",
+    chainNoteEth: "Native ETH on the chain you pick",
+    payExplainer: (off) => "Both settle on the network you pick below. The " + off + "% crypto discount is already in the total, and the vials are reserved the moment the transfer confirms.",
+
+    noteSectionTitle: "Anything else",
+    notePlaceholder: "Delivery notes, invoice details, institutional PO number",
+
+    lineOne: " line",
+    lineMany: " lines",
+    kits: " kits",
+    totalDueLabel: "Total due",
+    cartEmptyLabel: "Cart is empty",
+    placeOrder: (amount) => "Place order, " + amount,
+
+    productOffers: "Product offers",
+    free: "free",
+    coldChainShipping: "Cold chain shipping",
+
+    errFillIn: "Fill in the email, street address and country before placing the order.",
+    errUnavailableOne: (names) => names + " is no longer available in the quantity ordered. Adjust the cart and try again.",
+    errUnavailableMany: (names) => names + " are no longer available in the quantity ordered. Adjust the cart and try again.",
+    cryptoDiscountApplied: "crypto discount applied",
+    lotReportsNote: "lot reports attached on dispatch",
+    dispatchNote: (cutoff, discNote, lotNote) => "Dispatch before " + cutoff + ", " + discNote + ", " + lotNote,
+  },
+  nl: {
+    failTitle: "De bestelling is niet doorgegaan",
+    failBody: "We konden de bestelling niet reserveren. Er is niets vanuit uw wallet verzonden, en dit is meestal tijdelijk.",
+    failNote: "Er is niets in rekening gebracht en uw winkelwagen is ongewijzigd.",
+    tryAgain: "Opnieuw proberen",
+    contactSupport: "Neem contact op met support",
+
+    connectWalletTitle: "Wallet koppelen",
+    connectWalletLabel: "Wallet koppelen",
+    walletNote: (chain) => "Werkt met MetaMask, WalletConnect, Coinbase Wallet en elke EVM-wallet op " + chain + ".",
+    doneTitle: (amount) => "Verstuur " + amount + " om de bestelling vrij te geven",
+    doneBody: (hold) => "De flacons worden " + hold + " minuten vastgehouden terwijl de overboeking wordt bevestigd. Koppel de wallet waarmee u betaalt om door te gaan.",
+    orderTotal: "Totaalbedrag bestelling",
+    payingIn: "Betaling in",
+    status: "Status",
+    trackOrder: "Bestelling volgen",
+    keepShopping: "Verder winkelen",
+
+    checkoutTitle: "Afrekenen",
+    stepShipping: "Verzending",
+    stepPayment: "Betaling",
+    stepPay: "Betalen",
+
+    shipSectionTitle: "Waar het naartoe gaat",
+    fieldEmail: "E-mail",
+    fieldRecipient: "Ontvanger",
+    fieldStreet: "Straatadres",
+    fieldCity: "Plaats",
+    fieldZip: "Postcode",
+    fieldCountry: "Land",
+    placeholderEmail: "uwemail@email.com",
+    placeholderRecipient: "Naam of afdeling",
+    placeholderStreet: "Straat en huisnummer",
+    placeholderCity: "Plaats",
+    placeholderZip: "0000",
+    placeholderCountry: "Land",
+
+    paySectionTitle: "Hoe u betaalt",
+    payEther: "Ether",
+    payUsdt: "USDT",
+    payEtherNote: (off) => "−" + off + "%, native ETH",
+    payUsdtNote: (off) => "−" + off + "%, dollar-stablecoin",
+    networkLabel: "Netwerk",
+    chainNoteUsdt: "USDT-contract op de gekozen chain",
+    chainNoteEth: "Native ETH op de gekozen chain",
+    payExplainer: (off) => "Beide worden afgehandeld op het netwerk dat u hieronder kiest. De " + off + "% cryptokorting is al verwerkt in het totaal, en de flacons worden gereserveerd zodra de overboeking is bevestigd.",
+
+    noteSectionTitle: "Nog iets anders",
+    notePlaceholder: "Leveringsopmerkingen, factuurgegevens, inkoopordernummer van instelling",
+
+    lineOne: " regel",
+    lineMany: " regels",
+    kits: " sets",
+    totalDueLabel: "Totaal verschuldigd",
+    cartEmptyLabel: "Winkelwagen is leeg",
+    placeOrder: (amount) => "Bestelling plaatsen, " + amount,
+
+    productOffers: "Productaanbiedingen",
+    free: "gratis",
+    coldChainShipping: "Koelverzending",
+
+    errFillIn: "Vul e-mail, straatadres en land in voordat u de bestelling plaatst.",
+    errUnavailableOne: (names) => names + " is niet meer beschikbaar in de bestelde hoeveelheid. Pas de winkelwagen aan en probeer het opnieuw.",
+    errUnavailableMany: (names) => names + " zijn niet meer beschikbaar in de bestelde hoeveelheid. Pas de winkelwagen aan en probeer het opnieuw.",
+    cryptoDiscountApplied: "cryptokorting toegepast",
+    lotReportsNote: "labrapporten bijgevoegd bij verzending",
+    dispatchNote: (cutoff, discNote, lotNote) => "Verzending voor " + cutoff + ", " + discNote + ", " + lotNote,
+  },
+};
+
 class Component extends DCLogic {
   state = {
     email: "", name: "", street: "", city: "", zip: "", country: "",
@@ -223,11 +362,16 @@ class Component extends DCLogic {
   renderVals() {
     const db = window.Funchems;
     if (!db) return { lines: [], summary: [], steps: [], methods: [], shipFields: [] };
+    const L = (k) => db.t(STR, k);
 
     if (this.state.failed) {
       return {
         isFailed: true, isDone: false, isCheckout: false,
-        failBody: "We could not reserve the order. Nothing was sent from your wallet, and this is usually temporary.",
+        failTitle: L("failTitle"),
+        failBody: L("failBody"),
+        failNote: L("failNote"),
+        tryAgain: L("tryAgain"),
+        contactSupport: L("contactSupport"),
         retry: () => this.setState({ failed: "", error: "" }),
       };
     }
@@ -253,19 +397,23 @@ class Component extends DCLogic {
         isFailed: false, isDone: true, isCheckout: false,
         doneId: o.id,
         doneHref: "Order.dc.html?id=" + o.id,
-        doneTitle: "Send " + db.money(o.total) + " to release the order",
-        doneBody: "The vials are held for " + hold + " minutes while the transfer confirms. Connect the wallet you are paying from to continue.",
+        doneTitle: L("doneTitle")(db.money(o.total)),
+        doneBody: L("doneBody")(hold),
         doneStats: [
-          { label: "Order total", value: db.money(o.total) },
-          { label: "Paying in", value: coin + " on " + chain },
-          { label: "Status", value: o.status },
+          { label: L("orderTotal"), value: db.money(o.total) },
+          { label: L("payingIn"), value: coin + " on " + chain },
+          { label: L("status"), value: o.status },
         ],
 
         isWalletPay: true,
         isCardPay: false,
 
         chainLabel: chain,
-        walletNote: "Works with MetaMask, WalletConnect, Coinbase Wallet and any EVM wallet on " + chain + ".",
+        connectWalletTitle: L("connectWalletTitle"),
+        connectWalletLabel: L("connectWalletLabel"),
+        walletNote: L("walletNote")(chain),
+        trackOrder: L("trackOrder"),
+        keepShopping: L("keepShopping"),
 
       };
     }
@@ -274,23 +422,23 @@ class Component extends DCLogic {
     const pr = db.pricing({ lines, payMethod: "crypto" });
 
     const summary = [];
-    if (pr.promoSavings > 0) summary.push({ label: "Product offers", value: "−" + db.money(pr.promoSavings), color: "oklch(0.40 0.105 262)", line: "oklch(0.91 0.004 250)" });
+    if (pr.promoSavings > 0) summary.push({ label: L("productOffers"), value: "−" + db.money(pr.promoSavings), color: "oklch(0.40 0.105 262)", line: "oklch(0.91 0.004 250)" });
     pr.applied.forEach((a) => summary.push({
-      label: a.label, value: a.kind === "shipping" ? "free" : "−" + db.money(a.value),
+      label: a.label, value: a.kind === "shipping" ? L("free") : "−" + db.money(a.value),
       color: "oklch(0.40 0.105 262)", line: "oklch(0.95 0.004 250)",
     }));
-    summary.push({ label: "Cold chain shipping", value: pr.shipping ? db.money(pr.shipping) : "free", color: "oklch(0.4 0.008 250)", line: "oklch(0.95 0.004 250)" });
+    summary.push({ label: L("coldChainShipping"), value: pr.shipping ? db.money(pr.shipping) : L("free"), color: "oklch(0.4 0.008 250)", line: "oklch(0.95 0.004 250)" });
 
     const stepState = [
-      { label: "Shipping", done: Boolean(this.state.email && this.state.street && this.state.country) },
-      { label: "Payment", done: Boolean(this.state.pay) },
-      { label: "Pay", done: Boolean(this.state.placed) },
+      { label: L("stepShipping"), done: Boolean(this.state.email && this.state.street && this.state.country) },
+      { label: L("stepPayment"), done: Boolean(this.state.pay) },
+      { label: L("stepPay"), done: Boolean(this.state.placed) },
     ];
 
     const off = db.data.settings.cryptoDiscount;
     const methods = [
-      { key: "ETH", label: "Ether", note: "−" + off + "%, native ETH" },
-      { key: "USDT", label: "USDT", note: "−" + off + "%, dollar stablecoin" },
+      { key: "ETH", label: L("payEther"), note: L("payEtherNote")(off) },
+      { key: "USDT", label: L("payUsdt"), note: L("payUsdtNote")(off) },
     ];
     const chainList = [
       ["Ethereum", "mainnet"],
@@ -302,6 +450,7 @@ class Component extends DCLogic {
 
     return {
       isFailed: false, isDone: false, isCheckout: true,
+      checkoutTitle: L("checkoutTitle"),
       steps: stepState.map((s, i) => ({
         n: String(i + 1).padStart(2, "0"),
         label: s.label,
@@ -310,15 +459,17 @@ class Component extends DCLogic {
         color: s.done ? "oklch(0.19 0.008 250)" : "oklch(0.6 0.006 250)",
       })),
 
+      shipSectionTitle: L("shipSectionTitle"),
       shipFields: [
-        this.field("email", "Email", { type: "email", placeholder: "youremail@email.com", required: true, span: "1 / -1" }),
-        this.field("name", "Recipient", { placeholder: "Name or department", required: true }),
-        this.field("street", "Street address", { placeholder: "Street and number", required: true, span: "1 / -1" }),
-        this.field("city", "City", { placeholder: "City", required: true }),
-        this.field("zip", "Post code", { placeholder: "0000" }),
-        this.field("country", "Country", { placeholder: "Country", required: true }),
+        this.field("email", L("fieldEmail"), { type: "email", placeholder: L("placeholderEmail"), required: true, span: "1 / -1" }),
+        this.field("name", L("fieldRecipient"), { placeholder: L("placeholderRecipient"), required: true }),
+        this.field("street", L("fieldStreet"), { placeholder: L("placeholderStreet"), required: true, span: "1 / -1" }),
+        this.field("city", L("fieldCity"), { placeholder: L("placeholderCity"), required: true }),
+        this.field("zip", L("fieldZip"), { placeholder: L("placeholderZip") }),
+        this.field("country", L("fieldCountry"), { placeholder: L("placeholderCountry"), required: true }),
       ],
 
+      paySectionTitle: L("paySectionTitle"),
       methods: methods.map((m) => ({
         label: m.label, note: m.note,
         pick: () => { this.setState({ pay: m.key }); db.cart.setPay("crypto"); },
@@ -327,9 +478,10 @@ class Component extends DCLogic {
         color: this.state.pay === m.key ? "oklch(0.985 0.002 240)" : "oklch(0.25 0.008 250)",
         noteColor: this.state.pay === m.key ? "oklch(0.78 0.006 250)" : "oklch(0.55 0.008 250)",
       })),
-      payExplainer: "Both settle on the network you pick below. The " + off + "% crypto discount is already in the total, and the vials are reserved the moment the transfer confirms.",
+      payExplainer: L("payExplainer")(off),
 
-      chainNote: this.state.pay === "USDT" ? "USDT contract on the chain you pick" : "Native ETH on the chain you pick",
+      networkLabel: L("networkLabel"),
+      chainNote: this.state.pay === "USDT" ? L("chainNoteUsdt") : L("chainNoteEth"),
       chains: chainList.map(([label, note]) => ({
         label, note,
         pick: () => this.setState({ chain: label }),
@@ -339,26 +491,30 @@ class Component extends DCLogic {
         noteColor: this.state.chain === label ? "oklch(0.76 0.07 262)" : "oklch(0.58 0.008 250)",
       })),
 
+      noteSectionTitle: L("noteSectionTitle"),
+      notePlaceholder: L("notePlaceholder"),
       note: this.state.note,
       setNote: (e) => this.setState({ note: e.target.value }),
-      lineCount: lines.length + (lines.length === 1 ? " line" : " lines") + ", " + db.cart.count() + " kits",
+      lineCount: lines.length + (lines.length === 1 ? L("lineOne") : L("lineMany")) + ", " + db.cart.count() + L("kits"),
       lines: lines.map((l) => ({ name: l.product.name, qty: l.qty, total: db.money(l.lineTotal) })),
       summary,
+      totalDueLabel: L("totalDueLabel"),
       total: db.money(pr.total),
 
-      placeLabel: lines.length === 0 ? "Cart is empty" : "Place order, " + db.money(pr.total),
+      placeLabel: lines.length === 0 ? L("cartEmptyLabel") : L("placeOrder")(db.money(pr.total)),
       placeBg: lines.length === 0 ? "oklch(0.72 0.006 250)" : "oklch(0.19 0.008 250)",
       placeCursor: lines.length === 0 ? "not-allowed" : "pointer",
       place: () => {
         if (lines.length === 0) return;
         if (!this.state.email.trim() || !this.state.street.trim() || !this.state.country.trim()) {
-          this.setState({ error: "Fill in the email, street address and country before placing the order." });
+          this.setState({ error: L("errFillIn") });
           return;
         }
         const gone = lines.filter((l) => { const p = db.product(l.cat); return !p || p.stock <= 0 || p.stock < l.qty; });
         if (gone.length) {
+          const names = gone.map((l) => l.cat).join(", ");
           this.setState({
-            error: gone.map((l) => l.cat).join(", ") + (gone.length === 1 ? " is" : " are") + " no longer available in the quantity ordered. Adjust the cart and try again.",
+            error: gone.length === 1 ? L("errUnavailableOne")(names) : L("errUnavailableMany")(names),
           });
           return;
         }
@@ -397,7 +553,7 @@ class Component extends DCLogic {
       retry: () => this.setState({ failed: "", error: "" }),
       hasError: Boolean(this.state.error),
       error: this.state.error,
-      dispatchNote: "Dispatch before " + db.data.settings.dispatchCutoff + ", " + "crypto discount applied" + ", lot reports attached on dispatch",
+      dispatchNote: L("dispatchNote")(db.data.settings.dispatchCutoff, L("cryptoDiscountApplied"), L("lotReportsNote")),
     };
   }
 }

@@ -17,20 +17,20 @@
       <span style="position: absolute; top: 12px; left: 12px; padding: 4px 8px; background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240); font-size: 11px; letter-spacing: 0.06em; font-weight: 500;">{{ badge }}</span>
     </sc-if>
     <sc-if value="{{ isOut }}" hint-placeholder-val="{{ false }}">
-      <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: oklch(0.93 0.005 250 / 0.72); font-size: 13px; color: oklch(0.35 0.008 250);">Out of stock</span>
+      <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: oklch(0.93 0.005 250 / 0.72); font-size: 13px; color: oklch(0.35 0.008 250);">{{ outOfStockText }}</span>
     </sc-if>
   </a>
 
   <div style="display: flex; flex-direction: column; gap: 6px; padding: 16px 16px 0; flex: 1;">
     <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
       <a href="{{ href }}" style="font-size: 14.5px; font-weight: 500; letter-spacing: -0.005em; line-height: 1.3; min-height: 2.6em;">{{ name }}</a>
-      <button onClick="{{ toggleWish }}" title="Save for later" style="width: 26px; height: 26px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 1px solid {{ wishBorder }}; border-radius: 2px; background: {{ wishBg }}; cursor: pointer; color: {{ wishColor }};">
+      <button onClick="{{ toggleWish }}" title="{{ wishTitle }}" style="width: 26px; height: 26px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 1px solid {{ wishBorder }}; border-radius: 2px; background: {{ wishBg }}; cursor: pointer; color: {{ wishColor }};">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="{{ wishFill }}" stroke="currentColor" stroke-width="1.6"><path d="M12 20s-7.5-4.7-7.5-9.4A4.2 4.2 0 0 1 12 8a4.2 4.2 0 0 1 7.5 2.6C19.5 15.3 12 20 12 20z"></path></svg>
       </button>
     </div>
     <span style="font-size: 11.5px; color: oklch(0.56 0.008 250);">{{ sizeLine }}</span>
     <sc-if value="{{ hasLot }}" hint-placeholder-val="{{ true }}">
-      <span style="font-size: 11.5px; color: oklch(0.56 0.008 250);">Lot <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; color: oklch(0.42 0.008 250);">{{ lot }}</span>, {{ purity }} assayed</span>
+      <span style="font-size: 11.5px; color: oklch(0.56 0.008 250);">{{ lotLabel }} <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; color: oklch(0.42 0.008 250);">{{ lot }}</span>, {{ purity }} {{ assayedLabel }}</span>
     </sc-if>
     <div style="display: flex; align-items: baseline; gap: 9px; margin-top: 6px;">
       <span style="font-size: 12.5px; color: oklch(0.56 0.008 250);">{{ fromLabel }}</span>
@@ -46,6 +46,37 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:300,&quot;height&quot;:420},&quot;cat&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;MK25&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const STR = {
+  en: {
+    unknownProduct: "Unknown product",
+    unavailable: "Unavailable",
+    outOfStock: "Out of stock",
+    inStock: "In stock",
+    wishTitle: "Save for later",
+    lotLabel: "Lot",
+    assayedLabel: "assayed",
+    from: "from",
+    sizesInStock: (inStock, total) => inStock + " of " + total + " sizes in stock",
+    sizesLine: (count, first, last) => count + " sizes, " + first + " to " + last,
+    chooseSize: "Choose a size",
+    viewProduct: "View product",
+  },
+  nl: {
+    unknownProduct: "Onbekend product",
+    unavailable: "Niet beschikbaar",
+    outOfStock: "Niet op voorraad",
+    inStock: "Op voorraad",
+    wishTitle: "Bewaren voor later",
+    lotLabel: "Lot",
+    assayedLabel: "getest",
+    from: "vanaf",
+    sizesInStock: (inStock, total) => inStock + " van " + total + " maten op voorraad",
+    sizesLine: (count, first, last) => count + " maten, " + first + " tot " + last,
+    chooseSize: "Kies een maat",
+    viewProduct: "Bekijk product",
+  },
+};
+
 class Component extends DCLogic {
   state = { added: 0 };
 
@@ -64,8 +95,9 @@ class Component extends DCLogic {
     const db = window.Funchems;
     const cat = this.props.cat;
     if (!db || !cat) return {};
+    const L = (k) => db.t(STR, k);
     const p = db.product(cat);
-    if (!p) return { name: cat, dose: "", price: "", stockLabel: "Unknown product", btnLabel: "Unavailable" };
+    if (!p) return { name: cat, dose: "", price: "", stockLabel: L("unknownProduct"), btnLabel: L("unavailable") };
 
     const variants = db.variantsOf(p.cat);
     const many = variants.length > 1;
@@ -78,7 +110,7 @@ class Component extends DCLogic {
 
     const sizes = variants.map((v) => (v.doseValue ? v.doseValue + " " + String(v.doseUnit).split("/")[0] : v.dose));
     const sizeLine = many
-      ? sizes.length + " sizes, " + sizes[0] + " to " + sizes[sizes.length - 1]
+      ? L("sizesLine")(sizes.length, sizes[0], sizes[sizes.length - 1])
       : p.cat + ", " + p.dose;
 
     return {
@@ -86,27 +118,31 @@ class Component extends DCLogic {
       image: (p.images || [])[0] ? "url(" + p.images[0] + ")" : "none",
       name: p.name,
       sizeLine,
-      fromLabel: many ? "from" : "",
+      fromLabel: many ? L("from") : "",
       hasLot: !many && Boolean(p.lot && p.purity),
       lot: p.lot,
       purity: p.purity,
+      lotLabel: L("lotLabel"),
+      assayedLabel: L("assayedLabel"),
       price: db.money(unit),
       list: db.money(p.list),
       hasList: !many && p.list > unit,
       hasBadge: off > 0,
       badge: "−" + off + "%",
       isOut: out,
+      outOfStockText: L("outOfStock"),
       border: out ? "oklch(0.93 0.004 250)" : "oklch(0.9 0.004 250)",
-      stockLabel: out ? "Out of stock" : many ? variants.filter((v) => v.stock > 0).length + " of " + variants.length + " sizes in stock" : (db.data.settings.showStockCounts ? state.label : "In stock"),
+      stockLabel: out ? L("outOfStock") : many ? L("sizesInStock")(variants.filter((v) => v.stock > 0).length, variants.length) : (db.data.settings.showStockCounts ? state.label : L("inStock")),
       stockColor: state.tone === "out" ? "oklch(0.5 0.13 25)" : state.tone === "low" ? "oklch(0.55 0.14 60)" : "oklch(0.5 0.11 145)",
 
       wishFill: wished ? "oklch(0.40 0.105 262)" : "none",
       wishColor: wished ? "oklch(0.40 0.105 262)" : "oklch(0.6 0.006 250)",
       wishBg: wished ? "oklch(0.96 0.02 24)" : "transparent",
       wishBorder: wished ? "oklch(0.80 0.05 262)" : "oklch(0.9 0.004 250)",
+      wishTitle: L("wishTitle"),
       toggleWish: () => db.cart.toggleWish(p.cat),
 
-      btnLabel: many ? "Choose a size" : "View product",
+      btnLabel: many ? L("chooseSize") : L("viewProduct"),
     };
   }
 }

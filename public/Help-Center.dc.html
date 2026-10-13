@@ -28,11 +28,11 @@
 
   <section style="max-width: 1400px; margin: 0 auto; padding: 56px clamp(16px, 3.5vw, 40px) 0;">
     <div style="display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center;">
-      <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">Support replies within four hours, 7 days</span>
-      <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 52px; line-height: 1; letter-spacing: -0.025em; font-weight: 600;">Help Center</h1>
+      <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">{{ eyebrow }}</span>
+      <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 52px; line-height: 1; letter-spacing: -0.025em; font-weight: 600;">{{ heading }}</h1>
       <div style="position: relative; width: 100%; max-width: 620px; margin-top: 6px;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="oklch(0.55 0.006 250)" stroke-width="2" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%);"><circle cx="11" cy="11" r="7"></circle><path d="M16.5 16.5 21 21"></path></svg>
-        <input type="text" value="{{ query }}" onChange="{{ setQuery }}" placeholder="Search shipping, payment, returns…" style="width: 100%; height: 54px; padding: 0 20px 0 46px; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 14.5px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);">
+        <input type="text" value="{{ query }}" onChange="{{ setQuery }}" placeholder="{{ searchPlaceholder }}" style="width: 100%; height: 54px; padding: 0 20px 0 46px; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; background: oklch(0.985 0.002 240); font-size: 14.5px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);">
       </div>
       <sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}">
         <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; letter-spacing: 0.06em; color: oklch(0.55 0.008 250);">{{ resultLine }}</span>
@@ -56,7 +56,7 @@
     <div style="display: flex; flex-wrap: wrap; gap: 56px; align-items: start;">
       <div style="flex: 0 1 300px; min-width: 240px; display: flex; flex-direction: column; gap: 14px; position: sticky; top: 24px;">
         <h2 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 34px; line-height: 1.05; letter-spacing: -0.02em; font-weight: 600;">{{ faqHeading }}</h2>
-        <p style="margin: 0; font-size: 13.5px; line-height: 1.6; color: oklch(0.48 0.008 250); text-wrap: pretty;">If the answer is not here, write to support and quote your order number. Replies come from a person, not a template.</p>
+        <p style="margin: 0; font-size: 13.5px; line-height: 1.6; color: oklch(0.48 0.008 250); text-wrap: pretty;">{{ sidebarNote }}</p>
         <button onClick="{{ toggleContact }}" style="display: flex; align-items: center; align-self: flex-start; height: 42px; padding: 0 20px; margin-top: 6px; border: 1px solid oklch(0.19 0.008 250); border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.19 0.008 250);" style-hover="background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240);">{{ contactLabel }}</button>
       </div>
 
@@ -65,7 +65,7 @@
           <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid oklch(0.93 0.004 250);">
             <span style="width: 8px; height: 8px; border-radius: 50%; background: {{ chatDot }}; display: block; flex: none;"></span>
             <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
-              <span style="font-size: 14.5px; font-weight: 600;">Live chat</span>
+              <span style="font-size: 14.5px; font-weight: 600;">{{ chatTitle }}</span>
               <span style="font-size: 12.5px; color: oklch(0.53 0.008 250);">{{ chatStatus }}</span>
             </span>
             <span style="margin-left: auto; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: oklch(0.55 0.008 250);">{{ chatHandle }}</span>
@@ -84,7 +84,7 @@
           </div>
 
           <div style="display: flex; gap: 8px; padding: 14px 20px; border-top: 1px solid oklch(0.93 0.004 250); flex-wrap: wrap;">
-            <input type="text" value="{{ chatDraft }}" onChange="{{ setChatDraft }}" onKeyDown="{{ chatKey }}" placeholder="Type a message" style="flex: 1 1 200px; min-width: 0; height: 44px; padding: 0 13px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-family: inherit; font-size: 13.5px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);">
+            <input type="text" value="{{ chatDraft }}" onChange="{{ setChatDraft }}" onKeyDown="{{ chatKey }}" placeholder="{{ chatPlaceholder }}" style="flex: 1 1 200px; min-width: 0; height: 44px; padding: 0 13px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-family: inherit; font-size: 13.5px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);">
             <button onClick="{{ sendChat }}" style="height: 44px; padding: 0 22px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262);">{{ chatSendLabel }}</button>
           </div>
           <sc-if value="{{ hasChatNote }}" hint-placeholder-val="{{ false }}">
@@ -94,7 +94,7 @@
 
         <sc-if value="{{ contactOpen }}" hint-placeholder-val="{{ false }}">
           <div style="display: flex; flex-direction: column; gap: 16px; padding: 26px 28px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.86 0.006 250); border-radius: 2px;">
-            <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 24px;">Write to support</span>
+            <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 24px;">{{ contactTitle }}</span>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
               <sc-for list="{{ contactFields }}" as="f" hint-placeholder-count="2">
                 <div style="display: flex; flex-direction: column; gap: 6px;">
@@ -104,8 +104,8 @@
               </sc-for>
             </div>
             <div style="display: flex; flex-direction: column; gap: 6px;">
-              <label style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.56 0.008 250);">How can we help</label>
-              <textarea value="{{ message }}" onChange="{{ setMessage }}" rows="4" placeholder="Order number and what happened" style="padding: 12px; border: 1px solid {{ messageBorder }}; border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13.5px; line-height: 1.6; resize: vertical; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);"></textarea>
+              <label style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.56 0.008 250);">{{ messageLabel }}</label>
+              <textarea value="{{ message }}" onChange="{{ setMessage }}" rows="4" placeholder="{{ messagePlaceholder }}" style="padding: 12px; border: 1px solid {{ messageBorder }}; border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13.5px; line-height: 1.6; resize: vertical; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);"></textarea>
             </div>
             <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
               <button onClick="{{ send }}" style="height: 44px; padding: 0 24px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262);">{{ sendLabel }}</button>
@@ -128,8 +128,8 @@
           </sc-for>
           <sc-if value="{{ noFaqs }}" hint-placeholder-val="{{ false }}">
             <div style="display: flex; flex-direction: column; gap: 10px; padding: 56px 0;">
-              <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 24px; color: oklch(0.42 0.008 250);">Nothing matches that search</span>
-              <span style="font-size: 13.5px; color: oklch(0.55 0.008 250);">Write to support and we will answer directly, and add the article.</span>
+              <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 24px; color: oklch(0.42 0.008 250);">{{ emptyTitle }}</span>
+              <span style="font-size: 13.5px; color: oklch(0.55 0.008 250);">{{ emptyNote }}</span>
             </div>
           </sc-if>
         </div>
@@ -153,6 +153,107 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
+const STR = {
+  en: {
+    eyebrow: "Support replies within four hours, 7 days",
+    heading: "Help Center",
+    searchPlaceholder: "Search shipping, payment, returns…",
+    resultLine: (n, topicTitle) => n + (n === 1 ? " article" : " articles") + " match" + (topicTitle ? " in " + topicTitle : ""),
+    topicShippingTitle: "Shipping & cold chain",
+    topicShippingBody: "Dispatch times, packaging, customs, tracking.",
+    topicPaymentTitle: "Payment & discounts",
+    topicPaymentBody: "Crypto, tiers, invoices, VAT.",
+    topicOrdersTitle: "Orders & returns",
+    topicOrdersBody: "Changes, breakages, refunds, disputes.",
+    articleCount: (n) => n + (n === 1 ? " article" : " articles"),
+    faqHeadingDefault: "Common questions",
+    emptyTitle: "Nothing matches that search",
+    emptyNote: "Write to support and we will answer directly, and add the article.",
+    sidebarNote: "If the answer is not here, write to support and quote your order number. Replies come from a person, not a template.",
+    contactLabelOpen: "Contact support",
+    contactLabelClose: "Close form",
+    chatTitle: "Live chat",
+    chatStatusOnline: "Live chat, replies appear here",
+    chatStatusOffline: "Chat is temporarily unavailable, try again shortly",
+    chatHandle: "Support",
+    chatGreeting: "Usually replying within a few minutes during CET business hours.",
+    chatPlaceholder: "Type a message",
+    chatSendLabel: "Send",
+    chatSendingLabel: "Sending",
+    chatNoteDelivered: "Delivered to support.",
+    chatNoteFailed: "Message could not be delivered. Try again shortly.",
+    contactTitle: "Write to support",
+    fieldEmailLabel: "Your email",
+    fieldEmailPlaceholder: "youremail@email.com",
+    fieldOrderLabel: "Order number",
+    fieldOrderPlaceholder: "MP-24118",
+    messageLabel: "How can we help",
+    messagePlaceholder: "Order number and what happened",
+    sendLabelDefault: "Send message",
+    sendLabelSent: "Message sent",
+    sendNoteError: "A valid email and a message are needed.",
+    sendNoteSent: "Sent. A reply lands within four hours, seven days a week.",
+    sendNoteHint: "Quoting the order number gets you a faster answer.",
+    channelEmailLabel: "Email",
+    channelEmailNote: "Replies within four hours, seven days a week.",
+    channelChatLabel: "Live chat",
+    channelChatValue: "See the chat panel above",
+    channelChatNote: "Fastest for order status and restock questions.",
+    channelOrderLabel: "Order issues",
+    channelOrderValue: "Quote your order number",
+    channelOrderNote: "Found in the dispatch email and in your account.",
+  },
+  nl: {
+    eyebrow: "Support reageert binnen vier uur, 7 dagen per week",
+    heading: "Helpcentrum",
+    searchPlaceholder: "Zoek verzending, betaling, retourneren…",
+    resultLine: (n, topicTitle) => n + (n === 1 ? " artikel" : " artikelen") + " gevonden" + (topicTitle ? " in " + topicTitle : ""),
+    topicShippingTitle: "Verzending & koelketen",
+    topicShippingBody: "Verzendtijden, verpakking, douane, tracking.",
+    topicPaymentTitle: "Betaling & kortingen",
+    topicPaymentBody: "Crypto, kortingsniveaus, facturen, btw.",
+    topicOrdersTitle: "Bestellingen & retouren",
+    topicOrdersBody: "Wijzigingen, breuk, terugbetalingen, geschillen.",
+    articleCount: (n) => n + (n === 1 ? " artikel" : " artikelen"),
+    faqHeadingDefault: "Veelgestelde vragen",
+    emptyTitle: "Geen resultaten voor deze zoekopdracht",
+    emptyNote: "Stuur support een bericht en we antwoorden direct, en voegen het artikel toe.",
+    sidebarNote: "Staat het antwoord er niet bij, mail support en vermeld uw bestelnummer. Antwoorden komen van een persoon, niet van een sjabloon.",
+    contactLabelOpen: "Contact met support",
+    contactLabelClose: "Formulier sluiten",
+    chatTitle: "Livechat",
+    chatStatusOnline: "Livechat, antwoorden verschijnen hier",
+    chatStatusOffline: "Chat is tijdelijk niet beschikbaar, probeer het zo weer",
+    chatHandle: "Support",
+    chatGreeting: "Doorgaans antwoord binnen enkele minuten tijdens CET-kantooruren.",
+    chatPlaceholder: "Typ een bericht",
+    chatSendLabel: "Versturen",
+    chatSendingLabel: "Versturen...",
+    chatNoteDelivered: "Afgeleverd bij support.",
+    chatNoteFailed: "Bericht kon niet worden afgeleverd. Probeer het zo weer.",
+    contactTitle: "Mail naar support",
+    fieldEmailLabel: "Uw e-mailadres",
+    fieldEmailPlaceholder: "uwemail@email.com",
+    fieldOrderLabel: "Bestelnummer",
+    fieldOrderPlaceholder: "MP-24118",
+    messageLabel: "Waarmee kunnen we helpen",
+    messagePlaceholder: "Bestelnummer en wat er is gebeurd",
+    sendLabelDefault: "Bericht versturen",
+    sendLabelSent: "Bericht verstuurd",
+    sendNoteError: "Een geldig e-mailadres en een bericht zijn verplicht.",
+    sendNoteSent: "Verstuurd. U ontvangt binnen vier uur antwoord, zeven dagen per week.",
+    sendNoteHint: "Vermeld uw bestelnummer voor een sneller antwoord.",
+    channelEmailLabel: "E-mail",
+    channelEmailNote: "Antwoord binnen vier uur, zeven dagen per week.",
+    channelChatLabel: "Livechat",
+    channelChatValue: "Zie het chatpaneel hierboven",
+    channelChatNote: "Snelste weg voor orderstatus en voorraadvragen.",
+    channelOrderLabel: "Problemen met bestelling",
+    channelOrderValue: "Vermeld uw bestelnummer",
+    channelOrderNote: "Te vinden in de verzendbevestiging en in uw account.",
+  },
+};
+
 class Component extends DCLogic {
   state = {
     open: 0, query: "", topic: null, contactOpen: false,
@@ -161,6 +262,8 @@ class Component extends DCLogic {
   };
 
   async sendChatMessage(text) {
+    const db = window.Funchems;
+    const L = (k) => db.t(STR, k);
     const stamp = new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
     this.setState((s) => ({
       chatLog: s.chatLog.concat([{ from: "you", text, at: stamp }]),
@@ -174,10 +277,10 @@ class Component extends DCLogic {
       });
       const json = await res.json();
       if (!json.ok) throw new Error(json.error || "send failed");
-      this.setState({ chatSending: false, chatNoteOk: true, chatNote: "Delivered to support." });
+      this.setState({ chatSending: false, chatNoteOk: true, chatNote: L("chatNoteDelivered") });
       this.refreshChat();
     } catch (e) {
-      this.setState({ chatSending: false, chatNoteOk: false, chatNote: "Message could not be delivered. Try again shortly." });
+      this.setState({ chatSending: false, chatNoteOk: false, chatNote: L("chatNoteFailed") });
     }
   }
 
@@ -225,18 +328,25 @@ class Component extends DCLogic {
   renderVals() {
     const db = window.Funchems;
     if (!db) return { faqs: [], topics: [], channels: [], contactFields: [], chatLog: [] };
+    const L = (k) => db.t(STR, k);
     const all = db.data.content.faqs.filter((f) => f.live);
     const q = this.state.query.trim().toLowerCase();
 
     const groups = [
-      { key: "shipping", title: "Shipping & cold chain", body: "Dispatch times, packaging, customs, tracking." },
-      { key: "payment", title: "Payment & discounts", body: "Crypto, tiers, invoices, VAT." },
-      { key: "orders", title: "Orders & returns", body: "Changes, breakages, refunds, disputes." },
+      { key: "shipping", title: L("topicShippingTitle"), body: L("topicShippingBody") },
+      { key: "payment", title: L("topicPaymentTitle"), body: L("topicPaymentBody") },
+      { key: "orders", title: L("topicOrdersTitle"), body: L("topicOrdersBody") },
     ];
 
     let list = all;
     if (this.state.topic) list = list.filter((f) => this.topicOf(f) === this.state.topic);
-    if (q) list = list.filter((f) => (f.q + " " + f.a).toLowerCase().includes(q));
+    if (q) {
+      list = list.filter((f) => {
+        const tq = db.tr("faqs", f.id, "q", f.q);
+        const ta = db.tr("faqs", f.id, "a", f.a);
+        return (tq + " " + ta).toLowerCase().includes(q);
+      });
+    }
 
     const cf = (key, label, opts) => {
       const o = opts || {};
@@ -249,17 +359,19 @@ class Component extends DCLogic {
     };
 
     return {
+      eyebrow: L("eyebrow"),
+      heading: L("heading"),
+      searchPlaceholder: L("searchPlaceholder"),
       query: this.state.query,
       setQuery: (e) => this.setState({ query: e.target.value, open: -1 }),
       hasQuery: q.length > 0 || Boolean(this.state.topic),
-      resultLine: list.length + (list.length === 1 ? " article" : " articles") + " match"
-        + (this.state.topic ? " in " + (groups.find((g) => g.key === this.state.topic) || {}).title : ""),
+      resultLine: L("resultLine")(list.length, this.state.topic ? (groups.find((g) => g.key === this.state.topic) || {}).title : ""),
 
       topics: groups.map((g) => {
         const count = all.filter((f) => this.topicOf(f) === g.key).length;
         const on = this.state.topic === g.key;
         return {
-          count: count + (count === 1 ? " article" : " articles"),
+          count: L("articleCount")(count),
           title: g.title, body: g.body,
           border: on ? "oklch(0.40 0.105 262)" : "oklch(0.9 0.004 250)",
           pick: () => this.setState((s) => ({ topic: s.topic === g.key ? null : g.key, open: 0 })),
@@ -268,10 +380,13 @@ class Component extends DCLogic {
 
       faqHeading: this.state.topic
         ? (groups.find((g) => g.key === this.state.topic) || {}).title
-        : "Common questions",
+        : L("faqHeadingDefault"),
       noFaqs: list.length === 0,
+      emptyTitle: L("emptyTitle"),
+      emptyNote: L("emptyNote"),
+      sidebarNote: L("sidebarNote"),
       faqs: list.map((f, i) => ({
-        q: f.q, a: f.a,
+        q: db.tr("faqs", f.id, "q", f.q), a: db.tr("faqs", f.id, "a", f.a),
         open: this.state.open === i,
         sign: this.state.open === i ? "−" : "+",
         color: this.state.open === i ? "oklch(0.40 0.105 262)" : "oklch(0.19 0.008 250)",
@@ -279,11 +394,11 @@ class Component extends DCLogic {
       })),
 
       chatDot: this.state.chatOnline ? "oklch(0.55 0.13 145)" : "oklch(0.72 0.12 75)",
-      chatStatus: this.state.chatOnline
-        ? "Live chat, replies appear here"
-        : "Chat is temporarily unavailable, try again shortly",
-      chatHandle: "Support",
-      chatGreeting: "Usually replying within a few minutes during CET business hours.",
+      chatTitle: L("chatTitle"),
+      chatStatus: this.state.chatOnline ? L("chatStatusOnline") : L("chatStatusOffline"),
+      chatHandle: L("chatHandle"),
+      chatGreeting: L("chatGreeting"),
+      chatPlaceholder: L("chatPlaceholder"),
       chatEmpty: this.state.chatLog.length === 0,
       chatLog: this.state.chatLog.map((m) => ({
         text: m.text,
@@ -297,22 +412,25 @@ class Component extends DCLogic {
       setChatDraft: (e) => this.setState({ chatDraft: e.target.value }),
       chatKey: (e) => { if (e.key === "Enter" && this.state.chatDraft.trim()) this.sendChatMessage(this.state.chatDraft.trim()); },
       sendChat: () => { if (this.state.chatDraft.trim()) this.sendChatMessage(this.state.chatDraft.trim()); },
-      chatSendLabel: this.state.chatSending ? "Sending" : "Send",
+      chatSendLabel: this.state.chatSending ? L("chatSendingLabel") : L("chatSendLabel"),
       hasChatNote: Boolean(this.state.chatNote),
       chatNote: this.state.chatNote,
       chatNoteColor: this.state.chatNoteOk ? "oklch(0.42 0.10 145)" : "oklch(0.5 0.13 27)",
 
       contactOpen: this.state.contactOpen,
-      contactLabel: this.state.contactOpen ? "Close form" : "Contact support",
+      contactTitle: L("contactTitle"),
+      contactLabel: this.state.contactOpen ? L("contactLabelClose") : L("contactLabelOpen"),
       toggleContact: () => this.setState((s) => ({ contactOpen: !s.contactOpen })),
       contactFields: [
-        cf("email", "Your email", { type: "email", placeholder: "youremail@email.com", required: true }),
-        cf("order", "Order number", { placeholder: "MP-24118" }),
+        cf("email", L("fieldEmailLabel"), { type: "email", placeholder: L("fieldEmailPlaceholder"), required: true }),
+        cf("order", L("fieldOrderLabel"), { placeholder: L("fieldOrderPlaceholder") }),
       ],
+      messageLabel: L("messageLabel"),
+      messagePlaceholder: L("messagePlaceholder"),
       message: this.state.message,
       setMessage: (e) => this.setState({ message: e.target.value, sent: false }),
       messageBorder: this.state.error && !this.state.message.trim() ? "oklch(0.78 0.11 27)" : "oklch(0.88 0.004 250)",
-      sendLabel: this.state.sent ? "Message sent" : "Send message",
+      sendLabel: this.state.sent ? L("sendLabelSent") : L("sendLabelDefault"),
       send: () => {
         if (!this.state.email.includes("@") || !this.state.message.trim()) {
           this.setState({ error: true });
@@ -321,16 +439,16 @@ class Component extends DCLogic {
         this.setState({ sent: true, error: false, message: "" });
       },
       sendNote: this.state.error
-        ? "A valid email and a message are needed."
+        ? L("sendNoteError")
         : this.state.sent
-          ? "Sent. A reply lands within four hours, seven days a week."
-          : "Quoting the order number gets you a faster answer.",
+          ? L("sendNoteSent")
+          : L("sendNoteHint"),
       sendNoteColor: this.state.error ? "oklch(0.5 0.13 27)" : this.state.sent ? "oklch(0.45 0.11 145)" : "oklch(0.55 0.008 250)",
 
       channels: [
-        { label: "Email", value: "support@funchems.com", note: "Replies within four hours, seven days a week." },
-        { label: "Live chat", value: "See the chat panel above", note: "Fastest for order status and restock questions." },
-        { label: "Order issues", value: "Quote your order number", note: "Found in the dispatch email and in your account." },
+        { label: L("channelEmailLabel"), value: "support@funchems.com", note: L("channelEmailNote") },
+        { label: L("channelChatLabel"), value: L("channelChatValue"), note: L("channelChatNote") },
+        { label: L("channelOrderLabel"), value: L("channelOrderValue"), note: L("channelOrderNote") },
       ],
     };
   }

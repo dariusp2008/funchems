@@ -28,11 +28,11 @@
 
   <sc-if value="{{ signedOut }}" hint-placeholder-val="{{ false }}">
     <section style="max-width: 620px; margin: 0 auto; padding: 90px clamp(16px, 3.5vw, 40px) 120px; display: flex; flex-direction: column; gap: 16px;">
-      <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 30px; line-height: 1.08; letter-spacing: -0.02em; font-weight: 600;">Sign in to your account</h1>
-      <p style="margin: 0; font-size: 14px; line-height: 1.65; color: oklch(0.46 0.008 250);">Order history, saved compounds, stored payment methods and lab report access all sit behind the account.</p>
+      <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 30px; line-height: 1.08; letter-spacing: -0.02em; font-weight: 600;">{{ signInHeading }}</h1>
+      <p style="margin: 0; font-size: 14px; line-height: 1.65; color: oklch(0.46 0.008 250);">{{ signInBody }}</p>
       <div style="display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap;">
-        <a href="Sign-In.dc.html" style="display: flex; align-items: center; height: 46px; padding: 0 24px; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); font-size: 13.5px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">Sign in</a>
-        <a href="Sign-In.dc.html" style="display: flex; align-items: center; height: 46px; padding: 0 24px; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; font-size: 13.5px; font-weight: 500;" style-hover="border-color: oklch(0.19 0.008 250);">Create an account</a>
+        <a href="Sign-In.dc.html" style="display: flex; align-items: center; height: 46px; padding: 0 24px; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); font-size: 13.5px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">{{ signInCta }}</a>
+        <a href="Sign-In.dc.html" style="display: flex; align-items: center; height: 46px; padding: 0 24px; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; font-size: 13.5px; font-weight: 500;" style-hover="border-color: oklch(0.19 0.008 250);">{{ createAccountCta }}</a>
       </div>
     </section>
   </sc-if>
@@ -95,12 +95,12 @@
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 10px;">
                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.55 0.008 250);">Tracking</span>
+                    <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.55 0.008 250);">{{ trackingLabel }}</span>
                     <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: {{ o.trackColor }};">{{ o.tracking }}</span>
                   </div>
                   <div style="display: flex; gap: 8px; margin-top: 2px;">
                     <button onClick="{{ o.reorder }}" style="flex: 1; height: 36px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: transparent; cursor: pointer; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: oklch(0.32 0.008 250);" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">{{ o.reorderLabel }}</button>
-                    <a href="{{ o.href }}" style="flex: 1; display: flex; align-items: center; justify-content: center; height: 36px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: oklch(0.32 0.008 250);" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">Lot report</a>
+                    <a href="{{ o.href }}" style="flex: 1; display: flex; align-items: center; justify-content: center; height: 36px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: oklch(0.32 0.008 250);" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">{{ lotReportLabel }}</a>
                   </div>
                 </div>
               </div>
@@ -122,8 +122,8 @@
           </sc-for>
           <sc-if value="{{ noOrders }}" hint-placeholder-val="{{ false }}">
             <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 80px 20px; border: 1px dashed oklch(0.87 0.006 250);">
-              <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 28px; color: oklch(0.42 0.008 250);">No orders yet</span>
-              <a href="Shop.dc.html" style="font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">Browse the catalogue</a>
+              <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 28px; color: oklch(0.42 0.008 250);">{{ noOrdersText }}</span>
+              <a href="Shop.dc.html" style="font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.40 0.105 262);">{{ browseCatalogue }}</a>
             </div>
           </sc-if>
         </div>
@@ -140,8 +140,8 @@
           </sc-if>
           <sc-if value="{{ noSaved }}" hint-placeholder-val="{{ false }}">
             <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 80px 20px; border: 1px dashed oklch(0.87 0.006 250);">
-              <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 28px; color: oklch(0.42 0.008 250);">Nothing saved yet</span>
-              <span style="font-size: 13.5px; color: oklch(0.55 0.008 250);">Tap the heart on any product to keep it here.</span>
+              <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 28px; color: oklch(0.42 0.008 250);">{{ noSavedText }}</span>
+              <span style="font-size: 13.5px; color: oklch(0.55 0.008 250);">{{ noSavedHint }}</span>
             </div>
           </sc-if>
         </div>
@@ -150,7 +150,7 @@
       <sc-if value="{{ isDetails }}" hint-placeholder-val="{{ false }}">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; align-items: start;">
           <div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
-            <span style="font-size: 15px; font-weight: 500;">Shipping address</span>
+            <span style="font-size: 15px; font-weight: 500;">{{ shippingAddressHeading }}</span>
             <sc-for list="{{ addressFields }}" as="f" hint-placeholder-count="5">
               <div style="display: flex; flex-direction: column; gap: 6px;">
                 <label style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.56 0.008 250);">{{ f.label }}</label>
@@ -161,7 +161,7 @@
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 14px; padding: 24px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
-            <span style="font-size: 15px; font-weight: 500;">Preferences</span>
+            <span style="font-size: 15px; font-weight: 500;">{{ preferencesHeading }}</span>
             <sc-for list="{{ prefs }}" as="p" hint-placeholder-count="3">
               <div style="display: grid; grid-template-columns: minmax(0, 1fr) 96px; gap: 14px; align-items: center; padding: 10px 0; border-top: 1px solid oklch(0.95 0.004 250);">
                 <span style="display: flex; flex-direction: column; gap: 3px;">
@@ -174,9 +174,9 @@
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 12px; padding: 24px; background: oklch(0.19 0.008 250); color: oklch(0.88 0.006 250);">
-            <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.76 0.07 262);">Store credit</span>
+            <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.76 0.07 262);">{{ storeCreditHeading }}</span>
             <span style="font-size: 32px; font-weight: 500; letter-spacing: -0.02em; color: oklch(0.985 0.002 240);">{{ credit }}</span>
-            <span style="font-size: 13px; line-height: 1.6; color: oklch(0.7 0.006 250);">Credit applies automatically to your next order.</span>
+            <span style="font-size: 13px; line-height: 1.6; color: oklch(0.7 0.006 250);">{{ storeCreditNote }}</span>
           </div>
         </div>
       </sc-if>
@@ -186,7 +186,7 @@
 
           <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px; padding: clamp(20px, 3vw, 26px); background: oklch(0.19 0.008 250); color: oklch(0.93 0.004 250);">
             <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0;">
-              <span style="font-size: 13px; color: oklch(0.74 0.006 250);">Store balance</span>
+              <span style="font-size: 13px; color: oklch(0.74 0.006 250);">{{ storeBalanceLabel }}</span>
               <span style="font-family: Archivo, Helvetica, sans-serif; font-size: clamp(32px, 6vw, 44px); line-height: 1; color: oklch(0.985 0.002 240);">{{ balance }}</span>
             </div>
             <span style="flex: 1 1 220px; min-width: 0; font-size: 12.5px; line-height: 1.6; color: oklch(0.72 0.006 250);">{{ balanceNote }}</span>
@@ -194,7 +194,7 @@
 
           <div style="display: flex; flex-direction: column; gap: 16px; padding: clamp(20px, 3vw, 26px); background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
             <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
-              <span style="font-size: 15px; font-weight: 500;">Top up</span>
+              <span style="font-size: 15px; font-weight: 500;">{{ topUpHeading }}</span>
               <span style="font-size: 12.5px; color: oklch(0.55 0.008 250);">{{ topUpAsset }}</span>
             </div>
 
@@ -207,7 +207,7 @@
             </div>
 
             <div style="display: flex; flex-direction: column; gap: 6px; max-width: 260px;">
-              <label style="font-size: 12.5px; font-weight: 500; color: oklch(0.56 0.008 250);">Or another amount</label>
+              <label style="font-size: 12.5px; font-weight: 500; color: oklch(0.56 0.008 250);">{{ otherAmountLabel }}</label>
               <input type="text" inputMode="numeric" value="{{ customAmount }}" onChange="{{ setCustomAmount }}" placeholder="0" style="height: 44px; padding: 0 13px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);" />
             </div>
 
@@ -217,7 +217,7 @@
 
           <div style="display: flex; flex-direction: column; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
             <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 18px 22px; border-bottom: 1px solid oklch(0.93 0.004 250);">
-              <span style="font-size: 15px; font-weight: 500;">Top-up history</span>
+              <span style="font-size: 15px; font-weight: 500;">{{ topUpHistoryHeading }}</span>
               <span style="font-size: 12.5px; color: oklch(0.55 0.008 250);">{{ topUpHistoryNote }}</span>
             </div>
             <sc-for list="{{ topUps }}" as="t" hint-placeholder-count="0">
@@ -228,7 +228,7 @@
               </div>
             </sc-for>
             <sc-if value="{{ noTopUps }}" hint-placeholder-val="{{ true }}">
-              <span style="padding: 34px 22px; font-size: 13.5px; color: oklch(0.55 0.008 250);">No top-ups yet. Anything you add here is credited against future orders.</span>
+              <span style="padding: 34px 22px; font-size: 13.5px; color: oklch(0.55 0.008 250);">{{ noTopUpsText }}</span>
             </sc-if>
           </div>
         </div>
@@ -237,26 +237,26 @@
       <sc-if value="{{ isSecurity }}" hint-placeholder-val="{{ false }}">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 20px; align-items: start;">
           <div style="display: flex; flex-direction: column; gap: 14px; padding: 24px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
-            <span style="font-size: 15px; font-weight: 500;">Change password</span>
+            <span style="font-size: 15px; font-weight: 500;">{{ changePasswordHeading }}</span>
             <div style="display: flex; flex-direction: column; gap: 6px;">
-              <label style="font-size: 12.5px; font-weight: 500; color: oklch(0.56 0.008 250);">New password</label>
-              <input type="password" value="{{ newPassword }}" onChange="{{ setNewPassword }}" placeholder="Eight characters or more" style="height: 42px; padding: 0 11px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13.5px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);" />
+              <label style="font-size: 12.5px; font-weight: 500; color: oklch(0.56 0.008 250);">{{ newPasswordLabel }}</label>
+              <input type="password" value="{{ newPassword }}" onChange="{{ setNewPassword }}" placeholder="{{ newPasswordPlaceholder }}" style="height: 42px; padding: 0 11px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13.5px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262); background: oklch(0.985 0.002 240);" />
             </div>
-            <button onClick="{{ savePassword }}" style="align-self: flex-start; height: 42px; padding: 0 22px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262);">Update password</button>
+            <button onClick="{{ savePassword }}" style="align-self: flex-start; height: 42px; padding: 0 22px; border: 0; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;" style-hover="background: oklch(0.40 0.105 262);">{{ updatePasswordLabel }}</button>
             <sc-if value="{{ hasSecurityNote }}" hint-placeholder-val="{{ false }}">
               <span style="font-size: 12.5px; color: {{ securityNoteColor }};">{{ securityNote }}</span>
             </sc-if>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 12px; padding: 24px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
-            <span style="font-size: 15px; font-weight: 500;">Sessions</span>
+            <span style="font-size: 15px; font-weight: 500;">{{ sessionsHeading }}</span>
             <span style="font-size: 13px; line-height: 1.6; color: oklch(0.48 0.008 250);">{{ sessionLine }}</span>
-            <button onClick="{{ signOut }}" style="align-self: flex-start; height: 42px; padding: 0 22px; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; color: oklch(0.3 0.008 250);" style-hover="border-color: oklch(0.19 0.008 250);">Sign out</button>
+            <button onClick="{{ signOut }}" style="align-self: flex-start; height: 42px; padding: 0 22px; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; color: oklch(0.3 0.008 250);" style-hover="border-color: oklch(0.19 0.008 250);">{{ signOutLabel }}</button>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 12px; padding: 24px; border: 1px solid oklch(0.84 0.06 27); background: oklch(0.985 0.004 27);">
-            <span style="font-size: 15px; font-weight: 500; color: oklch(0.45 0.14 27);">Delete this account</span>
-            <span style="font-size: 13px; line-height: 1.6; color: oklch(0.42 0.03 27);">Removes your details, saved methods and preferences. Order records are kept for accounting, with your name detached from them.</span>
+            <span style="font-size: 15px; font-weight: 500; color: oklch(0.45 0.14 27);">{{ deleteAccountHeading }}</span>
+            <span style="font-size: 13px; line-height: 1.6; color: oklch(0.42 0.03 27);">{{ deleteAccountNote }}</span>
             <button onClick="{{ deleteAccount }}" style="align-self: flex-start; height: 42px; padding: 0 22px; border: 0; border-radius: 2px; background: {{ deleteBg }}; color: oklch(0.985 0.002 240); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;">{{ deleteLabel }}</button>
           </div>
         </div>
@@ -269,6 +269,173 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
+const STR = {
+  en: {
+    signInHeading: "Sign in to your account",
+    signInBody: "Order history, saved compounds, stored payment methods and lab report access all sit behind the account.",
+    signInCta: "Sign in",
+    createAccountCta: "Create an account",
+    tierInstitutional: "Institutional account",
+    tierRepeat: "Repeat customer",
+    tierDefault: "Account",
+    joinedPrefix: "joined ",
+    statOrdersPlaced: "Orders placed",
+    statLifetimeSpend: "Lifetime spend",
+    statStoreCredit: "Store credit",
+    tabOrders: "Orders",
+    tabSaved: "Saved",
+    tabTopUp: "Top up",
+    tabDetails: "Details",
+    tabSecurity: "Security",
+    trackingLabel: "Tracking",
+    lotReportLabel: "Lot report",
+    reorderLabel: "Reorder",
+    reorderedLabel: "Added",
+    trackAwaiting: "Awaiting",
+    trackPaid: "Paid",
+    trackPacked: "Packed",
+    trackShipped: "Shipped",
+    statusAwaiting: "Awaiting",
+    statusPaid: "Paid",
+    statusPacked: "Packed",
+    statusShipped: "Shipped",
+    statusRefunded: "Refunded",
+    trackingRefunded: "Refunded to source",
+    trackingAssigned: "Assigned at dispatch",
+    noOrdersText: "No orders yet",
+    browseCatalogue: "Browse the catalogue",
+    noSavedText: "Nothing saved yet",
+    noSavedHint: "Tap the heart on any product to keep it here.",
+    shippingAddressHeading: "Shipping address",
+    addrName: "Recipient",
+    addrNamePh: "Name or department",
+    addrStreet: "Street address",
+    addrStreetPh: "Street and number",
+    addrCity: "City",
+    addrCityPh: "City",
+    addrZip: "Post code",
+    addrZipPh: "0000",
+    addrCountry: "Country",
+    saveLabel: "Save address",
+    savedLabel: "Address saved",
+    preferencesHeading: "Preferences",
+    prefOn: "On",
+    prefOff: "Off",
+    prefRestockLabel: "Restock alerts",
+    prefRestockHint: "Email when a saved compound is back.",
+    prefAssayLabel: "New lab reports",
+    prefAssayHint: "Email when a new lot assay is published.",
+    prefOffsaleLabel: "Offsale shortlist",
+    prefOffsaleHint: "Get the vote shortlist before it opens.",
+    storeCreditHeading: "Store credit",
+    storeCreditNote: "Credit applies automatically to your next order.",
+    storeBalanceLabel: "Store balance",
+    balanceNote: "Credit sits on this account for future orders. It never expires and is not refundable to a wallet.",
+    topUpHeading: "Top up",
+    topUpAsset: "ETH or USDT, any chain we accept",
+    otherAmountLabel: "Or another amount",
+    topUpLabel: "Connect wallet to top up",
+    topUpNote: "Connect the wallet you want to send from. The amount is quoted in ETH or USDT at the rate showing in your wallet when you confirm.",
+    topUpHistoryHeading: "Top-up history",
+    topUpHistoryRecorded: (n) => n + " recorded",
+    topUpHistoryNone: "Nothing yet",
+    noTopUpsText: "No top-ups yet. Anything you add here is credited against future orders.",
+    changePasswordHeading: "Change password",
+    newPasswordLabel: "New password",
+    newPasswordPlaceholder: "Eight characters or more",
+    updatePasswordLabel: "Update password",
+    sessionsHeading: "Sessions",
+    sessionLine: (email) => "Signed in as " + email + " on this browser. Signing out clears the session here only.",
+    signOutLabel: "Sign out",
+    deleteAccountHeading: "Delete this account",
+    deleteAccountNote: "Removes your details, saved methods and preferences. Order records are kept for accounting, with your name detached from them.",
+    deleteLabel: "Delete account",
+    deleteConfirmLabel: "Tap again to confirm",
+  },
+  nl: {
+    signInHeading: "Log in op uw account",
+    signInBody: "Bestelgeschiedenis, opgeslagen verbindingen, opgeslagen betaalmethoden en toegang tot labrapporten zitten allemaal achter het account.",
+    signInCta: "Inloggen",
+    createAccountCta: "Account aanmaken",
+    tierInstitutional: "Zakelijk account",
+    tierRepeat: "Vaste klant",
+    tierDefault: "Account",
+    joinedPrefix: "lid sinds ",
+    statOrdersPlaced: "Geplaatste bestellingen",
+    statLifetimeSpend: "Totale besteding",
+    statStoreCredit: "Winkeltegoed",
+    tabOrders: "Bestellingen",
+    tabSaved: "Opgeslagen",
+    tabTopUp: "Opwaarderen",
+    tabDetails: "Gegevens",
+    tabSecurity: "Beveiliging",
+    trackingLabel: "Tracking",
+    lotReportLabel: "Partijrapport",
+    reorderLabel: "Opnieuw bestellen",
+    reorderedLabel: "Toegevoegd",
+    trackAwaiting: "In afwachting",
+    trackPaid: "Betaald",
+    trackPacked: "Verpakt",
+    trackShipped: "Verzonden",
+    statusAwaiting: "In afwachting",
+    statusPaid: "Betaald",
+    statusPacked: "Verpakt",
+    statusShipped: "Verzonden",
+    statusRefunded: "Terugbetaald",
+    trackingRefunded: "Terugbetaald naar bron",
+    trackingAssigned: "Wordt toegewezen bij verzending",
+    noOrdersText: "Nog geen bestellingen",
+    browseCatalogue: "Bekijk de catalogus",
+    noSavedText: "Nog niets opgeslagen",
+    noSavedHint: "Tik op het hartje bij een product om het hier te bewaren.",
+    shippingAddressHeading: "Verzendadres",
+    addrName: "Ontvanger",
+    addrNamePh: "Naam of afdeling",
+    addrStreet: "Straatnaam",
+    addrStreetPh: "Straat en huisnummer",
+    addrCity: "Plaats",
+    addrCityPh: "Plaats",
+    addrZip: "Postcode",
+    addrZipPh: "0000",
+    addrCountry: "Land",
+    saveLabel: "Adres opslaan",
+    savedLabel: "Adres opgeslagen",
+    preferencesHeading: "Voorkeuren",
+    prefOn: "Aan",
+    prefOff: "Uit",
+    prefRestockLabel: "Voorraadmeldingen",
+    prefRestockHint: "E-mail zodra een opgeslagen verbinding weer beschikbaar is.",
+    prefAssayLabel: "Nieuwe labrapporten",
+    prefAssayHint: "E-mail zodra een nieuwe partij-analyse wordt gepubliceerd.",
+    prefOffsaleLabel: "Afprijslijst",
+    prefOffsaleHint: "Ontvang de stemlijst voordat deze opent.",
+    storeCreditHeading: "Winkeltegoed",
+    storeCreditNote: "Tegoed wordt automatisch toegepast op uw volgende bestelling.",
+    storeBalanceLabel: "Tegoedsaldo",
+    balanceNote: "Tegoed blijft op dit account staan voor toekomstige bestellingen. Het verloopt nooit en is niet uitkeerbaar naar een wallet.",
+    topUpHeading: "Opwaarderen",
+    topUpAsset: "ETH of USDT, elke chain die wij accepteren",
+    otherAmountLabel: "Of een ander bedrag",
+    topUpLabel: "Wallet koppelen om op te waarderen",
+    topUpNote: "Koppel de wallet waarvan u wilt versturen. Het bedrag wordt opgegeven in ETH of USDT tegen de koers die in uw wallet staat op het moment van bevestigen.",
+    topUpHistoryHeading: "Opwaardeergeschiedenis",
+    topUpHistoryRecorded: (n) => n + " geregistreerd",
+    topUpHistoryNone: "Nog niets",
+    noTopUpsText: "Nog geen opwaarderingen. Alles wat u hier toevoegt wordt verrekend met toekomstige bestellingen.",
+    changePasswordHeading: "Wachtwoord wijzigen",
+    newPasswordLabel: "Nieuw wachtwoord",
+    newPasswordPlaceholder: "Minimaal acht tekens",
+    updatePasswordLabel: "Wachtwoord bijwerken",
+    sessionsHeading: "Sessies",
+    sessionLine: (email) => "Ingelogd als " + email + " op deze browser. Uitloggen wist de sessie alleen hier.",
+    signOutLabel: "Uitloggen",
+    deleteAccountHeading: "Dit account verwijderen",
+    deleteAccountNote: "Verwijdert uw gegevens, opgeslagen methoden en voorkeuren. Bestelgegevens worden bewaard voor de boekhouding, met uw naam losgekoppeld.",
+    deleteLabel: "Account verwijderen",
+    deleteConfirmLabel: "Tik nogmaals om te bevestigen",
+  },
+};
+
 class Component extends DCLogic {
   state = {
     tab: 0, reordered: null, saved: false,
@@ -292,28 +459,37 @@ class Component extends DCLogic {
   renderVals() {
     const db = window.Funchems;
     if (!db) return { tabs: [], orders: [], stats: [], signedIn: false, signedOut: false };
+    const L = (k) => db.t(STR, k);
     const me = db.currentUser();
-    if (!me) return { tabs: [], orders: [], stats: [], signedIn: false, signedOut: true, topUpAmounts: [], topUps: [] };
+    if (!me) {
+      return {
+        tabs: [], orders: [], stats: [], signedIn: false, signedOut: true, topUpAmounts: [], topUps: [],
+        signInHeading: L("signInHeading"), signInBody: L("signInBody"),
+        signInCta: L("signInCta"), createAccountCta: L("createAccountCta"),
+      };
+    }
     const orders = db.data.orders.filter((o) => o.email === me.email);
     const wishlist = db.cartState.wishlist || [];
     const flow = ["Awaiting", "Paid", "Packed", "Shipped"];
+    const flowLabel = (s) => ({ Awaiting: L("trackAwaiting"), Paid: L("trackPaid"), Packed: L("trackPacked"), Shipped: L("trackShipped") }[s] || s);
+    const statusLabel = (s) => ({ Awaiting: L("statusAwaiting"), Paid: L("statusPaid"), Packed: L("statusPacked"), Shipped: L("statusShipped"), Refunded: L("statusRefunded") }[s] || s);
 
     const tabs = [
-      { label: "Orders", count: orders.length },
-      { label: "Saved", count: wishlist.length },
-      { label: "Top up", count: "" },
-      { label: "Details", count: "" },
-      { label: "Security", count: "" },
+      { label: L("tabOrders"), count: orders.length },
+      { label: L("tabSaved"), count: wishlist.length },
+      { label: L("tabTopUp"), count: "" },
+      { label: L("tabDetails"), count: "" },
+      { label: L("tabSecurity"), count: "" },
     ];
 
     return {
-      tierLabel: me.tier === "institutional" ? "Institutional account" : me.tier === "repeat" ? "Repeat customer" : "Account",
+      tierLabel: me.tier === "institutional" ? L("tierInstitutional") : me.tier === "repeat" ? L("tierRepeat") : L("tierDefault"),
       greeting: me.name || me.email,
-      subline: [me.email, me.country, me.createdAt ? "joined " + me.createdAt : ""].filter(Boolean).join(", "),
+      subline: [me.email, me.country, me.createdAt ? L("joinedPrefix") + me.createdAt : ""].filter(Boolean).join(", "),
       stats: [
-        { label: "Orders placed", value: String(orders.length) },
-        { label: "Lifetime spend", value: db.money(me.spent) },
-        { label: "Store credit", value: db.money(me.credit) },
+        { label: L("statOrdersPlaced"), value: String(orders.length) },
+        { label: L("statLifetimeSpend"), value: db.money(me.spent) },
+        { label: L("statStoreCredit"), value: db.money(me.credit) },
       ],
 
       tabs: tabs.map((t, i) => ({
@@ -330,9 +506,22 @@ class Component extends DCLogic {
       isDetails: this.state.tab === 3,
       isSecurity: this.state.tab === 4,
 
+      storeBalanceLabel: L("storeBalanceLabel"),
+      topUpHeading: L("topUpHeading"),
+      changePasswordHeading: L("changePasswordHeading"),
+      newPasswordLabel: L("newPasswordLabel"),
+      newPasswordPlaceholder: L("newPasswordPlaceholder"),
+      updatePasswordLabel: L("updatePasswordLabel"),
+      sessionsHeading: L("sessionsHeading"),
+      signOutLabel: L("signOutLabel"),
+      deleteAccountHeading: L("deleteAccountHeading"),
+      deleteAccountNote: L("deleteAccountNote"),
+      topUpHistoryHeading: L("topUpHistoryHeading"),
+      otherAmountLabel: L("otherAmountLabel"),
+
       balance: db.money(me.balance || 0),
-      balanceNote: "Credit sits on this account for future orders. It never expires and is not refundable to a wallet.",
-      topUpAsset: "ETH or USDT, any chain we accept",
+      balanceNote: L("balanceNote"),
+      topUpAsset: L("topUpAsset"),
       topUpAmounts: [100, 250, 500, 1000].map((v) => ({
         label: db.money(v),
         pick: () => this.setState({ topUp: v, customAmount: "" }),
@@ -342,11 +531,12 @@ class Component extends DCLogic {
       })),
       customAmount: this.state.customAmount,
       setCustomAmount: (e) => this.setState({ customAmount: e.target.value.replace(/\D/g, "").slice(0, 6), topUp: 0 }),
-      topUpLabel: "Connect wallet to top up",
-      topUpNote: "Connect the wallet you want to send from. The amount is quoted in ETH or USDT at the rate showing in your wallet when you confirm.",
+      topUpLabel: L("topUpLabel"),
+      topUpNote: L("topUpNote"),
       topUps: (me.topUps || []).map((t) => ({ ref: t.ref, date: t.date, amount: db.money(t.amount) })),
       noTopUps: (me.topUps || []).length === 0,
-      topUpHistoryNote: (me.topUps || []).length ? (me.topUps || []).length + " recorded" : "Nothing yet",
+      topUpHistoryNote: (me.topUps || []).length ? L("topUpHistoryRecorded")((me.topUps || []).length) : L("topUpHistoryNone"),
+      noTopUpsText: L("noTopUpsText"),
 
       newPassword: this.state.newPassword,
       setNewPassword: (e) => this.setState({ newPassword: e.target.value, securityNote: "" }),
@@ -357,9 +547,9 @@ class Component extends DCLogic {
       hasSecurityNote: Boolean(this.state.securityNote),
       securityNote: this.state.securityNote,
       securityNoteColor: this.state.securityOk ? "oklch(0.42 0.10 145)" : "oklch(0.5 0.13 27)",
-      sessionLine: "Signed in as " + me.email + " on this browser. Signing out clears the session here only.",
+      sessionLine: L("sessionLine")(me.email),
       signOut: async () => { await db.auth.signOut(); window.location.href = "Sign-In.dc.html"; },
-      deleteLabel: this.state.confirmDelete ? "Tap again to confirm" : "Delete account",
+      deleteLabel: this.state.confirmDelete ? L("deleteConfirmLabel") : L("deleteLabel"),
       deleteBg: this.state.confirmDelete ? "oklch(0.45 0.16 27)" : "oklch(0.5 0.13 27)",
       deleteAccount: async () => {
         if (!this.state.confirmDelete) { this.setState({ confirmDelete: true }); return; }
@@ -369,6 +559,10 @@ class Component extends DCLogic {
       },
 
       noOrders: orders.length === 0,
+      noOrdersText: L("noOrdersText"),
+      browseCatalogue: L("browseCatalogue"),
+      trackingLabel: L("trackingLabel"),
+      lotReportLabel: L("lotReportLabel"),
       orders: orders.map((o) => {
         const idx = flow.indexOf(o.status);
         const refunded = o.status === "Refunded";
@@ -376,7 +570,7 @@ class Component extends DCLogic {
         return {
           id: "#" + o.id,
           meta: o.createdAt + ", " + o.payMethod + ", " + (o.lines || []).length + " lines",
-          status: o.status,
+          status: statusLabel(o.status),
           badgeBg: refunded ? "oklch(0.96 0.02 25)" : o.status === "Shipped" ? "oklch(0.19 0.008 250)" : "oklch(0.96 0.02 24)",
           badgeColor: refunded ? "oklch(0.5 0.13 25)" : o.status === "Shipped" ? "oklch(0.985 0.002 240)" : "oklch(0.40 0.105 262)",
           total: db.money(db.orderTotalOf(o)),
@@ -385,9 +579,9 @@ class Component extends DCLogic {
             const p = db.product(l.cat);
             return { cat: l.cat, name: (p && p.name) || l.cat, href: "Product-Detail.dc.html?p=" + l.cat, qty: l.qty, total: db.money(l.unit * l.qty) };
           }),
-          tracking: o.tracking || (refunded ? "Refunded to source" : "Assigned at dispatch"),
+          tracking: o.tracking || (refunded ? L("trackingRefunded") : L("trackingAssigned")),
           trackColor: o.tracking ? "oklch(0.3 0.008 250)" : "oklch(0.6 0.006 250)",
-          reorderLabel: this.state.reordered === o.id ? "Added" : "Reorder",
+          reorderLabel: this.state.reordered === o.id ? L("reorderedLabel") : L("reorderLabel"),
           reorder: () => {
             (o.lines || []).forEach((l) => db.cart.add(l.cat, l.qty));
             this.setState({ reordered: o.id });
@@ -395,7 +589,7 @@ class Component extends DCLogic {
             this.t = setTimeout(() => this.setState({ reordered: null }), 1600);
           },
           track: flow.map((label, i) => ({
-            label,
+            label: flowLabel(label),
             hasLine: i < flow.length - 1,
             dot: refunded ? "oklch(0.86 0.006 250)" : i <= idx ? "oklch(0.40 0.105 262)" : "oklch(0.88 0.004 250)",
             color: refunded ? "oklch(0.68 0.006 250)" : i <= idx ? "oklch(0.3 0.008 250)" : "oklch(0.65 0.006 250)",
@@ -406,37 +600,43 @@ class Component extends DCLogic {
 
       hasSaved: wishlist.length > 0,
       noSaved: wishlist.length === 0,
+      noSavedText: L("noSavedText"),
+      noSavedHint: L("noSavedHint"),
       saved: wishlist.map((cat) => ({ cat })),
 
+      shippingAddressHeading: L("shippingAddressHeading"),
       addressFields: [
-        ["name", "Recipient", "Name or department"],
-        ["street", "Street address", "Street and number"],
-        ["city", "City", "City"],
-        ["zip", "Post code", "0000"],
-        ["country", "Country", me.country],
+        ["name", L("addrName"), L("addrNamePh")],
+        ["street", L("addrStreet"), L("addrStreetPh")],
+        ["city", L("addrCity"), L("addrCityPh")],
+        ["zip", L("addrZip"), L("addrZipPh")],
+        ["country", L("addrCountry"), me.country],
       ].map(([key, label, placeholder]) => ({
         label, placeholder,
         value: this.state.addr[key],
         change: (e) => { const v = e.target.value; this.setState((s) => ({ addr: { ...s.addr, [key]: v }, saved: false })); },
       })),
-      saveLabel: this.state.saved ? "Address saved" : "Save address",
+      saveLabel: this.state.saved ? L("savedLabel") : L("saveLabel"),
       saveAddress: () => this.setState({ saved: true }),
 
+      preferencesHeading: L("preferencesHeading"),
       prefs: [
-        { key: "restock", label: "Restock alerts", hint: "Email when a saved compound is back." },
-        { key: "assay", label: "New lab reports", hint: "Email when a new lot assay is published." },
-        { key: "offsale", label: "Offsale shortlist", hint: "Get the vote shortlist before it opens." },
+        { key: "restock", label: L("prefRestockLabel"), hint: L("prefRestockHint") },
+        { key: "assay", label: L("prefAssayLabel"), hint: L("prefAssayHint") },
+        { key: "offsale", label: L("prefOffsaleLabel"), hint: L("prefOffsaleHint") },
       ].map((p) => {
         const on = this.state.prefs[p.key];
         return {
           label: p.label, hint: p.hint,
-          state: on ? "On" : "Off",
+          state: on ? L("prefOn") : L("prefOff"),
           bg: on ? "oklch(0.19 0.008 250)" : "transparent",
           color: on ? "oklch(0.985 0.002 240)" : "oklch(0.5 0.008 250)",
           border: on ? "oklch(0.19 0.008 250)" : "oklch(0.88 0.004 250)",
           toggle: () => this.setState((s) => ({ prefs: { ...s.prefs, [p.key]: !s.prefs[p.key] } })),
         };
       }),
+      storeCreditHeading: L("storeCreditHeading"),
+      storeCreditNote: L("storeCreditNote"),
       credit: db.money(me.credit),
     };
   }

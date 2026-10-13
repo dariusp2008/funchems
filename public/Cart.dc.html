@@ -29,10 +29,10 @@
   <section style="max-width: 1400px; margin: 0 auto; padding: 34px clamp(16px, 3.5vw, 40px) 0;">
     <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 28px; border-bottom: 1px solid oklch(0.9 0.004 250);">
       <div style="display: flex; flex-direction: column; gap: 10px;">
-        <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 34px; line-height: 1.05; letter-spacing: -0.02em; font-weight: 600;">Your cart</h1>
+        <h1 style="margin: 0; font-family: Archivo, Helvetica, sans-serif; font-size: 34px; line-height: 1.05; letter-spacing: -0.02em; font-weight: 600;">{{ pageTitle }}</h1>
         <span style="font-size: 13.5px; color: oklch(0.5 0.008 250);">{{ countLine }}</span>
       </div>
-      <a href="Shop.dc.html" style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.42 0.008 250); padding-bottom: 4px;">Continue shopping</a>
+      <a href="Shop.dc.html" style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.42 0.008 250); padding-bottom: 4px;">{{ continueShopping }}</a>
     </div>
   </section>
 
@@ -51,7 +51,7 @@
                 <span style="min-width: 26px; text-align: center; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px;">{{ l.qty }}</span>
                 <button onClick="{{ l.inc }}" style="width: 34px; height: 34px; border: 0; background: transparent; cursor: pointer; font-size: 15px; color: oklch(0.4 0.008 250);" style-hover="color: oklch(0.40 0.105 262);">+</button>
               </div>
-              <button onClick="{{ l.remove }}" style="border: 0; background: transparent; cursor: pointer; padding: 0; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.6 0.006 250);" style-hover="color: oklch(0.40 0.105 262);">Remove</button>
+              <button onClick="{{ l.remove }}" style="border: 0; background: transparent; cursor: pointer; padding: 0; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.6 0.006 250);" style-hover="color: oklch(0.40 0.105 262);">{{ removeLabel }}</button>
               <span style="font-size: 12.5px; color: {{ l.stockColor }};">{{ l.stockNote }}</span>
             </div>
           </div>
@@ -60,16 +60,16 @@
             <sc-if value="{{ l.hasWas }}" hint-placeholder-val="{{ true }}">
               <span style="font-size: 12.5px; color: oklch(0.62 0.006 250); text-decoration: line-through;">{{ l.wasTotal }}</span>
             </sc-if>
-            <span style="font-size: 12px; color: oklch(0.6 0.006 250);">{{ l.unit }} each</span>
+            <span style="font-size: 12px; color: oklch(0.6 0.006 250);">{{ l.unit }} {{ eachLabel }}</span>
           </div>
         </div>
       </sc-for>
 
       <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
         <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 88px 20px; border: 1px dashed oklch(0.87 0.006 250);">
-          <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 30px; color: oklch(0.4 0.008 250);">Your cart is empty</span>
-          <span style="font-size: 13.5px; color: oklch(0.55 0.008 250);">Every order ships with the assay for its lot.</span>
-          <a href="Shop.dc.html" style="display: flex; align-items: center; height: 44px; padding: 0 24px; margin-top: 6px; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">Browse compounds</a>
+          <span style="font-family: Archivo, Helvetica, sans-serif; font-size: 30px; color: oklch(0.4 0.008 250);">{{ emptyTitle }}</span>
+          <span style="font-size: 13.5px; color: oklch(0.55 0.008 250);">{{ emptyBody }}</span>
+          <a href="Shop.dc.html" style="display: flex; align-items: center; height: 44px; padding: 0 24px; margin-top: 6px; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">{{ browseCompounds }}</a>
         </div>
       </sc-if>
 
@@ -79,18 +79,18 @@
             <span style="font-size: 14.5px; font-weight: 500;">{{ tierTitle }}</span>
             <span style="font-size: 13px; color: oklch(0.5 0.008 250);">{{ tierBody }}</span>
           </div>
-          <a href="Shop.dc.html" style="display: flex; align-items: center; height: 40px; padding: 0 20px; border: 1px solid oklch(0.19 0.008 250); border-radius: 2px; font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240);">Keep shopping</a>
+          <a href="Shop.dc.html" style="display: flex; align-items: center; height: 40px; padding: 0 20px; border: 1px solid oklch(0.19 0.008 250); border-radius: 2px; font-size: 13px; font-weight: 500; letter-spacing: 0;" style-hover="background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240);">{{ keepShopping }}</a>
         </div>
       </sc-if>
 
       <sc-if value="{{ hasSaved }}" hint-placeholder-val="{{ false }}">
         <div style="display: flex; flex-direction: column; gap: 14px; padding: 22px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250);">
-          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.55 0.008 250);">Saved for later</span>
+          <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.55 0.008 250);">{{ savedForLater }}</span>
           <sc-for list="{{ saved }}" as="s" hint-placeholder-count="2">
             <div style="display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 14px; align-items: center; padding: 10px 0; border-top: 1px solid oklch(0.95 0.004 250);">
               <a href="{{ s.href }}" style="font-size: 13.5px; min-width: 0;">{{ s.name }}</a>
               <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px;">{{ s.price }}</span>
-              <button onClick="{{ s.move }}" style="height: 32px; padding: 0 12px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 12.5px; color: oklch(0.35 0.008 250);" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">Move to cart</button>
+              <button onClick="{{ s.move }}" style="height: 32px; padding: 0 12px; border: 1px solid oklch(0.88 0.004 250); border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 12.5px; color: oklch(0.35 0.008 250);" style-hover="border-color: oklch(0.40 0.105 262); color: oklch(0.40 0.105 262);">{{ moveToCart }}</button>
             </div>
           </sc-for>
         </div>
@@ -99,7 +99,7 @@
 
     <aside style="display: flex; flex-direction: column; gap: 20px; position: sticky; top: 24px;">
       <div style="display: flex; flex-direction: column; padding: 26px 28px 28px; background: oklch(0.985 0.002 240); border: 1px solid oklch(0.9 0.004 250); border-radius: 2px;">
-        <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.55 0.008 250); padding-bottom: 18px;">Order summary</span>
+        <span style="font-size: 12.5px; font-weight: 500; letter-spacing: 0; color: oklch(0.55 0.008 250); padding-bottom: 18px;">{{ orderSummary }}</span>
 
         <div style="display: flex; gap: 6px; padding-bottom: 18px;">
           <sc-for list="{{ payToggle }}" as="t" hint-placeholder-count="1">
@@ -115,20 +115,20 @@
         </sc-for>
 
         <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 18px 0 6px; margin-top: 6px; border-top: 1px solid oklch(0.88 0.004 250);">
-          <span style="font-size: 15px; font-weight: 500;">Total</span>
+          <span style="font-size: 15px; font-weight: 500;">{{ totalLabel }}</span>
           <span style="font-size: 26px; font-weight: 500; letter-spacing: -0.02em;">{{ grandTotal }}</span>
         </div>
         <span style="font-size: 12.5px; color: oklch(0.45 0.11 145); padding-bottom: 18px;">{{ savingLine }}</span>
 
         <div style="display: flex; gap: 8px; padding-bottom: 10px;">
-          <input type="text" value="{{ code }}" onChange="{{ setCode }}" onKeyDown="{{ onCodeKey }}" placeholder="Promo code (optional)" style="flex: 1; min-width: 0; height: 42px; padding: 0 12px; border: 1px solid {{ codeBorder }}; border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);" />
-          <button onClick="{{ applyCode }}" style="height: 42px; padding: 0 16px; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.35 0.008 250);" style-hover="border-color: oklch(0.19 0.008 250);">Apply</button>
+          <input type="text" value="{{ code }}" onChange="{{ setCode }}" onKeyDown="{{ onCodeKey }}" placeholder="{{ promoPlaceholder }}" style="flex: 1; min-width: 0; height: 42px; padding: 0 12px; border: 1px solid {{ codeBorder }}; border-radius: 2px; background: oklch(0.972 0.003 240); font-size: 13px; outline: none;" style-focus="border-color: oklch(0.40 0.105 262);" />
+          <button onClick="{{ applyCode }}" style="height: 42px; padding: 0 16px; border: 1px solid oklch(0.85 0.006 250); border-radius: 2px; background: transparent; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0; color: oklch(0.35 0.008 250);" style-hover="border-color: oklch(0.19 0.008 250);">{{ applyLabel }}</button>
         </div>
         <sc-if value="{{ hasCodeNote }}" hint-placeholder-val="{{ false }}">
           <span style="font-size: 12.5px; line-height: 1.55; color: {{ codeNoteColor }}; padding-bottom: 14px;">{{ codeNote }}</span>
         </sc-if>
 
-        <a href="Checkout.dc.html" style="display: flex; align-items: center; justify-content: center; height: 52px; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); font-family: inherit; font-size: 13px;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">Checkout</a>
+        <a href="Checkout.dc.html" style="display: flex; align-items: center; justify-content: center; height: 52px; border-radius: 2px; background: oklch(0.19 0.008 250); color: oklch(0.985 0.002 240); font-family: inherit; font-size: 13px;" style-hover="background: oklch(0.40 0.105 262); color: oklch(0.985 0.002 240);">{{ checkoutLabel }}</a>
         <div style="display: flex; align-items: center; justify-content: center; gap: 8px; padding-top: 14px; flex-wrap: wrap;">
           <sc-for list="{{ payments }}" as="p" hint-placeholder-count="5">
             <span style="padding: 5px 9px; border: 1px solid oklch(0.9 0.004 250); border-radius: 2px; font-size: 11.5px; color: oklch(0.55 0.008 250);">{{ p }}</span>
@@ -149,6 +149,85 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
+const STR = {
+  en: {
+    pageTitle: "Your cart",
+    continueShopping: "Continue shopping",
+    nothingHereYet: "Nothing here yet",
+    countLine: (kits, distinct) => kits + " kits, " + distinct + " different compound" + (distinct === 1 ? "" : "s"),
+    removeLabel: "Remove",
+    eachLabel: "each",
+    emptyTitle: "Your cart is empty",
+    emptyBody: "Every order ships with the assay for its lot.",
+    browseCompounds: "Browse compounds",
+    keepShopping: "Keep shopping",
+    savedForLater: "Saved for later",
+    moveToCart: "Move to cart",
+    orderSummary: "Order summary",
+    cryptoToggle: (pct) => "Crypto −" + pct + "%, applied below",
+    listPrice: "List price",
+    productOffers: "Product offers",
+    coldChainShipping: "Cold chain shipping",
+    free: "free",
+    totalLabel: "Total",
+    savingLine: (amount) => "You save " + amount + " against list price",
+    promoPlaceholder: "Promo code (optional)",
+    applyLabel: "Apply",
+    checkoutLabel: "Checkout",
+    tierTitle: (need, value) => "Add " + need + " more compound" + (need > 1 ? "s" : "") + " for −" + value + "%",
+    tierBody: (label) => label + " applies to the whole order, no code needed.",
+    onlyInStock: (n) => "only " + n + " in stock",
+    codeApplied: "Code applied to this order.",
+    codeInvalid: "That code is not recognised.",
+    codeUnmet: "That code needs a larger order to unlock.",
+    codeNotApplicable: "That code only covers products you do not have in the cart yet.",
+    codeSpent: "That code has reached its usage limit.",
+    codeExpired: "That code is outside its valid dates.",
+    codeExclusive: "That code cannot be combined with the offers already on this order.",
+    dispatchLine: (cutoff) => "Dispatched same day on orders before " + cutoff + ".",
+    coldPackLine: "Insulated cold pack, unbranded outer box.",
+    lotReportLine: "Lot report for every line included with dispatch.",
+  },
+  nl: {
+    pageTitle: "Uw winkelwagen",
+    continueShopping: "Verder winkelen",
+    nothingHereYet: "Nog niets hier",
+    countLine: (kits, distinct) => kits + " kits, " + distinct + " verschillende verbinding" + (distinct === 1 ? "" : "en"),
+    removeLabel: "Verwijderen",
+    eachLabel: "per stuk",
+    emptyTitle: "Uw winkelwagen is leeg",
+    emptyBody: "Elke bestelling wordt verzonden met de analysecertificaten van de lot.",
+    browseCompounds: "Bekijk verbindingen",
+    keepShopping: "Verder winkelen",
+    savedForLater: "Opgeslagen voor later",
+    moveToCart: "Naar winkelwagen",
+    orderSummary: "Besteloverzicht",
+    cryptoToggle: (pct) => "Crypto −" + pct + "%, hieronder toegepast",
+    listPrice: "Catalogusprijs",
+    productOffers: "Productaanbiedingen",
+    coldChainShipping: "Koelketenverzending",
+    free: "gratis",
+    totalLabel: "Totaal",
+    savingLine: (amount) => "U bespaart " + amount + " ten opzichte van de catalogusprijs",
+    promoPlaceholder: "Promocode (optioneel)",
+    applyLabel: "Toepassen",
+    checkoutLabel: "Afrekenen",
+    tierTitle: (need, value) => "Voeg nog " + need + " verbinding" + (need > 1 ? "en" : "") + " toe voor −" + value + "%",
+    tierBody: (label) => label + " geldt voor de hele bestelling, geen code nodig.",
+    onlyInStock: (n) => "nog maar " + n + " op voorraad",
+    codeApplied: "Code toegepast op deze bestelling.",
+    codeInvalid: "Die code wordt niet herkend.",
+    codeUnmet: "Voor die code is een grotere bestelling nodig.",
+    codeNotApplicable: "Die code geldt alleen voor producten die nog niet in uw winkelwagen staan.",
+    codeSpent: "Die code heeft de gebruikslimiet bereikt.",
+    codeExpired: "Die code is buiten de geldigheidsperiode.",
+    codeExclusive: "Die code kan niet worden gecombineerd met de aanbiedingen die al op deze bestelling staan.",
+    dispatchLine: (cutoff) => "Dezelfde dag verzonden bij bestellingen vóór " + cutoff + ".",
+    coldPackLine: "Geïsoleerde koelbox, neutrale buitenverpakking.",
+    lotReportLine: "Bij elke zending zit een lotrapport voor elke regel.",
+  },
+};
+
 class Component extends DCLogic {
   state = { code: "", touched: false };
 
@@ -168,22 +247,39 @@ class Component extends DCLogic {
   renderVals() {
     const db = window.Funchems;
     if (!db) return { lines: [], summary: [], payments: [], assurances: [] };
+    const L = (k) => db.t(STR, k);
     const lines = db.cart.lines();
     const pr = db.pricing({ lines });
     const isCrypto = pr.isCrypto;
     const wishlist = (db.cartState.wishlist || []).map((c) => db.product(c)).filter(Boolean);
 
-    const summary = [{ label: "List price", value: db.money(pr.listTotal), color: "oklch(0.55 0.008 250)" }];
-    if (pr.promoSavings > 0) summary.push({ label: "Product offers", value: "−" + db.money(pr.promoSavings), color: "oklch(0.40 0.105 262)" });
+    const summary = [{ label: L("listPrice"), value: db.money(pr.listTotal), color: "oklch(0.55 0.008 250)" }];
+    if (pr.promoSavings > 0) summary.push({ label: L("productOffers"), value: "−" + db.money(pr.promoSavings), color: "oklch(0.40 0.105 262)" });
     pr.applied.forEach((a) => summary.push({
       label: a.label,
-      value: a.kind === "shipping" ? "free" : "−" + db.money(a.value),
+      value: a.kind === "shipping" ? L("free") : "−" + db.money(a.value),
       color: "oklch(0.40 0.105 262)",
     }));
-    summary.push({ label: "Cold chain shipping", value: pr.shipping ? db.money(pr.shipping) : "free", color: "oklch(0.35 0.008 250)" });
+    summary.push({ label: L("coldChainShipping"), value: pr.shipping ? db.money(pr.shipping) : L("free"), color: "oklch(0.35 0.008 250)" });
 
     return {
-      countLine: lines.length ? db.cart.count() + " kits, " + pr.distinct + " different compound" + (pr.distinct === 1 ? "" : "s") : "Nothing here yet",
+      pageTitle: L("pageTitle"),
+      continueShopping: L("continueShopping"),
+      removeLabel: L("removeLabel"),
+      eachLabel: L("eachLabel"),
+      emptyTitle: L("emptyTitle"),
+      emptyBody: L("emptyBody"),
+      browseCompounds: L("browseCompounds"),
+      keepShopping: L("keepShopping"),
+      savedForLater: L("savedForLater"),
+      moveToCart: L("moveToCart"),
+      orderSummary: L("orderSummary"),
+      totalLabel: L("totalLabel"),
+      promoPlaceholder: L("promoPlaceholder"),
+      applyLabel: L("applyLabel"),
+      checkoutLabel: L("checkoutLabel"),
+
+      countLine: lines.length ? L("countLine")(db.cart.count(), pr.distinct) : L("nothingHereYet"),
       isEmpty: lines.length === 0,
       lines: lines.map((l) => {
         const state = db.stockLabel(l.product);
@@ -196,7 +292,7 @@ class Component extends DCLogic {
           total: db.money(l.lineTotal),
           wasTotal: db.money(l.lineList),
           hasWas: l.lineList > l.lineTotal,
-          stockNote: l.qty > l.product.stock ? "only " + l.product.stock + " in stock" : state.tone === "low" ? state.label : "",
+          stockNote: l.qty > l.product.stock ? L("onlyInStock")(l.product.stock) : state.tone === "low" ? state.label : "",
           stockColor: l.qty > l.product.stock ? "oklch(0.5 0.13 25)" : "oklch(0.55 0.14 60)",
           inc: () => db.cart.setQty(l.cat, l.qty + 1),
           dec: () => (l.qty <= 1 ? db.cart.remove(l.cat) : db.cart.setQty(l.cat, l.qty - 1)),
@@ -205,7 +301,7 @@ class Component extends DCLogic {
       }),
 
       payToggle: [{
-        label: "Crypto −" + db.data.settings.cryptoDiscount + "%, applied below",
+        label: L("cryptoToggle")(db.data.settings.cryptoDiscount),
         pick: () => db.cart.setPay("crypto"),
         bg: "oklch(0.19 0.008 250)",
         color: "oklch(0.985 0.002 240)",
@@ -214,7 +310,7 @@ class Component extends DCLogic {
 
       summary,
       grandTotal: db.money(pr.total),
-      savingLine: pr.savings > 0 ? "You save " + db.money(pr.savings) + " against list price" : "",
+      savingLine: pr.savings > 0 ? L("savingLine")(db.money(pr.savings)) : "",
 
       code: this.state.code,
       setCode: (e) => this.setState({ code: e.target.value.toUpperCase() }),
@@ -222,19 +318,19 @@ class Component extends DCLogic {
       applyCode: () => { db.cart.setCode(this.state.code); this.setState({ touched: true }); },
       codeBorder: pr.codeState === "applied" ? "oklch(0.7 0.11 145)" : pr.codeState && pr.codeState !== "" ? "oklch(0.8 0.09 30)" : "oklch(0.88 0.004 250)",
       hasCodeNote: Boolean(pr.codeState),
-      codeNote: pr.codeState === "applied" ? "Code applied to this order."
-        : pr.codeState === "invalid" ? "That code is not recognised."
-        : pr.codeState === "unmet" ? "That code needs a larger order to unlock."
-        : pr.codeState === "notapplicable" ? "That code only covers products you do not have in the cart yet."
-        : pr.codeState === "spent" ? "That code has reached its usage limit."
-        : pr.codeState === "expired" ? "That code is outside its valid dates."
-        : pr.codeState === "exclusive" ? "That code cannot be combined with the offers already on this order."
+      codeNote: pr.codeState === "applied" ? L("codeApplied")
+        : pr.codeState === "invalid" ? L("codeInvalid")
+        : pr.codeState === "unmet" ? L("codeUnmet")
+        : pr.codeState === "notapplicable" ? L("codeNotApplicable")
+        : pr.codeState === "spent" ? L("codeSpent")
+        : pr.codeState === "expired" ? L("codeExpired")
+        : pr.codeState === "exclusive" ? L("codeExclusive")
         : "",
       codeNoteColor: pr.codeState === "applied" ? "oklch(0.45 0.11 145)" : "oklch(0.5 0.13 30)",
 
       hasTier: Boolean(pr.nextTier) && lines.length > 0,
-      tierTitle: pr.nextTier ? "Add " + pr.nextTier.need + " more compound" + (pr.nextTier.need > 1 ? "s" : "") + " for −" + pr.nextTier.value + "%" : "",
-      tierBody: pr.nextTier ? pr.nextTier.label + " applies to the whole order, no code needed." : "",
+      tierTitle: pr.nextTier ? L("tierTitle")(pr.nextTier.need, pr.nextTier.value) : "",
+      tierBody: pr.nextTier ? L("tierBody")(pr.nextTier.label) : "",
 
       hasSaved: wishlist.length > 0,
       saved: wishlist.map((p) => ({
@@ -246,9 +342,9 @@ class Component extends DCLogic {
 
       payments: ["ETH", "USDT", "Ethereum", "Arbitrum", "Base", "Optimism", "Polygon"],
       assurances: [
-        "Dispatched same day on orders before " + db.data.settings.dispatchCutoff + ".",
-        "Insulated cold pack, unbranded outer box.",
-        "Lot report for every line included with dispatch.",
+        L("dispatchLine")(db.data.settings.dispatchCutoff),
+        L("coldPackLine"),
+        L("lotReportLine"),
       ],
     };
   }
