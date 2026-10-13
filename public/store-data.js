@@ -194,7 +194,6 @@
         },
         footerLinks: [
           { id: "fl1", column: "Shop", label: "All compounds", href: "Shop.dc.html" },
-          { id: "fl3", column: "Shop", label: "Pricelist", href: "Pricelist.dc.html" },
           { id: "fl4", column: "Shop", label: "Promotions", href: "Promotions.dc.html" },
           { id: "fl8", column: "Support", label: "Help Center", href: "Help-Center.dc.html" },
           { id: "fl10", column: "Support", label: "Your account", href: "Account.dc.html" },
@@ -209,7 +208,6 @@
         nav: [
           { id: "n1", label: "Home", href: "Funchems.dc.html" },
           { id: "n2", label: "Shop", href: "Shop.dc.html" },
-          { id: "n3", label: "Pricelist", href: "Pricelist.dc.html" },
           { id: "n5", label: "Promotions", href: "Promotions.dc.html" },
           { id: "n6", label: "Help Center", href: "Help-Center.dc.html" },
         ],
