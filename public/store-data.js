@@ -182,6 +182,13 @@
         faqs: [
           { id: "f2", q: "Which payment methods are accepted?", a: "ETH and USDT, on Ethereum, Arbitrum, Base, Optimism or Polygon. Every order takes 8% off the total automatically.", live: true },
           { id: "f4", q: "How long does delivery take?", a: "Dispatch is same day before 14:00 CET. Two to four days inside the EU, four to seven days worldwide.", live: true },
+          { id: "f5", q: "Is the packaging discreet?", a: "Yes. Orders go out in a plain outer box with no branding and no indication of what is inside.", live: true },
+          { id: "f6", q: "Can I track my order?", a: "The dispatch email includes a tracking link, and the order number also works from the account page.", live: true },
+          { id: "f7", q: "Is there a discount for paying in crypto?", a: "Yes, 8% off the total, applied automatically at checkout on ETH and USDT. No code needed.", live: true },
+          { id: "f8", q: "Do prices include tax?", a: "Prices are shown in USD and do not include any import duties or local tax, which are the buyer's responsibility.", live: true },
+          { id: "f9", q: "Can I change my order after placing it?", a: "Contact support right away with your order number. We can usually adjust quantities before the lot leaves the facility.", live: true },
+          { id: "f10", q: "What if something arrives damaged?", a: "Email support with your order number and a photo. A replacement or refund goes out within one business day.", live: true },
+          { id: "f11", q: "How do I cancel an order?", a: "Message support within an hour of placing it and we will cancel before it is prepared.", live: true },
         ],
         footer: {
           blurb: "Research chemicals with per-lot third-party assays. Shipped cold, packed discreet, priced without coupon games.",
