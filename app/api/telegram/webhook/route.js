@@ -48,16 +48,36 @@ async function handleMessage(msg) {
       await tgSend(chatId, "Not authorized.");
       return;
     }
-    const [newEmail, newTgId] = text.split(/\s+/).slice(1);
-    if (!newEmail || !newTgId || !/^\d+$/.test(newTgId)) {
-      await tgSend(chatId, "Usage:\n/addadmin email@example.com telegram_id\n\nGet telegram_id from @userinfobot.");
+    const newEmail = text.split(/\s+/)[1];
+    if (!newEmail || !newEmail.includes("@")) {
+      await tgSend(chatId, "Usage:\n/addadmin email@example.com\n\nThey get dashboard access right away. They link their own Telegram with /link once they DM this bot.");
       return;
     }
     const { error } = await db.from("admins").upsert(
-      { email: newEmail.toLowerCase(), telegram_id: Number(newTgId), added_by: requesterEmail },
-      { onConflict: "email" }
+      { email: newEmail.toLowerCase(), added_by: requesterEmail },
+      { onConflict: "email", ignoreDuplicates: false }
     );
-    await tgSend(chatId, error ? `Error: ${error.message}` : `Added ${newEmail} as admin.`);
+    await tgSend(chatId, error ? `Error: ${error.message}` : `Added ${newEmail} as admin.\nThey should DM me /link ${newEmail} to unlock this menu too.`);
+    return;
+  }
+
+  if (text.startsWith("/link")) {
+    const email = (text.split(/\s+/)[1] || "").toLowerCase();
+    if (!email || !email.includes("@")) {
+      await tgSend(chatId, "Usage: /link email@example.com");
+      return;
+    }
+    const { data: row } = await db.from("admins").select("id, telegram_id").eq("email", email).maybeSingle();
+    if (!row) {
+      await tgSend(chatId, "No admin with that email.");
+      return;
+    }
+    if (row.telegram_id && row.telegram_id !== fromId) {
+      await tgSend(chatId, "That email is already linked to someone else.");
+      return;
+    }
+    await db.from("admins").update({ telegram_id: fromId }).eq("id", row.id);
+    await tgSend(chatId, `Linked. Send /start to open the admin menu.`);
   }
 }
 
@@ -76,7 +96,7 @@ async function handleCallback(cq) {
 
   if (data === "add_prompt") {
     await tgAnswerCallback(cq.id);
-    await tgSend(chatId, "Send:\n/addadmin email@example.com telegram_id\n\nGet telegram_id from @userinfobot.");
+    await tgSend(chatId, "Send:\n/addadmin email@example.com\n\nThey get dashboard access right away. They link their own Telegram later with /link email@example.com.");
     return;
   }
 
