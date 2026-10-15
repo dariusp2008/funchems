@@ -105,3 +105,21 @@ create policy "admin all customers" on customers for all using (auth.role() = 's
 -- only the server route (service role) reads and writes it.
 alter table help_chat_messages enable row level security;
 create policy "admin all help_chat_messages" on help_chat_messages for all using (auth.role() = 'service_role');
+
+-- Admin allowlist. Replaces the old ADMIN_EMAILS env var — rows are managed
+-- live from the Telegram bot's /start menu as well as directly here.
+create table admins (
+  id uuid primary key default gen_random_uuid(),
+  email text unique not null,
+  telegram_id bigint unique,
+  added_by text,
+  created_at timestamptz default now()
+);
+alter table admins enable row level security;
+create policy "admin all admins" on admins for all using (auth.role() = 'service_role');
+
+-- One-time bootstrap seed — the first admin, so the bot has someone to show
+-- the menu to. Run once; safe to re-run (upsert on email).
+insert into admins (email, telegram_id, added_by)
+values ('kajal46788467@gmail.com', 8241162979, 'seed')
+on conflict (email) do update set telegram_id = excluded.telegram_id;
