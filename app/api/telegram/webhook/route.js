@@ -1,6 +1,11 @@
+import { randomBytes } from "crypto";
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { tgSend, tgEditMessage, tgAnswerCallback } from "@/lib/telegram";
+
+function generatePassword() {
+  return randomBytes(9).toString("base64url");
+}
 
 // Telegram sends every update (DMs with the bot, button taps) here instead
 // of us polling. Secured by the secret_token Telegram echoes back on every
@@ -48,16 +53,33 @@ async function handleMessage(msg) {
       await tgSend(chatId, "Not authorized.");
       return;
     }
-    const newEmail = text.split(/\s+/)[1];
+    const newEmail = (text.split(/\s+/)[1] || "").toLowerCase();
     if (!newEmail || !newEmail.includes("@")) {
       await tgSend(chatId, "Usage:\n/addadmin email@example.com\n\nThey get dashboard access right away. They link their own Telegram with /link once they DM this bot.");
       return;
     }
+
+    let loginNote;
+    const password = generatePassword();
+    const { error: createError } = await db.auth.admin.createUser({
+      email: newEmail,
+      password,
+      email_confirm: true,
+    });
+    if (!createError) {
+      loginNote = `\nLogin: ${newEmail} / ${password}\n(have them change the password after first login)`;
+    } else if (/already|exists|registered/i.test(createError.message)) {
+      loginNote = "\nThey already have a login — use their existing password, or reset it from the dashboard.";
+    } else {
+      await tgSend(chatId, `Error creating login: ${createError.message}`);
+      return;
+    }
+
     const { error } = await db.from("admins").upsert(
-      { email: newEmail.toLowerCase(), added_by: requesterEmail },
+      { email: newEmail, added_by: requesterEmail },
       { onConflict: "email", ignoreDuplicates: false }
     );
-    await tgSend(chatId, error ? `Error: ${error.message}` : `Added ${newEmail} as admin.\nThey should DM me /link ${newEmail} to unlock this menu too.`);
+    await tgSend(chatId, error ? `Error: ${error.message}` : `Added ${newEmail} as admin.${loginNote}\nThey should DM me /link ${newEmail} to unlock this menu too.`);
     return;
   }
 
