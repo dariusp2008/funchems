@@ -16,7 +16,7 @@ create table products (
   body text, created_at timestamptz default now()
 );
 create table discounts (
-  id uuid primary key default gen_random_uuid(),
+  id text primary key,
   code text unique,                      -- null = automatic rule
   label text not null,
   kind text not null,                    -- percent | fixed | shipping | bogo
@@ -40,24 +40,29 @@ create table orders (
   lines jsonb default '[]', tracking text, note text,
   country text, created_at timestamptz default now()
 );
+-- id is text, not uuid: the dashboard generates its own client-side ids
+-- (see uid() in store-data.js) and upserts on them directly.
 create table lab_reports (
-  id uuid primary key default gen_random_uuid(),
+  id text primary key,
   lot text not null, product_cat text, method text,
-  purity text, reported_on date, file_url text, live bool default true
+  purity text, reported_on date, file_url text, file_name text, live bool default true
 );
 create table reviews (
-  id uuid primary key default gen_random_uuid(),
-  product_cat text, author text, lot text, stars int,
-  body text, images jsonb default '[]',
+  id text primary key,
+  product_cat text, author text, role text, lot text, stars int, date date,
+  body text, avatar text, images jsonb default '[]',
   live bool default false, created_at timestamptz default now()
 );
+-- Unused: the dashboard's vote-cycle editor doesn't match this per-row shape,
+-- so votes are stored as one row in `content` (key 'votes') instead. Table
+-- kept for backward compatibility, not written to.
 create table votes (
   id uuid primary key default gen_random_uuid(),
   cycle text, product_cat text, count int default 0,
   open bool default true, closes_on date
 );
 create table content (
-  key text primary key, value jsonb          -- hero, blocks, nav, strip, promos...
+  key text primary key, value jsonb          -- hero, blocks, nav, strip, promos, votes...
 );
 create table help_chat_messages (
   id bigserial primary key,
@@ -123,3 +128,13 @@ create policy "admin all admins" on admins for all using (auth.role() = 'service
 insert into admins (email, telegram_id, added_by)
 values ('kajal46788467@gmail.com', 8241162979, 'seed')
 on conflict (email) do update set telegram_id = excluded.telegram_id;
+
+-- One-time migration — discounts/lab_reports/reviews originally had uuid ids;
+-- the dashboard generates its own string ids client-side (see uid() in
+-- store-data.js) and upserts on them directly, so these need to be text.
+-- Safe to run on an empty table; skip if already migrated.
+alter table discounts alter column id type text, alter column id drop default;
+alter table lab_reports alter column id type text, alter column id drop default;
+alter table reviews alter column id type text, alter column id drop default;
+alter table lab_reports add column file_name text;
+alter table reviews add column role text, add column date date, add column avatar text;

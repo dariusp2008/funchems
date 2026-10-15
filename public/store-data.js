@@ -25,7 +25,7 @@
  *   body text, created_at timestamptz default now()
  * );
  * create table discounts (
- *   id uuid primary key default gen_random_uuid(),
+ *   id text primary key,                   -- client-generated, see uid()
  *   code text unique,                      -- null = automatic rule
  *   label text not null,
  *   kind text not null,                    -- percent | fixed | shipping | bogo
@@ -57,23 +57,18 @@
  *   flagged bool default false, created_at timestamptz default now()
  * );
  * create table lab_reports (
- *   id uuid primary key default gen_random_uuid(),
+ *   id text primary key,                   -- client-generated, see uid()
  *   lot text not null, product_cat text, method text,
- *   purity text, reported_on date, file_url text, live bool default true
+ *   purity text, reported_on date, file_url text, file_name text, live bool default true
  * );
  * create table reviews (
- *   id uuid primary key default gen_random_uuid(),
- *   product_cat text, author text, lot text, stars int,
- *   body text, images jsonb default '[]',
+ *   id text primary key,                   -- client-generated, see uid()
+ *   product_cat text, author text, role text, lot text, stars int, date date,
+ *   body text, avatar text, images jsonb default '[]',
  *   live bool default false, created_at timestamptz default now()
  * );
- * create table votes (
- *   id uuid primary key default gen_random_uuid(),
- *   cycle text, product_cat text, count int default 0,
- *   open bool default true, closes_on date
- * );
  * create table content (
- *   key text primary key, value jsonb          -- hero, blocks, nav, strip, promos...
+ *   key text primary key, value jsonb      -- hero, blocks, nav, strip, promos, votes...
  * );
  *
  * -- Row level security: public reads live rows, writes go through the service role.
@@ -99,6 +94,77 @@
   const pct = (n) => (n > 0 ? "−" : "") + Math.round(Math.abs(n)) + "%";
   const uid = (p) => p + "-" + Math.random().toString(36).slice(2, 8);
   const today = () => new Date().toISOString().slice(0, 10);
+
+  /* ---- Supabase row <-> in-app shape --------------------------------- *
+   * The dashboard edits camelCase fields; every Supabase column is
+   * snake_case. These are the only two places that translation happens.
+   */
+  function toProductRow(p) {
+    return {
+      cat: p.cat, name: p.name,
+      dose: (p.doseValue || p.doseUnit) ? [p.doseValue, p.doseUnit].filter(Boolean).join(" ") : (p.dose || ""),
+      category: p.category || "compound", price: Number(p.price) || 0,
+      list_price: p.list != null && p.list !== "" ? Number(p.list) : null,
+      stock: Number(p.stock) || 0, low_stock_at: Number(p.lowStockAt) || 10,
+      purity: p.purity || null, lot: p.lot || null, live: !!p.live,
+      sort: Number(p.sort) || 0, images: p.images || [], body: p.body || null,
+    };
+  }
+  function fromProductRow(row) {
+    const { list_price, low_stock_at, ...rest } = row;
+    return { ...rest, list: list_price, lowStockAt: low_stock_at };
+  }
+
+  function toDiscountRow(d) {
+    return {
+      id: d.id, code: d.code ? d.code : null, label: d.label, kind: d.kind,
+      value: Number(d.value) || 0, scope: d.scope || "order",
+      scope_value: d.scopeValue || null,
+      min_subtotal: Number(d.minSubtotal) || 0, min_distinct: Number(d.minDistinct) || 0,
+      pay_method: d.payMethod || null, stackable: !!d.stackable, auto: !!d.auto,
+      uses: Number(d.uses) || 0, max_uses: d.maxUses != null && d.maxUses !== "" ? Number(d.maxUses) : null,
+      starts_at: d.startsAt || null, ends_at: d.endsAt || null, live: !!d.live,
+    };
+  }
+  function fromDiscountRow(row) {
+    return {
+      id: row.id, code: row.code || "", label: row.label, kind: row.kind, value: row.value,
+      scope: row.scope, scopeValue: row.scope_value || "", minSubtotal: row.min_subtotal,
+      minDistinct: row.min_distinct, payMethod: row.pay_method || "", stackable: row.stackable,
+      auto: row.auto, uses: row.uses, maxUses: row.max_uses, startsAt: row.starts_at || "",
+      endsAt: row.ends_at || "", live: row.live,
+    };
+  }
+
+  function toLabReportRow(r) {
+    return {
+      id: r.id, lot: r.lot, product_cat: r.productCat || null, method: r.method || null,
+      purity: r.purity || null, reported_on: r.reportedOn || null,
+      file_url: r.fileUrl || null, file_name: r.fileName || null, live: !!r.live,
+    };
+  }
+  function fromLabReportRow(row) {
+    return {
+      id: row.id, lot: row.lot, productCat: row.product_cat || "", method: row.method || "",
+      purity: row.purity || "", reportedOn: row.reported_on || "", fileUrl: row.file_url || "",
+      fileName: row.file_name || "", live: row.live,
+    };
+  }
+
+  function toReviewRow(r) {
+    return {
+      id: r.id, product_cat: r.productCat || null, author: r.author || null, role: r.role || null,
+      lot: r.lot || null, stars: Number(r.stars) || 0, date: r.date || null,
+      body: r.body || null, avatar: r.avatar || null, images: r.images || [], live: !!r.live,
+    };
+  }
+  function fromReviewRow(row) {
+    return {
+      id: row.id, productCat: row.product_cat || "", author: row.author || "", role: row.role || "",
+      lot: row.lot || "", stars: row.stars, date: row.date || "", body: row.body || "",
+      avatar: row.avatar || "", images: row.images || [], live: row.live,
+    };
+  }
 
   function seed() {
     const products = [];
@@ -486,21 +552,23 @@
     async pull() {
       const c = this.connect();
       if (!c) return { ok: false, reason: "local" };
-      const tables = { products: "products", discounts: "discounts", orders: "orders", customers: "customers", labReports: "lab_reports", reviews: "reviews" };
-      const contentTables = {
-        categories: "categories", qtyTiers: "qty_tiers", doseUnits: "dose_units",
-        bundles: "bundles", promos: "promotions", faqs: "help_articles",
-        hero: "home_hero", blocks: "home_blocks", marquee: "home_marquee",
-        nav: "nav_items", strip: "top_strip", languages: "locales",
-        footerLinks: "footer_links", legalLinks: "legal_links",
-      };
-      for (const [key, table] of Object.entries(contentTables)) {
-        const { data, error } = await c.from(table).select("*");
-        if (!error && data && data.length) this.data.content[key] = data;
+
+      // Every content.* section (hero, nav, faqs, promos, ...) and votes
+      // live as one row each in the single `content` table — not their own
+      // tables, so this schema never needs to grow a table per section.
+      const { data: contentRows, error: contentError } = await c.from("content").select("*");
+      if (!contentError && contentRows) {
+        for (const row of contentRows) {
+          if (row.key === "votes") this.data.votes = row.value;
+          else this.data.content[row.key] = row.value;
+        }
       }
+
+      const tables = { products: "products", discounts: "discounts", orders: "orders", customers: "customers", labReports: "lab_reports", reviews: "reviews" };
+      const fromRow = { products: fromProductRow, discounts: fromDiscountRow, labReports: fromLabReportRow, reviews: fromReviewRow };
       for (const [key, table] of Object.entries(tables)) {
         const { data, error } = await c.from(table).select("*");
-        if (!error && data) this.data[key] = data;
+        if (!error && data) this.data[key] = fromRow[key] ? data.map(fromRow[key]) : data;
       }
       this.save();
       return { ok: true };
@@ -514,10 +582,18 @@
       const { data } = await c.auth.getSession();
       const token = data.session && data.session.access_token;
       if (!token) return { ok: false, reason: "signed-out" };
+      const content = Object.entries(this.data.content).map(([key, value]) => ({ key, value }));
+      content.push({ key: "votes", value: this.data.votes });
       const res = await fetch("/api/admin/sync", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
-        body: JSON.stringify({ products: this.data.products, discounts: this.data.discounts }),
+        body: JSON.stringify({
+          products: this.data.products.map(toProductRow),
+          discounts: this.data.discounts.map(toDiscountRow),
+          labReports: this.data.labReports.map(toLabReportRow),
+          reviews: this.data.reviews.map(toReviewRow),
+          content,
+        }),
       });
       const body = await res.json();
       return body;
